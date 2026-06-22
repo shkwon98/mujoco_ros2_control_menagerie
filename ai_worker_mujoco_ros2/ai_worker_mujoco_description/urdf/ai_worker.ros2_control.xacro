@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="position_joint" params="joint_name initial_positions">
+    <joint name="${joint_name}">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">${initial_positions[joint_name]}</param>
+      </state_interface>
+      <state_interface name="velocity">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="effort">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="ai_worker_mujoco_ros2_control" params="name initial_positions_file robot_model">
+    <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+        <param name="mujoco_model">$(find ai_worker_mujoco_description)/mjcf/scene_${robot_model}.xml</param>
+        <param name="sim_speed_factor">1.0</param>
+        <param name="headless">false</param>
+      </hardware>
+
+      <xacro:position_joint joint_name="lift_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="head_joint1" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="head_joint2" initial_positions="${initial_positions}"/>
+
+      <xacro:position_joint joint_name="arm_l_joint1" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_l_joint2" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_l_joint3" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_l_joint4" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_l_joint5" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_l_joint6" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_l_joint7" initial_positions="${initial_positions}"/>
+
+      <xacro:position_joint joint_name="arm_r_joint1" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_r_joint2" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_r_joint3" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_r_joint4" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_r_joint5" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_r_joint6" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="arm_r_joint7" initial_positions="${initial_positions}"/>
+    </ros2_control>
+  </xacro:macro>
+</robot>

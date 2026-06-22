@@ -6,19 +6,19 @@
       joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
-      right_arm_controller:
+      arm_right_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-      left_arm_controller:
+      arm_left_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-      waist_controller:
+      torso_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
       leg_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-  right_arm_controller:
+  arm_right_controller:
     ros__parameters:
       joints:
         - right_shoulder_pitch_joint
@@ -37,7 +37,7 @@
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
 
-  left_arm_controller:
+  arm_left_controller:
     ros__parameters:
       joints:
         - left_shoulder_pitch_joint
@@ -56,7 +56,7 @@
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
 
-  waist_controller:
+  torso_controller:
     ros__parameters:
       joints:
         - waist_yaw_joint

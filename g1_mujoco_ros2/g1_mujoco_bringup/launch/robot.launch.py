@@ -9,7 +9,6 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    hardware_type = LaunchConfiguration("hardware_type")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
     initial_positions_file = LaunchConfiguration("initial_positions_file")
     mujoco_model_file = LaunchConfiguration("mujoco_model_file")
@@ -28,8 +27,6 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             xacro_file,
-            " hardware_type:=",
-            hardware_type,
             " initial_positions_file:=",
             initial_positions_file,
             " mujoco_model_file:=",
@@ -43,37 +40,37 @@ def generate_launch_description():
     ros2_control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        namespace="/control/g1",
+        namespace="/control/body",
         parameters=[robot_description, controllers_yaml],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
-            ("robot_description", "/control/g1/robot_description"),
+            ("robot_description", "/control/body/robot_description"),
         ],
     )
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        namespace="/sensors/proprio/g1",
+        namespace="/sensors/proprio/body",
         parameters=[robot_description],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
-            ("robot_description", "/control/g1/robot_description"),
-            ("joint_states", "/sensors/proprio/g1/joint_states"),
+            ("robot_description", "/control/body/robot_description"),
+            ("joint_states", "/sensors/proprio/body/joint_states"),
         ],
     )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        namespace="/control/g1",
+        namespace="/control/body",
         output="screen",
         arguments=[
             "joint_state_broadcaster",
             "--controller-ros-args",
-            "--ros-args --remap joint_states:=/sensors/proprio/g1/joint_states",
+            "--ros-args --remap joint_states:=/sensors/proprio/body/joint_states",
             "--ros-args",
             "--log-level",
             log_level,
@@ -84,12 +81,12 @@ def generate_launch_description():
         return Node(
             package="controller_manager",
             executable="spawner",
-            namespace="/control/g1",
+            namespace="/control/body",
             output="screen",
             arguments=[
                 controller_name,
                 "--controller-ros-args",
-                "--ros-args --remap ~/joint_states:=/sensors/proprio/g1/joint_states",
+                "--ros-args --remap ~/joint_states:=/sensors/proprio/body/joint_states",
                 "--controller-ros-args",
                 f"--ros-args --remap ~/joint_trajectory:={command_topic}",
                 "--ros-args",
@@ -98,26 +95,25 @@ def generate_launch_description():
             ],
         )
 
-    right_arm_controller_spawner = make_controller_spawner(
-        "right_arm_controller",
-        "/control/g1/right_arm_controller/joint_trajectory",
+    arm_right_controller_spawner = make_controller_spawner(
+        "arm_right_controller",
+        "/control/body/arm_right_controller/joint_trajectory",
     )
-    left_arm_controller_spawner = make_controller_spawner(
-        "left_arm_controller",
-        "/control/g1/left_arm_controller/joint_trajectory",
+    arm_left_controller_spawner = make_controller_spawner(
+        "arm_left_controller",
+        "/control/body/arm_left_controller/joint_trajectory",
     )
-    waist_controller_spawner = make_controller_spawner(
-        "waist_controller",
-        "/control/g1/waist_controller/joint_trajectory",
+    torso_controller_spawner = make_controller_spawner(
+        "torso_controller",
+        "/control/body/torso_controller/joint_trajectory",
     )
     leg_controller_spawner = make_controller_spawner(
         "leg_controller",
-        "/control/g1/leg_controller/joint_trajectory",
+        "/control/body/leg_controller/joint_trajectory",
     )
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("hardware_type", default_value="mujoco", choices=["mujoco", "mock"], description="Hardware type"),
             DeclareLaunchArgument(
                 "controllers_yaml",
                 default_value=PathJoinSubstitution(
@@ -156,9 +152,9 @@ def generate_launch_description():
             ros2_control_node,
             robot_state_publisher_node,
             joint_state_broadcaster_spawner,
-            right_arm_controller_spawner,
-            left_arm_controller_spawner,
-            waist_controller_spawner,
+            arm_right_controller_spawner,
+            arm_left_controller_spawner,
+            torso_controller_spawner,
             leg_controller_spawner,
         ]
     )

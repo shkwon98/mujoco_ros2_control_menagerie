@@ -28,7 +28,8 @@ def test_description_provides_urdf_mjcf_meshes_and_ros2_control_xacro():
 
     xacro_text = (DESCRIPTION / "urdf" / "g1.ros2_control.xacro").read_text()
     assert "mujoco_ros2_control/MujocoSystemInterface" in xacro_text
-    assert "mock_components/GenericSystem" in xacro_text
+    assert "mock_components/GenericSystem" not in xacro_text
+    assert "hardware_type" not in xacro_text
     assert "$(find-pkg-share g1_mujoco_description)/mjcf/g1_29dof_fixed.xml" in xacro_text
 
     urdf_text = (DESCRIPTION / "urdf" / "g1_29dof.urdf").read_text()
@@ -42,9 +43,9 @@ def test_controller_config_exposes_joint_trajectory_surfaces():
     text = config.read_text()
 
     assert "joint_state_broadcaster:" in text
-    assert "right_arm_controller:" in text
-    assert "left_arm_controller:" in text
-    assert "waist_controller:" in text
+    assert "arm_right_controller:" in text
+    assert "arm_left_controller:" in text
+    assert "torso_controller:" in text
     assert "leg_controller:" in text
     assert "joint_trajectory_controller/JointTrajectoryController" in text
     assert "right_shoulder_pitch_joint" in text
@@ -56,30 +57,28 @@ def test_bringup_launch_starts_ros2_control_and_spawners():
     launch = BRINGUP / "launch" / "robot.launch.py"
     text = launch.read_text()
 
-    assert 'DeclareLaunchArgument("hardware_type"' in text
-    assert 'choices=["mujoco", "mock"]' in text
+    assert 'DeclareLaunchArgument("hardware_type"' not in text
+    assert 'choices=["mujoco", "mock"]' not in text
     assert 'choices=["g1_29dof_fixed.xml", "g1_29dof.xml"]' in text
     assert 'executable="ros2_control_node"' in text
     assert 'executable="robot_state_publisher"' in text
     assert 'joint_state_broadcaster' in text
-    assert 'right_arm_controller' in text
-    assert 'left_arm_controller' in text
-    assert 'waist_controller' in text
+    assert 'arm_right_controller' in text
+    assert 'arm_left_controller' in text
+    assert 'torso_controller' in text
     assert 'leg_controller' in text
-    assert "/sensors/proprio/g1/joint_states" in text
-    assert "/control/g1/right_arm_controller/joint_trajectory" in text
-    assert "/control/g1/left_arm_controller/joint_trajectory" in text
+    assert "/sensors/proprio/body/joint_states" in text
+    assert "/control/body/robot_description" in text
+    assert "/control/body/arm_right_controller/joint_trajectory" in text
+    assert "/control/body/arm_left_controller/joint_trajectory" in text
+    assert "/control/body/torso_controller/joint_trajectory" in text
 
 
-def test_dexgraft_body_config_points_to_g1_ros2_control_topics():
-    config = BRINGUP / "config" / "dexgraft_g1.yaml"
-    text = config.read_text()
+def test_g1_mujoco_bringup_does_not_embed_dexgraft_config():
+    assert not (BRINGUP / "config").exists()
 
-    assert 'urdf_path: "$(find-pkg-share g1_mujoco_description)/urdf/g1_29dof.urdf"' in text
-    assert 'joint_states_topic: "/sensors/proprio/g1/joint_states"' in text
-    assert 'right_traj_topic: "/control/g1/right_arm_controller/joint_trajectory"' in text
-    assert 'left_traj_topic: "/control/g1/left_arm_controller/joint_trajectory"' in text
-    assert "right_shoulder_pitch_joint" in text
-    assert "left_shoulder_pitch_joint" in text
-    assert 'right_control_frame: "right_wrist_yaw_link"' in text
-    assert 'left_control_frame: "left_wrist_yaw_link"' in text
+    checked_suffixes = (".py", ".xml", ".yaml", ".yml", ".xacro", ".md")
+    for path in ROOT.rglob("*"):
+        if not path.is_file() or path.suffix not in checked_suffixes or "test" in path.parts:
+            continue
+        assert "dexgraft" not in path.read_text(errors="ignore").lower()

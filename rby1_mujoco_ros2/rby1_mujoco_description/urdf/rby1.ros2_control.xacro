@@ -43,27 +43,22 @@
   </xacro:macro>
 
   <xacro:macro name="rby1_mujoco_ros2_control"
-    params="name robot_model robot_version initial_positions_file hardware_type">
+    params="name robot_model robot_version initial_positions_file">
     <xacro:property name="initial_positions"
       value="${xacro.load_yaml(initial_positions_file)['initial_positions']}" />
     <xacro:property name="include_temperature" value="false" />
 
     <ros2_control name="${name}" type="system">
       <hardware>
-        <xacro:if value="${hardware_type == 'mujoco'}">
-          <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-          <xacro:if value="${robot_model == 'a' or robot_model == 'm'}">
-            <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>
-          </xacro:if>
-          <xacro:if value="${robot_model == 'ub'}">
-            <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act.xml</param>
-          </xacro:if>
-          <param name="sim_speed_factor">1.0</param>
-          <param name="headless">false</param>
+        <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+        <xacro:if value="${robot_model == 'a' or robot_model == 'm'}">
+          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>
         </xacro:if>
-        <xacro:if value="${hardware_type == 'mock'}">
-          <plugin>mock_components/GenericSystem</plugin>
+        <xacro:if value="${robot_model == 'ub'}">
+          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act.xml</param>
         </xacro:if>
+        <param name="sim_speed_factor">1.0</param>
+        <param name="headless">false</param>
       </hardware>
 
       <xacro:if value="${robot_model == 'a'}">

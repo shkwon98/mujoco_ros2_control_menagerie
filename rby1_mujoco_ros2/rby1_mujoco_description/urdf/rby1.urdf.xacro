@@ -2,7 +2,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rby1">
   <xacro:arg name="robot_model" default="a" />
   <xacro:arg name="robot_version" default="v1.2" />
-  <xacro:arg name="hardware_type" default="mujoco" />
   <xacro:arg name="initial_positions_file"
     default="$(find rby1_mujoco_description)/config/initial_positions/rby1$(arg robot_model).yaml" />
 
@@ -54,6 +53,5 @@
     robot_model="$(arg robot_model)"
     robot_version="$(arg robot_version)"
     initial_positions_file="$(arg initial_positions_file)"
-    hardware_type="$(arg hardware_type)"
   />
 </robot>

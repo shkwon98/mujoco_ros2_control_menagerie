@@ -15,21 +15,16 @@
     </joint>
   </xacro:macro>
 
-  <xacro:macro name="g1_mujoco_ros2_control" params="name hardware_type initial_positions_file mujoco_model_file">
+  <xacro:macro name="g1_mujoco_ros2_control" params="name initial_positions_file mujoco_model_file">
     <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
 
     <ros2_control name="${name}" type="system">
       <hardware>
-        <xacro:if value="${hardware_type == 'mujoco'}">
-          <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-          <!-- Package-share equivalent: $(find-pkg-share g1_mujoco_description)/mjcf/g1_29dof_fixed.xml -->
-          <param name="mujoco_model">$(find g1_mujoco_description)/mjcf/${mujoco_model_file}</param>
-          <param name="sim_speed_factor">1.0</param>
-          <param name="headless">false</param>
-        </xacro:if>
-        <xacro:if value="${hardware_type == 'mock'}">
-          <plugin>mock_components/GenericSystem</plugin>
-        </xacro:if>
+        <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+        <!-- Package-share equivalent: $(find-pkg-share g1_mujoco_description)/mjcf/g1_29dof_fixed.xml -->
+        <param name="mujoco_model">$(find g1_mujoco_description)/mjcf/${mujoco_model_file}</param>
+        <param name="sim_speed_factor">1.0</param>
+        <param name="headless">false</param>
       </hardware>
 
       <xacro:position_joint joint_name="left_hip_pitch_joint" initial_positions="${initial_positions}"/>

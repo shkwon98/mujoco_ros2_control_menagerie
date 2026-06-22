@@ -17,7 +17,6 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     """Generate launch description with declared arguments."""
-    hardware_type = LaunchConfiguration("hardware_type")
     robot_model = LaunchConfiguration("robot_model")
     robot_version = LaunchConfiguration("robot_version")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
@@ -41,8 +40,6 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             xacro_file,
-            " hardware_type:=",
-            hardware_type,
             " robot_model:=",
             robot_model,
             " robot_version:=",
@@ -155,12 +152,6 @@ def generate_launch_description():
 
     actions = [
         DeclareLaunchArgument(
-            "hardware_type",
-            default_value="mujoco",
-            choices=["mujoco", "mock"],
-            description="Hardware type",
-        ),
-        DeclareLaunchArgument(
             "robot_model",
             default_value="a",
             choices=["a", "m", "ub"],
@@ -175,7 +166,7 @@ def generate_launch_description():
             "controllers_yaml",
             default_value=PathJoinSubstitution(
                 [
-                    FindPackageShare("rby1_mujoco_bringup"),
+                    FindPackageShare("rby1_mujoco_description"),
                     "config",
                     "ros2_control",
                     PythonExpression(
