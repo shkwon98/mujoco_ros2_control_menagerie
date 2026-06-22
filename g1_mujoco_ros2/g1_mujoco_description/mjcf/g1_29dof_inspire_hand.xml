@@ -11,6 +11,9 @@
   <compiler angle="radian" meshdir="meshes" />
 
   <default>
+    <default class="g1">
+      <position kp="500" dampratio="1" inheritrange="1" />
+    </default>
     <default class="torso_motor">
       <joint damping="0.05" armature="0.01" frictionloss="0.2"/>
     </default>
@@ -111,6 +114,7 @@
   </asset>
 
   <worldbody>
+    <light pos="1 0 3.5" dir="0 0 -1" directional="true"/>
     <body name="pelvis" pos="0 0 0.793">
       <inertial pos="0 0 -0.07605" quat="1 0 -0.000399148 0" mass="3.813"
         diaginertia="0.010549 0.0093089 0.0079184" />
@@ -802,94 +806,93 @@
 
   <!-- ================================================================ -->
   <!-- Mimic joint equality constraints (from URDF <mimic> elements)    -->
-  <!-- joint2 = polycoef[0] + polycoef[1]*joint1                        -->
+  <!-- MuJoCo joint equality constrains joint1 = polycoef(joint2).       -->
   <!-- ================================================================ -->
   <equality>
     <!-- Left hand thumb coupling -->
-    <joint joint1="l_ih_thumb_proximal_pitch" joint2="l_ih_thumb_intermediate"
+    <joint joint1="l_ih_thumb_intermediate" joint2="l_ih_thumb_proximal_pitch"
       polycoef="0 1.334 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="l_ih_thumb_proximal_pitch" joint2="l_ih_thumb_distal"
+    <joint joint1="l_ih_thumb_distal" joint2="l_ih_thumb_proximal_pitch"
       polycoef="0 0.667 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
     <!-- Left hand finger coupling (proximal drives intermediate) -->
-    <joint joint1="l_ih_index_proximal" joint2="l_ih_index_intermediate"
+    <joint joint1="l_ih_index_intermediate" joint2="l_ih_index_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="l_ih_middle_proximal" joint2="l_ih_middle_intermediate"
+    <joint joint1="l_ih_middle_intermediate" joint2="l_ih_middle_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="l_ih_ring_proximal" joint2="l_ih_ring_intermediate"
+    <joint joint1="l_ih_ring_intermediate" joint2="l_ih_ring_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="l_ih_pinky_proximal" joint2="l_ih_pinky_intermediate"
+    <joint joint1="l_ih_pinky_intermediate" joint2="l_ih_pinky_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
 
     <!-- Right hand thumb coupling -->
-    <joint joint1="r_ih_thumb_proximal_pitch" joint2="r_ih_thumb_intermediate"
+    <joint joint1="r_ih_thumb_intermediate" joint2="r_ih_thumb_proximal_pitch"
       polycoef="0 1.334 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="r_ih_thumb_proximal_pitch" joint2="r_ih_thumb_distal"
+    <joint joint1="r_ih_thumb_distal" joint2="r_ih_thumb_proximal_pitch"
       polycoef="0 0.667 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
     <!-- Right hand finger coupling -->
-    <joint joint1="r_ih_index_proximal" joint2="r_ih_index_intermediate"
+    <joint joint1="r_ih_index_intermediate" joint2="r_ih_index_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="r_ih_middle_proximal" joint2="r_ih_middle_intermediate"
+    <joint joint1="r_ih_middle_intermediate" joint2="r_ih_middle_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="r_ih_ring_proximal" joint2="r_ih_ring_intermediate"
+    <joint joint1="r_ih_ring_intermediate" joint2="r_ih_ring_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-    <joint joint1="r_ih_pinky_proximal" joint2="r_ih_pinky_intermediate"
+    <joint joint1="r_ih_pinky_intermediate" joint2="r_ih_pinky_proximal"
       polycoef="-0.04545 1.06399 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001"/>
   </equality>
 
+  <contact>
+    <exclude body1="l_ih_hand_base" body2="l_ih_thumb_proximal"/>
+    <exclude body1="r_ih_hand_base" body2="r_ih_thumb_proximal"/>
+  </contact>
+
   <actuator>
     <!-- Legs -->
-    <motor name="left_hip_pitch" joint="left_hip_pitch_joint" ctrlrange="-88 88" />
-    <motor name="left_hip_roll" joint="left_hip_roll_joint" ctrlrange="-88 88" />
-    <motor name="left_hip_yaw" joint="left_hip_yaw_joint" ctrlrange="-88 88" />
-    <motor name="left_knee" joint="left_knee_joint" ctrlrange="-139 139" />
-    <motor name="left_ankle_pitch" joint="left_ankle_pitch_joint" ctrlrange="-50 50" />
-    <motor name="left_ankle_roll" joint="left_ankle_roll_joint" ctrlrange="-50 50" />
-
-    <motor name="right_hip_pitch" joint="right_hip_pitch_joint" ctrlrange="-88 88" />
-    <motor name="right_hip_roll" joint="right_hip_roll_joint" ctrlrange="-88 88" />
-    <motor name="right_hip_yaw" joint="right_hip_yaw_joint" ctrlrange="-88 88" />
-    <motor name="right_knee" joint="right_knee_joint" ctrlrange="-139 139" />
-    <motor name="right_ankle_pitch" joint="right_ankle_pitch_joint" ctrlrange="-50 50" />
-    <motor name="right_ankle_roll" joint="right_ankle_roll_joint" ctrlrange="-50 50" />
-
+    <position class="g1" name="left_hip_pitch_joint" joint="left_hip_pitch_joint" />
+    <position class="g1" name="left_hip_roll_joint" joint="left_hip_roll_joint" />
+    <position class="g1" name="left_hip_yaw_joint" joint="left_hip_yaw_joint" />
+    <position class="g1" name="left_knee_joint" joint="left_knee_joint" />
+    <position class="g1" name="left_ankle_pitch_joint" joint="left_ankle_pitch_joint" />
+    <position class="g1" name="left_ankle_roll_joint" joint="left_ankle_roll_joint" />
+    <position class="g1" name="right_hip_pitch_joint" joint="right_hip_pitch_joint" />
+    <position class="g1" name="right_hip_roll_joint" joint="right_hip_roll_joint" />
+    <position class="g1" name="right_hip_yaw_joint" joint="right_hip_yaw_joint" />
+    <position class="g1" name="right_knee_joint" joint="right_knee_joint" />
+    <position class="g1" name="right_ankle_pitch_joint" joint="right_ankle_pitch_joint" />
+    <position class="g1" name="right_ankle_roll_joint" joint="right_ankle_roll_joint" />
     <!-- Waist -->
-    <motor name="waist_yaw" joint="waist_yaw_joint" ctrlrange="-88 88" />
-    <motor name="waist_roll" joint="waist_roll_joint" ctrlrange="-50 50" />
-    <motor name="waist_pitch" joint="waist_pitch_joint" ctrlrange="-50 50" />
-
+    <position class="g1" name="waist_yaw_joint" joint="waist_yaw_joint" />
+    <position class="g1" name="waist_roll_joint" joint="waist_roll_joint" />
+    <position class="g1" name="waist_pitch_joint" joint="waist_pitch_joint" />
     <!-- Left arm -->
-    <motor name="left_shoulder_pitch" joint="left_shoulder_pitch_joint" ctrlrange="-25 25" />
-    <motor name="left_shoulder_roll" joint="left_shoulder_roll_joint" ctrlrange="-25 25" />
-    <motor name="left_shoulder_yaw" joint="left_shoulder_yaw_joint" ctrlrange="-25 25" />
-    <motor name="left_elbow" joint="left_elbow_joint" ctrlrange="-25 25" />
-    <motor name="left_wrist_roll" joint="left_wrist_roll_joint" ctrlrange="-25 25" />
-    <motor name="left_wrist_pitch" joint="left_wrist_pitch_joint" ctrlrange="-5 5" />
-    <motor name="left_wrist_yaw" joint="left_wrist_yaw_joint" ctrlrange="-5 5" />
-
+    <position class="g1" name="left_shoulder_pitch_joint" joint="left_shoulder_pitch_joint" />
+    <position class="g1" name="left_shoulder_roll_joint" joint="left_shoulder_roll_joint" />
+    <position class="g1" name="left_shoulder_yaw_joint" joint="left_shoulder_yaw_joint" />
+    <position class="g1" name="left_elbow_joint" joint="left_elbow_joint" />
+    <position class="g1" name="left_wrist_roll_joint" joint="left_wrist_roll_joint" />
+    <position class="g1" name="left_wrist_pitch_joint" joint="left_wrist_pitch_joint" />
+    <position class="g1" name="left_wrist_yaw_joint" joint="left_wrist_yaw_joint" />
     <!-- Left Inspire Hand (6 actuated DOF: thumb yaw + pitch, index/middle/ring/pinky proximal) -->
-    <motor name="l_ih_thumb_proximal_yaw"   joint="l_ih_thumb_proximal_yaw"   ctrlrange="-1 1" />
-    <motor name="l_ih_thumb_proximal_pitch" joint="l_ih_thumb_proximal_pitch" ctrlrange="-1 1" />
-    <motor name="l_ih_index_proximal"       joint="l_ih_index_proximal"       ctrlrange="-1 1" />
-    <motor name="l_ih_middle_proximal"      joint="l_ih_middle_proximal"      ctrlrange="-1 1" />
-    <motor name="l_ih_ring_proximal"        joint="l_ih_ring_proximal"        ctrlrange="-1 1" />
-    <motor name="l_ih_pinky_proximal"       joint="l_ih_pinky_proximal"       ctrlrange="-1 1" />
-
+    <position class="g1" name="l_ih_thumb_proximal_yaw" joint="l_ih_thumb_proximal_yaw" />
+    <position class="g1" name="l_ih_thumb_proximal_pitch" joint="l_ih_thumb_proximal_pitch" />
+    <position class="g1" name="l_ih_index_proximal" joint="l_ih_index_proximal" />
+    <position class="g1" name="l_ih_middle_proximal" joint="l_ih_middle_proximal" />
+    <position class="g1" name="l_ih_ring_proximal" joint="l_ih_ring_proximal" />
+    <position class="g1" name="l_ih_pinky_proximal" joint="l_ih_pinky_proximal" />
     <!-- Right arm -->
-    <motor name="right_shoulder_pitch" joint="right_shoulder_pitch_joint" ctrlrange="-25 25" />
-    <motor name="right_shoulder_roll" joint="right_shoulder_roll_joint" ctrlrange="-25 25" />
-    <motor name="right_shoulder_yaw" joint="right_shoulder_yaw_joint" ctrlrange="-25 25" />
-    <motor name="right_elbow" joint="right_elbow_joint" ctrlrange="-25 25" />
-    <motor name="right_wrist_roll" joint="right_wrist_roll_joint" ctrlrange="-25 25" />
-    <motor name="right_wrist_pitch" joint="right_wrist_pitch_joint" ctrlrange="-5 5" />
-    <motor name="right_wrist_yaw" joint="right_wrist_yaw_joint" ctrlrange="-5 5" />
-
+    <position class="g1" name="right_shoulder_pitch_joint" joint="right_shoulder_pitch_joint" />
+    <position class="g1" name="right_shoulder_roll_joint" joint="right_shoulder_roll_joint" />
+    <position class="g1" name="right_shoulder_yaw_joint" joint="right_shoulder_yaw_joint" />
+    <position class="g1" name="right_elbow_joint" joint="right_elbow_joint" />
+    <position class="g1" name="right_wrist_roll_joint" joint="right_wrist_roll_joint" />
+    <position class="g1" name="right_wrist_pitch_joint" joint="right_wrist_pitch_joint" />
+    <position class="g1" name="right_wrist_yaw_joint" joint="right_wrist_yaw_joint" />
     <!-- Right Inspire Hand (6 actuated DOF) -->
-    <motor name="r_ih_thumb_proximal_yaw"   joint="r_ih_thumb_proximal_yaw"   ctrlrange="-1 1" />
-    <motor name="r_ih_thumb_proximal_pitch" joint="r_ih_thumb_proximal_pitch" ctrlrange="-1 1" />
-    <motor name="r_ih_index_proximal"       joint="r_ih_index_proximal"       ctrlrange="-1 1" />
-    <motor name="r_ih_middle_proximal"      joint="r_ih_middle_proximal"      ctrlrange="-1 1" />
-    <motor name="r_ih_ring_proximal"        joint="r_ih_ring_proximal"        ctrlrange="-1 1" />
-    <motor name="r_ih_pinky_proximal"       joint="r_ih_pinky_proximal"       ctrlrange="-1 1" />
+    <position class="g1" name="r_ih_thumb_proximal_yaw" joint="r_ih_thumb_proximal_yaw" />
+    <position class="g1" name="r_ih_thumb_proximal_pitch" joint="r_ih_thumb_proximal_pitch" />
+    <position class="g1" name="r_ih_index_proximal" joint="r_ih_index_proximal" />
+    <position class="g1" name="r_ih_middle_proximal" joint="r_ih_middle_proximal" />
+    <position class="g1" name="r_ih_ring_proximal" joint="r_ih_ring_proximal" />
+    <position class="g1" name="r_ih_pinky_proximal" joint="r_ih_pinky_proximal" />
   </actuator>
 
   <sensor>
