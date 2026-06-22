@@ -25,11 +25,20 @@
     <xacro:position_joint joint_name="${side}_hand_index_1_joint" initial_positions="${initial_positions}"/>
   </xacro:macro>
 
+  <xacro:macro name="g1_inspire_hand_joints" params="prefix initial_positions">
+    <xacro:position_joint joint_name="${prefix}_thumb_proximal_yaw" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${prefix}_thumb_proximal_pitch" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${prefix}_index_proximal" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${prefix}_middle_proximal" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${prefix}_ring_proximal" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${prefix}_pinky_proximal" initial_positions="${initial_positions}"/>
+  </xacro:macro>
+
   <xacro:macro name="g1_mujoco_ros2_control" params="name initial_positions_file robot_model mujoco_model_file">
     <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
     <xacro:property
       name="selected_mujoco_model_file"
-      value="${mujoco_model_file if mujoco_model_file != 'auto' else ('scene_with_hands_fixed.xml' if robot_model == 'g1_with_hands' else 'scene.xml')}"/>
+      value="${mujoco_model_file if mujoco_model_file != 'auto' else ('scene_with_hands_fixed.xml' if robot_model == 'g1_with_hands' else ('scene_inspire_hand_fixed.xml' if robot_model == 'g1_with_inspire_hands' else 'scene.xml'))}"/>
 
     <ros2_control name="${name}" type="system">
       <hardware>
@@ -76,6 +85,10 @@
       <xacro:if value="${robot_model == 'g1_with_hands'}">
         <xacro:g1_hand_joints side="left" initial_positions="${initial_positions}"/>
         <xacro:g1_hand_joints side="right" initial_positions="${initial_positions}"/>
+      </xacro:if>
+      <xacro:if value="${robot_model == 'g1_with_inspire_hands'}">
+        <xacro:g1_inspire_hand_joints prefix="l_ih" initial_positions="${initial_positions}"/>
+        <xacro:g1_inspire_hand_joints prefix="r_ih" initial_positions="${initial_positions}"/>
       </xacro:if>
     </ros2_control>
   </xacro:macro>

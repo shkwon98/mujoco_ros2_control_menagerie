@@ -30,6 +30,16 @@
     </joint>
   </xacro:macro>
 
+  <xacro:macro name="g1_inspire_revolute_joint" params="name parent child xyz axis lower upper">
+    <joint name="${name}" type="revolute">
+      <origin xyz="${xyz}" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="${child}"/>
+      <axis xyz="${axis}"/>
+      <limit lower="${lower}" upper="${upper}" effort="1.0" velocity="6.0"/>
+    </joint>
+  </xacro:macro>
+
   <xacro:macro name="g1_left_hand_urdf">
     <xacro:g1_hand_link name="left_hand_palm_link" mesh="left_hand_palm_link.STL"/>
     <xacro:g1_hand_link name="left_hand_thumb_0_link" mesh="left_hand_thumb_0_link.STL"/>
@@ -176,10 +186,142 @@
       upper="1.74533"/>
   </xacro:macro>
 
+  <xacro:macro name="g1_inspire_left_hand_urdf">
+    <link name="l_ih_hand_base"/>
+    <link name="l_ih_thumb_proximal_base"/>
+    <link name="l_ih_thumb_proximal"/>
+    <link name="l_ih_index_proximal"/>
+    <link name="l_ih_middle_proximal"/>
+    <link name="l_ih_ring_proximal"/>
+    <link name="l_ih_pinky_proximal"/>
+
+    <xacro:g1_hand_fixed_joint
+      name="l_ih_hand_base_joint"
+      parent="left_wrist_yaw_link"
+      child="l_ih_hand_base"
+      xyz="0.05 0 0"/>
+    <xacro:g1_inspire_revolute_joint
+      name="l_ih_thumb_proximal_yaw"
+      parent="l_ih_hand_base"
+      child="l_ih_thumb_proximal_base"
+      xyz="-0.01696 -0.0691 0.02045"
+      axis="0 0 1"
+      lower="0"
+      upper="1.308"/>
+    <xacro:g1_inspire_revolute_joint
+      name="l_ih_thumb_proximal_pitch"
+      parent="l_ih_thumb_proximal_base"
+      child="l_ih_thumb_proximal"
+      xyz="0.0099867 0.0098242 -0.0089"
+      axis="0 0 -1"
+      lower="0"
+      upper="0.6"/>
+    <xacro:g1_inspire_revolute_joint
+      name="l_ih_index_proximal"
+      parent="l_ih_hand_base"
+      child="l_ih_index_proximal"
+      xyz="0.00028533 -0.13653 0.032268"
+      axis="0 0 -1"
+      lower="0"
+      upper="1.47"/>
+    <xacro:g1_inspire_revolute_joint
+      name="l_ih_middle_proximal"
+      parent="l_ih_hand_base"
+      child="l_ih_middle_proximal"
+      xyz="0.00028533 -0.1371 0.01295"
+      axis="0 0 -1"
+      lower="0"
+      upper="1.47"/>
+    <xacro:g1_inspire_revolute_joint
+      name="l_ih_ring_proximal"
+      parent="l_ih_hand_base"
+      child="l_ih_ring_proximal"
+      xyz="0.00028533 -0.13691 -0.0062872"
+      axis="0 0 -1"
+      lower="0"
+      upper="1.47"/>
+    <xacro:g1_inspire_revolute_joint
+      name="l_ih_pinky_proximal"
+      parent="l_ih_hand_base"
+      child="l_ih_pinky_proximal"
+      xyz="0.00028533 -0.13571 -0.025488"
+      axis="0 0 -1"
+      lower="0"
+      upper="1.47"/>
+  </xacro:macro>
+
+  <xacro:macro name="g1_inspire_right_hand_urdf">
+    <link name="r_ih_hand_base"/>
+    <link name="r_ih_thumb_proximal_base"/>
+    <link name="r_ih_thumb_proximal"/>
+    <link name="r_ih_index_proximal"/>
+    <link name="r_ih_middle_proximal"/>
+    <link name="r_ih_ring_proximal"/>
+    <link name="r_ih_pinky_proximal"/>
+
+    <xacro:g1_hand_fixed_joint
+      name="r_ih_hand_base_joint"
+      parent="right_wrist_yaw_link"
+      child="r_ih_hand_base"
+      xyz="0.05 0 0"/>
+    <xacro:g1_inspire_revolute_joint
+      name="r_ih_thumb_proximal_yaw"
+      parent="r_ih_hand_base"
+      child="r_ih_thumb_proximal_base"
+      xyz="-0.01696 -0.0691 -0.02045"
+      axis="0 0 -1"
+      lower="0"
+      upper="1.308"/>
+    <xacro:g1_inspire_revolute_joint
+      name="r_ih_thumb_proximal_pitch"
+      parent="r_ih_thumb_proximal_base"
+      child="r_ih_thumb_proximal"
+      xyz="0.0099867 -0.0098242 -0.0089"
+      axis="0 0 1"
+      lower="0"
+      upper="0.6"/>
+    <xacro:g1_inspire_revolute_joint
+      name="r_ih_index_proximal"
+      parent="r_ih_hand_base"
+      child="r_ih_index_proximal"
+      xyz="0.00028533 -0.13653 -0.032268"
+      axis="0 0 1"
+      lower="0"
+      upper="1.47"/>
+    <xacro:g1_inspire_revolute_joint
+      name="r_ih_middle_proximal"
+      parent="r_ih_hand_base"
+      child="r_ih_middle_proximal"
+      xyz="0.00028533 -0.1371 -0.01295"
+      axis="0 0 1"
+      lower="0"
+      upper="1.47"/>
+    <xacro:g1_inspire_revolute_joint
+      name="r_ih_ring_proximal"
+      parent="r_ih_hand_base"
+      child="r_ih_ring_proximal"
+      xyz="0.00028533 -0.13691 0.0062872"
+      axis="0 0 1"
+      lower="0"
+      upper="1.47"/>
+    <xacro:g1_inspire_revolute_joint
+      name="r_ih_pinky_proximal"
+      parent="r_ih_hand_base"
+      child="r_ih_pinky_proximal"
+      xyz="0.00028533 -0.13571 0.025488"
+      axis="0 0 1"
+      lower="0"
+      upper="1.47"/>
+  </xacro:macro>
+
   <xacro:macro name="g1_optional_hands" params="robot_model">
     <xacro:if value="${robot_model == 'g1_with_hands'}">
       <xacro:g1_left_hand_urdf/>
       <xacro:g1_right_hand_urdf/>
+    </xacro:if>
+    <xacro:if value="${robot_model == 'g1_with_inspire_hands'}">
+      <xacro:g1_inspire_left_hand_urdf/>
+      <xacro:g1_inspire_right_hand_urdf/>
     </xacro:if>
   </xacro:macro>
 </robot>

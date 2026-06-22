@@ -26,10 +26,12 @@ def launch_setup(context, *args, **kwargs):
     controller_file_by_model = {
         "g1": "g1_controllers.yaml",
         "g1_with_hands": "g1_with_hands_controllers.yaml",
+        "g1_with_inspire_hands": "g1_with_inspire_hands_controllers.yaml",
     }
     mujoco_model_file_by_model = {
         "g1": "scene.xml",
         "g1_with_hands": "scene_with_hands_fixed.xml",
+        "g1_with_inspire_hands": "scene_inspire_hand_fixed.xml",
     }
 
     if controllers_yaml_value == "auto":
@@ -183,7 +185,7 @@ def launch_setup(context, *args, **kwargs):
         ),
     ]
 
-    if robot_model_value == "g1_with_hands":
+    if robot_model_value in ["g1_with_hands", "g1_with_inspire_hands"]:
         nodes.extend(
             [
                 make_joint_state_broadcaster_spawner(
@@ -222,7 +224,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "robot_model",
                 default_value="g1",
-                choices=["g1", "g1_with_hands"],
+                choices=["g1", "g1_with_hands", "g1_with_inspire_hands"],
                 description="Unitree G1 MuJoCo Menagerie model",
             ),
             DeclareLaunchArgument(

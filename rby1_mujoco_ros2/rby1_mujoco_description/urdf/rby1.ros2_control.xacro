@@ -47,21 +47,26 @@
     <xacro:property name="initial_positions"
       value="${xacro.load_yaml(initial_positions_file)['initial_positions']}" />
     <xacro:property name="include_temperature" value="false" />
+    <xacro:property name="base_robot_model"
+      value="${'a' if robot_model == 'a_wuji' else robot_model}" />
 
     <ros2_control name="${name}" type="system">
       <hardware>
         <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-        <xacro:if value="${robot_model == 'a' or robot_model == 'm'}">
+        <xacro:if value="${robot_model == 'a_wuji'}">
+          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1a/model_act_v1.2_wuji.xml</param>
+        </xacro:if>
+        <xacro:if value="${(base_robot_model == 'a' or base_robot_model == 'm') and robot_model != 'a_wuji'}">
           <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>
         </xacro:if>
-        <xacro:if value="${robot_model == 'ub'}">
+        <xacro:if value="${base_robot_model == 'ub'}">
           <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act.xml</param>
         </xacro:if>
         <param name="sim_speed_factor">1.0</param>
         <param name="headless">false</param>
       </hardware>
 
-      <xacro:if value="${robot_model == 'a'}">
+      <xacro:if value="${base_robot_model == 'a'}">
         <xacro:velocity_joint joint_name="right_wheel" initial_positions="${initial_positions}"
           include_temperature="${include_temperature}" />
         <xacro:velocity_joint joint_name="left_wheel" initial_positions="${initial_positions}"
@@ -80,7 +85,7 @@
           include_temperature="${include_temperature}" />
       </xacro:if>
 
-      <xacro:if value="${robot_model == 'm'}">
+      <xacro:if value="${base_robot_model == 'm'}">
         <xacro:velocity_joint joint_name="wheel_fr" initial_positions="${initial_positions}"
           include_temperature="${include_temperature}" />
         <xacro:velocity_joint joint_name="wheel_fl" initial_positions="${initial_positions}"
@@ -103,7 +108,7 @@
           include_temperature="${include_temperature}" />
       </xacro:if>
 
-      <xacro:if value="${robot_model == 'ub'}">
+      <xacro:if value="${base_robot_model == 'ub'}">
         <xacro:position_joint joint_name="torso_hp" initial_positions="${initial_positions}"
           include_temperature="${include_temperature}" />
         <xacro:position_joint joint_name="torso_5" initial_positions="${initial_positions}"
@@ -140,10 +145,56 @@
       <xacro:position_joint joint_name="left_arm_6" initial_positions="${initial_positions}"
         include_temperature="${include_temperature}" />
 
-      <xacro:position_joint joint_name="right_trigger" initial_positions="${initial_positions}"
-        include_temperature="${include_temperature}" />
-      <xacro:position_joint joint_name="left_trigger" initial_positions="${initial_positions}"
-        include_temperature="${include_temperature}" />
+      <xacro:if value="${robot_model != 'a_wuji'}">
+        <xacro:position_joint joint_name="right_trigger" initial_positions="${initial_positions}"
+          include_temperature="${include_temperature}" />
+        <xacro:position_joint joint_name="left_trigger" initial_positions="${initial_positions}"
+          include_temperature="${include_temperature}" />
+      </xacro:if>
+
+      <xacro:if value="${robot_model == 'a_wuji'}">
+        <xacro:position_joint joint_name="right_finger1_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger1_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger1_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger1_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger2_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger2_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger2_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger2_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger3_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger3_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger3_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger3_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger4_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger4_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger4_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger4_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger5_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger5_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger5_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="right_finger5_joint4" initial_positions="${initial_positions}" />
+
+        <xacro:position_joint joint_name="left_finger1_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger1_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger1_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger1_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger2_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger2_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger2_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger2_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger3_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger3_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger3_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger3_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger4_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger4_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger4_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger4_joint4" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger5_joint1" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger5_joint2" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger5_joint3" initial_positions="${initial_positions}" />
+        <xacro:position_joint joint_name="left_finger5_joint4" initial_positions="${initial_positions}" />
+      </xacro:if>
 
       <xacro:position_joint joint_name="head_0" initial_positions="${initial_positions}"
         include_temperature="${include_temperature}" />

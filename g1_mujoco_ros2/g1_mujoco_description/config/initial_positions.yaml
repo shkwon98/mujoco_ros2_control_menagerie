@@ -42,3 +42,15 @@ initial_positions:
   right_hand_middle_1_joint: 0.0
   right_hand_index_0_joint: 0.0
   right_hand_index_1_joint: 0.0
+  l_ih_thumb_proximal_yaw: 0.0
+  l_ih_thumb_proximal_pitch: 0.0
+  l_ih_index_proximal: 0.0
+  l_ih_middle_proximal: 0.0
+  l_ih_ring_proximal: 0.0
+  l_ih_pinky_proximal: 0.0
+  r_ih_thumb_proximal_yaw: 0.0
+  r_ih_thumb_proximal_pitch: 0.0
+  r_ih_index_proximal: 0.0
+  r_ih_middle_proximal: 0.0
+  r_ih_ring_proximal: 0.0
+  r_ih_pinky_proximal: 0.0

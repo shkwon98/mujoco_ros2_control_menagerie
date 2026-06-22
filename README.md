@@ -17,8 +17,8 @@ Those packages should depend on this repository, not the other way around.
 | Robot | Launch package | `robot_model` values | Notes |
 | --- | --- | --- | --- |
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
-| Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands` | `g1_with_hands` defaults to a fixed-base hand scene for upper-body work |
-| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `ub` | `a` and `m` include mobile-base control, `ub` is upper-body only |
+| Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
+| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `ub`, `a_wuji` | `a_wuji` is RBY1A v1.2 with Wuji hands |
 
 Each robot follows the same package split:
 
@@ -71,17 +71,38 @@ ros2 launch ai_worker_mujoco_bringup robot.launch.py robot_model:=ffw_sg2
 ros2 launch g1_mujoco_bringup robot.launch.py
 ```
 
+Model variants:
+
+| `robot_model` | Default MuJoCo file | Controllers | Base behavior |
+| --- | --- | --- | --- |
+| `g1` | `scene.xml` | body, arms, torso, legs | floating base |
+| `g1_with_hands` | `scene_with_hands_fixed.xml` | body, arms, torso, legs, hands | pelvis welded to world |
+| `g1_with_inspire_hands` | `scene_inspire_hand_fixed.xml` | body, arms, torso, legs, Inspire hands | pelvis welded to world |
+
 Examples:
 
 ```bash
 ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
+ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_inspire_hands
 ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands mujoco_model_file:=scene_with_hands.xml
+ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_inspire_hands mujoco_model_file:=scene_inspire_hand.xml
 ros2 launch g1_mujoco_bringup robot.launch.py mujoco_model_file:=g1_29dof_fixed.xml
 ```
 
-`robot_model:=g1_with_hands` defaults to `scene_with_hands_fixed.xml`, which
-welds the pelvis to the world. Use `mujoco_model_file:=scene_with_hands.xml`
-when you explicitly want the original floating-base hand scene.
+G1 hand variants default to fixed-base scenes so arm and hand control can be
+tested without a balance controller. Override `mujoco_model_file` with
+`scene_with_hands.xml` or `scene_inspire_hand.xml` when you explicitly want the
+original floating-base hand scene.
+
+Useful G1 launch arguments:
+
+| Argument | Default | Description |
+| --- | --- | --- |
+| `robot_model` | `g1` | `g1`, `g1_with_hands`, or `g1_with_inspire_hands` |
+| `mujoco_model_file` | `auto` | MJCF file under `g1_mujoco_description/mjcf` |
+| `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
+| `initial_positions_file` | package default | Initial joint positions YAML |
+| `log_level` | `info` | ROS log level |
 
 ### RBY1
 
@@ -94,7 +115,11 @@ Examples:
 ```bash
 ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m robot_version:=v1.2
 ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=ub robot_version:=v1.2
+ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=a_wuji robot_version:=v1.2
 ```
+
+`robot_model:=a_wuji` is a v1.2-only variant. It uses the RBY1A body and
+replaces the stock grippers with separate Wuji hand controllers.
 
 ## Common ROS Interface
 
@@ -148,9 +173,9 @@ Robots with separate hand controllers use:
 /sensors/proprio/hand_right/dynamic_joint_states
 ```
 
-RBY1 currently publishes all joint states through the body proprioception
-topics. AI Worker and G1 split hand proprioception into `hand_left` and
-`hand_right` when hand controllers are present.
+RBY1 `a`, `m`, and `ub` publish all joint states through body proprioception.
+AI Worker, G1 hand variants, and RBY1 `a_wuji` split hand proprioception into
+`hand_left` and `hand_right` when hand controllers are present.
 
 ### Mobile base
 
@@ -188,11 +213,26 @@ Controller manager: /control/body/controller_manager
 ```
 
 For hand controllers, some models remap the controller runtime namespace to
-`/control/hand_left` and `/control/hand_right`. See the G1 README for the full
-hand-controller rqt command.
+`/control/hand_left` and `/control/hand_right`. For G1 hand variants, run:
+
+```bash
+ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller \
+  --clear-config --force-discover \
+  --ros-args \
+  -r robot_description:=/control/body/robot_description \
+  -r /control/body/hand_left_controller/controller_state:=/control/hand_left/hand_left_controller/controller_state \
+  -r /control/body/hand_left_controller/joint_trajectory:=/control/hand_left/hand_left_controller/joint_trajectory \
+  -r /control/body/hand_right_controller/controller_state:=/control/hand_right/hand_right_controller/controller_state \
+  -r /control/body/hand_right_controller/joint_trajectory:=/control/hand_right/hand_right_controller/joint_trajectory
+```
+
+In the GUI, select `/control/body/controller_manager`, then choose
+`hand_left_controller` or `hand_right_controller`.
 
 ## Notes
 
 - Launch files are MuJoCo-only.
 - If topic discovery looks stale, stop the old launch process before starting a new robot.
 - `source /opt/ros/jazzy/setup.bash` before building or launching from a clean shell.
+- Keep each robot variant's MuJoCo file, URDF/xacro wrapper, and controller YAML
+  on the same joint set. Hand joints must exist in both the URDF and the MJCF.

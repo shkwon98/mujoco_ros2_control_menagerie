@@ -7,37 +7,58 @@
 
   <xacro:property name="robot_model" value="$(arg robot_model)" />
   <xacro:property name="robot_version" value="$(arg robot_version)" />
+  <xacro:property name="base_robot_model"
+    value="${'a' if robot_model == 'a_wuji' else robot_model}" />
   <xacro:property name="gripper_z_offset"
-    value="${0 if robot_model == 'a' and robot_version == 'v1.0' else -0.035}" />
+    value="${0 if base_robot_model == 'a' and robot_version == 'v1.0' else -0.035}" />
 
-  <xacro:if value="${robot_model == 'a'}">
+  <xacro:if value="${base_robot_model == 'a'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1a/model_${robot_version}.urdf" />
   </xacro:if>
-  <xacro:if value="${robot_model == 'm'}">
+  <xacro:if value="${base_robot_model == 'm'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m/model_${robot_version}.urdf" />
   </xacro:if>
-  <xacro:if value="${robot_model == 'ub'}">
+  <xacro:if value="${base_robot_model == 'ub'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1ub/model.urdf" />
   </xacro:if>
 
   <!-- Virtual gripper joints for unified ros2_control interfaces. -->
-  <link name="right_gripper_link" />
-  <joint name="right_trigger" type="prismatic">
-    <parent link="ee_right" />
-    <child link="right_gripper_link" />
-    <origin xyz="0 0 ${gripper_z_offset}" rpy="0 0 0" />
-    <axis xyz="0 0 1" />
-    <limit lower="0" upper="1" effort="1" velocity="10" />
-  </joint>
+  <xacro:if value="${robot_model != 'a_wuji'}">
+    <link name="right_gripper_link" />
+    <joint name="right_trigger" type="prismatic">
+      <parent link="ee_right" />
+      <child link="right_gripper_link" />
+      <origin xyz="0 0 ${gripper_z_offset}" rpy="0 0 0" />
+      <axis xyz="0 0 1" />
+      <limit lower="0" upper="1" effort="1" velocity="10" />
+    </joint>
 
-  <link name="left_gripper_link" />
-  <joint name="left_trigger" type="prismatic">
-    <parent link="ee_left" />
-    <child link="left_gripper_link" />
-    <origin xyz="0 0 ${gripper_z_offset}" rpy="0 0 0" />
-    <axis xyz="0 0 1" />
-    <limit lower="0" upper="1" effort="1" velocity="10" />
-  </joint>
+    <link name="left_gripper_link" />
+    <joint name="left_trigger" type="prismatic">
+      <parent link="ee_left" />
+      <child link="left_gripper_link" />
+      <origin xyz="0 0 ${gripper_z_offset}" rpy="0 0 0" />
+      <axis xyz="0 0 1" />
+      <limit lower="0" upper="1" effort="1" velocity="10" />
+    </joint>
+  </xacro:if>
+
+  <xacro:if value="${robot_model == 'a_wuji'}">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right.urdf" />
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left.urdf" />
+
+    <joint name="right_wuji_mount_joint" type="fixed">
+      <parent link="ee_right" />
+      <child link="right_palm_link" />
+      <origin xyz="0 0 -0.2" rpy="3.14159 0 0" />
+    </joint>
+
+    <joint name="left_wuji_mount_joint" type="fixed">
+      <parent link="ee_left" />
+      <child link="left_palm_link" />
+      <origin xyz="0 0 -0.2" rpy="3.14159 0 0" />
+    </joint>
+  </xacro:if>
 
   <link name="world" />
   <joint name="world_to_base" type="planar">
