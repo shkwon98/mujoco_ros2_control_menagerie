@@ -1,29 +1,28 @@
 # Unitree G1 MuJoCo ROS 2 Control
 
-This folder bootstraps Unitree G1 support in the same shape as the current
-RBY1 setup:
+This folder provides Unitree G1 support in the same shape as the other
+MuJoCo ROS 2 Control Menagerie integrations:
 
 - `g1_mujoco_description`: URDF, MJCF, meshes, and `ros2_control`
   xacro.
 - `g1_mujoco_bringup`: `ros2_control_node` and controller spawners.
 - `g1_mujoco_ros2`: metapackage.
 
-The initial model uses Unitree's `g1_29dof.urdf` and matching `g1_29dof.xml`
-from `unitreerobotics/unitree_ros`. The MJCF actuator block has been converted
-from torque motors to position actuators so that
-`joint_trajectory_controller/JointTrajectoryController` can command position
-trajectories through `mujoco_ros2_control`.
+The primary MuJoCo models follow Google DeepMind MuJoCo Menagerie's
+`unitree_g1` split:
 
-The default launch uses `g1_29dof_fixed.xml`, where the pelvis is fixed to the
-world. This is intentional for upper-body control bringup: a floating humanoid
-will not stand from joint trajectory position controllers alone. Use
-`mujoco_model_file:=g1_29dof.xml` only when you also provide a whole-body
-balance controller.
+- `robot_model:=g1`: 29-DoF body model, `mjcf/scene.xml`
+- `robot_model:=g1_with_hands`: 29-DoF body plus 14 hand joints, `mjcf/scene_with_hands.xml`
+
+The older local `g1_29dof.xml` and `g1_29dof_fixed.xml` files are kept for
+compatibility and static upper-body bringup. The menagerie scenes use a
+floating base, so they need a balance controller if you expect the robot to
+stand dynamically.
 
 Build:
 
 ```bash
-colcon build --merge-install --symlink-install --base-paths src/robot/humanoid_mujoco_ros2_control/g1_mujoco_ros2
+colcon build --merge-install --symlink-install --base-paths src/robot/mujoco_ros2_control_menagerie/g1_mujoco_ros2
 ```
 
 Launch MuJoCo-backed control:
@@ -31,6 +30,29 @@ Launch MuJoCo-backed control:
 ```bash
 source install/setup.bash
 ros2 launch g1_mujoco_bringup robot.launch.py
+```
+
+Launch the hand model:
+
+```bash
+ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
+```
+
+For fixed-base upper-body testing with the body-only model:
+
+```bash
+ros2 launch g1_mujoco_bringup robot.launch.py mujoco_model_file:=g1_29dof_fixed.xml
+```
+
+Main trajectory topics:
+
+```text
+/control/body/arm_left_controller/joint_trajectory
+/control/body/arm_right_controller/joint_trajectory
+/control/body/torso_controller/joint_trajectory
+/control/body/leg_controller/joint_trajectory
+/control/hand_left/hand_left_controller/joint_trajectory
+/control/hand_right/hand_right_controller/joint_trajectory
 ```
 
 Before using this for real task tuning, verify whether your physical or target

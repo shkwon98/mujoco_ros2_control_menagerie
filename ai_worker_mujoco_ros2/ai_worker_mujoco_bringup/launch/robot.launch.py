@@ -1,18 +1,37 @@
 #!/usr/bin/env python3
 
+import os
+
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+from ament_index_python.packages import get_package_share_directory
 
 
-def generate_launch_description():
+def launch_setup(context, *args, **kwargs):
     robot_model = LaunchConfiguration("robot_model")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
     initial_positions_file = LaunchConfiguration("initial_positions_file")
     log_level = LaunchConfiguration("log_level")
+    robot_model_value = robot_model.perform(context)
+    controllers_yaml_value = controllers_yaml.perform(context)
+
+    controller_file_by_model = {
+        "ffw_bg2": "ai_worker_ffw_bg2_controllers.yaml",
+        "ffw_bh5": "ai_worker_ffw_bh5_controllers.yaml",
+        "ffw_sg2": "ai_worker_ffw_sg2_controllers.yaml",
+        "ffw_sh5": "ai_worker_ffw_sh5_controllers.yaml",
+    }
+    if controllers_yaml_value == "auto":
+        controllers_yaml_value = os.path.join(
+            get_package_share_directory("ai_worker_mujoco_description"),
+            "config",
+            "ros2_control",
+            controller_file_by_model[robot_model_value],
+        )
 
     xacro_file = PathJoinSubstitution(
         [
@@ -41,7 +60,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         namespace="/control/body",
-        parameters=[robot_description, controllers_yaml],
+        parameters=[robot_description, controllers_yaml_value],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
@@ -77,7 +96,36 @@ def generate_launch_description():
         ],
     )
 
-    def make_controller_spawner(controller_name, command_topic):
+    def make_controller_spawner(controller_name, command_topic=None, action_topic=None):
+        controller_args = [
+            controller_name,
+            "--controller-ros-args",
+            "--ros-args --remap ~/joint_states:=/sensors/proprio/body/joint_states",
+        ]
+        if command_topic:
+            controller_args.extend(
+                [
+                    "--controller-ros-args",
+                    f"--ros-args --remap ~/joint_trajectory:={command_topic}",
+                ]
+            )
+        if action_topic:
+            controller_args.extend(
+                [
+                    "--controller-ros-args",
+                    f"--ros-args --remap ~/follow_joint_trajectory:={action_topic}",
+                ]
+            )
+        controller_args.extend(["--ros-args", "--log-level", log_level])
+        return Node(
+            package="controller_manager",
+            executable="spawner",
+            namespace="/control/body",
+            output="screen",
+            arguments=controller_args,
+        )
+
+    def make_forward_controller_spawner(controller_name, command_topic):
         return Node(
             package="controller_manager",
             executable="spawner",
@@ -86,9 +134,7 @@ def generate_launch_description():
             arguments=[
                 controller_name,
                 "--controller-ros-args",
-                "--ros-args --remap ~/joint_states:=/sensors/proprio/body/joint_states",
-                "--controller-ros-args",
-                f"--ros-args --remap ~/joint_trajectory:={command_topic}",
+                f"--ros-args --remap ~/commands:={command_topic}",
                 "--ros-args",
                 "--log-level",
                 log_level,
@@ -98,16 +144,65 @@ def generate_launch_description():
     arm_right_controller_spawner = make_controller_spawner(
         "arm_right_controller",
         "/control/body/arm_right_controller/joint_trajectory",
+        "/control/body/arm_right_controller/follow_joint_trajectory",
     )
     arm_left_controller_spawner = make_controller_spawner(
         "arm_left_controller",
         "/control/body/arm_left_controller/joint_trajectory",
+        "/control/body/arm_left_controller/follow_joint_trajectory",
     )
     torso_controller_spawner = make_controller_spawner(
         "torso_controller",
         "/control/body/torso_controller/joint_trajectory",
+        "/control/body/torso_controller/follow_joint_trajectory",
+    )
+    head_controller_spawner = make_controller_spawner(
+        "head_controller",
+        "/control/body/head_controller/joint_trajectory",
+        "/control/body/head_controller/follow_joint_trajectory",
+    )
+    hand_left_controller_spawner = make_controller_spawner(
+        "hand_left_controller",
+        "/control/hand_left/hand_left_controller/joint_trajectory",
+        "/control/hand_left/hand_left_controller/follow_joint_trajectory",
+    )
+    hand_right_controller_spawner = make_controller_spawner(
+        "hand_right_controller",
+        "/control/hand_right/hand_right_controller/joint_trajectory",
+        "/control/hand_right/hand_right_controller/follow_joint_trajectory",
     )
 
+    nodes = [
+        ros2_control_node,
+        robot_state_publisher_node,
+        joint_state_broadcaster_spawner,
+        arm_right_controller_spawner,
+        arm_left_controller_spawner,
+        torso_controller_spawner,
+        head_controller_spawner,
+        hand_left_controller_spawner,
+        hand_right_controller_spawner,
+    ]
+
+    if robot_model_value in ("ffw_sg2", "ffw_sh5"):
+        nodes.extend(
+            [
+                make_controller_spawner(
+                    "base_steer_controller",
+                    "/control/body/base_steer_controller/joint_trajectory",
+                    "/control/body/base_steer_controller/follow_joint_trajectory",
+                ),
+                make_forward_controller_spawner(
+                    "base_drive_controller",
+                    "/control/body/base_drive_controller/commands",
+                ),
+            ]
+        )
+
+    return nodes
+
+
+def generate_launch_description():
     return LaunchDescription(
         [
             DeclareLaunchArgument(
@@ -123,15 +218,8 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "controllers_yaml",
-                default_value=PathJoinSubstitution(
-                    [
-                        FindPackageShare("ai_worker_mujoco_description"),
-                        "config",
-                        "ros2_control",
-                        "ai_worker_controllers.yaml",
-                    ]
-                ),
-                description="Controller configuration YAML",
+                default_value="auto",
+                description="Controller configuration YAML, or 'auto' to select by robot_model",
             ),
             DeclareLaunchArgument(
                 "initial_positions_file",
@@ -150,15 +238,6 @@ def generate_launch_description():
                 choices=["debug", "info", "warn", "error", "fatal"],
                 description="ROS log level",
             ),
-            ros2_control_node,
-            robot_state_publisher_node,
-            joint_state_broadcaster_spawner,
-            arm_right_controller_spawner,
-            arm_left_controller_spawner,
-            torso_controller_spawner,
-            make_controller_spawner(
-                "head_controller",
-                "/control/body/head_controller/joint_trajectory",
-            ),
+            OpaqueFunction(function=launch_setup),
         ]
     )

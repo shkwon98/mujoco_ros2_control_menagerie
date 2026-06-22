@@ -28,3 +28,17 @@ initial_positions:
   right_wrist_roll_joint: 0.0
   right_wrist_pitch_joint: 0.0
   right_wrist_yaw_joint: 0.0
+  left_hand_thumb_0_joint: 0.0
+  left_hand_thumb_1_joint: 0.0
+  left_hand_thumb_2_joint: 0.0
+  left_hand_middle_0_joint: 0.0
+  left_hand_middle_1_joint: 0.0
+  left_hand_index_0_joint: 0.0
+  left_hand_index_1_joint: 0.0
+  right_hand_thumb_0_joint: 0.0
+  right_hand_thumb_1_joint: 0.0
+  right_hand_thumb_2_joint: 0.0
+  right_hand_middle_0_joint: 0.0
+  right_hand_middle_1_joint: 0.0
+  right_hand_index_0_joint: 0.0
+  right_hand_index_1_joint: 0.0

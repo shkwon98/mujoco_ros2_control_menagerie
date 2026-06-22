@@ -15,14 +15,26 @@
     </joint>
   </xacro:macro>
 
-  <xacro:macro name="g1_mujoco_ros2_control" params="name initial_positions_file mujoco_model_file">
+  <xacro:macro name="g1_hand_joints" params="side initial_positions">
+    <xacro:position_joint joint_name="${side}_hand_thumb_0_joint" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${side}_hand_thumb_1_joint" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${side}_hand_thumb_2_joint" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${side}_hand_middle_0_joint" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${side}_hand_middle_1_joint" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${side}_hand_index_0_joint" initial_positions="${initial_positions}"/>
+    <xacro:position_joint joint_name="${side}_hand_index_1_joint" initial_positions="${initial_positions}"/>
+  </xacro:macro>
+
+  <xacro:macro name="g1_mujoco_ros2_control" params="name initial_positions_file robot_model mujoco_model_file">
     <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+    <xacro:property
+      name="selected_mujoco_model_file"
+      value="${mujoco_model_file if mujoco_model_file != 'auto' else ('scene_with_hands.xml' if robot_model == 'g1_with_hands' else 'scene.xml')}"/>
 
     <ros2_control name="${name}" type="system">
       <hardware>
         <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-        <!-- Package-share equivalent: $(find-pkg-share g1_mujoco_description)/mjcf/g1_29dof_fixed.xml -->
-        <param name="mujoco_model">$(find g1_mujoco_description)/mjcf/${mujoco_model_file}</param>
+        <param name="mujoco_model">$(find g1_mujoco_description)/mjcf/${selected_mujoco_model_file}</param>
         <param name="sim_speed_factor">1.0</param>
         <param name="headless">false</param>
       </hardware>
@@ -60,6 +72,11 @@
       <xacro:position_joint joint_name="right_wrist_roll_joint" initial_positions="${initial_positions}"/>
       <xacro:position_joint joint_name="right_wrist_pitch_joint" initial_positions="${initial_positions}"/>
       <xacro:position_joint joint_name="right_wrist_yaw_joint" initial_positions="${initial_positions}"/>
+
+      <xacro:if value="${robot_model == 'g1_with_hands'}">
+        <xacro:g1_hand_joints side="left" initial_positions="${initial_positions}"/>
+        <xacro:g1_hand_joints side="right" initial_positions="${initial_positions}"/>
+      </xacro:if>
     </ros2_control>
   </xacro:macro>
 </robot>

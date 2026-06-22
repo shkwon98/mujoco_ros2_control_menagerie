@@ -49,12 +49,16 @@ def test_fixed_base_mujoco_model_does_not_oscillate_without_commands():
     assert joint_speed < 0.5
 
 
-def test_default_xacro_uses_fixed_base_mujoco_model():
+def test_default_xacro_uses_menagerie_scene_and_keeps_fixed_base_override():
     wrapper = DESCRIPTION / "urdf" / "g1_mujoco.urdf.xacro"
     ros2_control = DESCRIPTION / "urdf" / "g1.ros2_control.xacro"
+    wrapper_text = wrapper.read_text()
 
-    assert 'default="g1_29dof_fixed.xml"' in wrapper.read_text()
+    assert 'name="robot_model" default="g1"' in wrapper_text
+    assert 'name="mujoco_model_file" default="auto"' in wrapper_text
+    assert "scene_with_hands.xml" in ros2_control.read_text()
     assert "mujoco_model_file" in ros2_control.read_text()
+    assert (DESCRIPTION / "mjcf" / "g1_29dof_fixed.xml").is_file()
 
 
 @pytest.mark.parametrize("model_name", ["g1_29dof_fixed.xml", "g1_29dof.xml"])

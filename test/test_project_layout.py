@@ -3,19 +3,21 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 ROBOT_ROOT = ROOT.parent
+PROJECT_NAME = "mujoco_ros2_control_menagerie"
 
 
-def test_humanoid_project_contains_g1_and_rby1_subprojects():
+def test_menagerie_project_contains_g1_and_rby1_subprojects():
+    assert ROOT.name == PROJECT_NAME
     assert (ROOT / "ai_worker_mujoco_ros2" / "ai_worker_mujoco_description" / "package.xml").is_file()
     assert (ROOT / "ai_worker_mujoco_ros2" / "ai_worker_mujoco_bringup" / "package.xml").is_file()
     assert (ROOT / "g1_mujoco_ros2" / "g1_mujoco_description" / "package.xml").is_file()
     assert (ROOT / "g1_mujoco_ros2" / "g1_mujoco_bringup" / "package.xml").is_file()
     assert (ROOT / "rby1_mujoco_ros2" / "rby1_mujoco_description" / "package.xml").is_file()
     assert (ROOT / "rby1_mujoco_ros2" / "rby1_mujoco_bringup" / "package.xml").is_file()
-    assert (ROOT / "humanoid_mujoco_ros2_control" / "package.xml").is_file()
+    assert (ROOT / PROJECT_NAME / "package.xml").is_file()
 
 
-def test_humanoid_project_does_not_vendor_full_rby1_ros2_repository():
+def test_menagerie_project_does_not_vendor_full_rby1_ros2_repository():
     assert not (ROBOT_ROOT / "g1_mujoco_ros2").exists()
     assert not (ROOT / "rby1_ros2").exists()
 
@@ -33,15 +35,15 @@ def test_humanoid_project_does_not_vendor_full_rby1_ros2_repository():
         assert not (rby1_subset / unrelated_path).exists()
 
 
-def test_humanoid_metapackage_depends_on_robot_metapackages():
-    package_xml = (ROOT / "humanoid_mujoco_ros2_control" / "package.xml").read_text()
-    cmake = (ROOT / "humanoid_mujoco_ros2_control" / "CMakeLists.txt").read_text()
+def test_menagerie_metapackage_depends_on_robot_metapackages():
+    package_xml = (ROOT / PROJECT_NAME / "package.xml").read_text()
+    cmake = (ROOT / PROJECT_NAME / "CMakeLists.txt").read_text()
 
-    assert "<name>humanoid_mujoco_ros2_control</name>" in package_xml
+    assert f"<name>{PROJECT_NAME}</name>" in package_xml
     assert "<exec_depend>ai_worker_mujoco_ros2</exec_depend>" in package_xml
     assert "<exec_depend>g1_mujoco_ros2</exec_depend>" in package_xml
     assert "<exec_depend>rby1_mujoco_ros2</exec_depend>" in package_xml
-    assert "project(humanoid_mujoco_ros2_control)" in cmake
+    assert f"project({PROJECT_NAME})" in cmake
 
 
 def test_g1_and_rby1_mujoco_ros2_control_entrypoints_are_documented():
@@ -186,10 +188,8 @@ def test_ai_worker_exposes_hand_and_wheel_control_interfaces():
     for joint_name in (
         "gripper_l_joint1",
         "gripper_r_joint1",
-        "finger_l_joint1",
-        "finger_l_joint20",
-        "finger_r_joint1",
-        "finger_r_joint20",
+        "finger_${side}_joint1",
+        "finger_${side}_joint20",
         "left_wheel_steer_joint",
         "left_wheel_drive_joint",
         "right_wheel_steer_joint",
@@ -282,7 +282,7 @@ def test_ai_worker_mujoco_models_are_stable_without_commands():
             assert np.isfinite(data.qacc).all()
 
 
-def test_humanoid_mujoco_ros2_control_is_mujoco_only():
+def test_mujoco_ros2_control_menagerie_is_mujoco_only():
     forbidden = ("hardware_type", "mock_components", "GenericSystem", "dexgraft")
     checked_suffixes = (".py", ".xacro", ".xml", ".md", ".yaml", ".yml")
     for path in ROOT.rglob("*"):

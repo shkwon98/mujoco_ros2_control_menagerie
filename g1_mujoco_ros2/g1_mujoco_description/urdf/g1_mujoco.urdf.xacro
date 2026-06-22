@@ -1,13 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="g1_mujoco">
   <xacro:arg name="initial_positions_file" default="$(find g1_mujoco_description)/config/initial_positions.yaml"/>
-  <xacro:arg name="mujoco_model_file" default="g1_29dof_fixed.xml"/>
+  <xacro:arg name="robot_model" default="g1"/>
+  <xacro:arg name="mujoco_model_file" default="auto"/>
 
   <xacro:include filename="$(find g1_mujoco_description)/urdf/g1_29dof.urdf"/>
+  <xacro:include filename="$(find g1_mujoco_description)/urdf/g1_hands.urdf.xacro"/>
   <xacro:include filename="$(find g1_mujoco_description)/urdf/g1.ros2_control.xacro"/>
+
+  <xacro:g1_optional_hands robot_model="$(arg robot_model)"/>
 
   <xacro:g1_mujoco_ros2_control
     name="g1_mujoco"
     initial_positions_file="$(arg initial_positions_file)"
+    robot_model="$(arg robot_model)"
     mujoco_model_file="$(arg mujoco_model_file)"/>
 </robot>

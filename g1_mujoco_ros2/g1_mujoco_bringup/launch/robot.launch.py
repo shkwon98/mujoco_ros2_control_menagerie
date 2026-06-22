@@ -1,18 +1,47 @@
 #!/usr/bin/env python3
 
+import os
+
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 
-def generate_launch_description():
+def launch_setup(context, *args, **kwargs):
+    robot_model = LaunchConfiguration("robot_model")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
     initial_positions_file = LaunchConfiguration("initial_positions_file")
     mujoco_model_file = LaunchConfiguration("mujoco_model_file")
     log_level = LaunchConfiguration("log_level")
+
+    robot_model_value = robot_model.perform(context)
+    controllers_yaml_value = controllers_yaml.perform(context)
+    mujoco_model_file_value = mujoco_model_file.perform(context)
+
+    description_share = get_package_share_directory("g1_mujoco_description")
+    controller_file_by_model = {
+        "g1": "g1_controllers.yaml",
+        "g1_with_hands": "g1_with_hands_controllers.yaml",
+    }
+    mujoco_model_file_by_model = {
+        "g1": "scene.xml",
+        "g1_with_hands": "scene_with_hands.xml",
+    }
+
+    if controllers_yaml_value == "auto":
+        controllers_yaml_value = os.path.join(
+            description_share,
+            "config",
+            "ros2_control",
+            controller_file_by_model[robot_model_value],
+        )
+
+    if mujoco_model_file_value == "auto":
+        mujoco_model_file_value = mujoco_model_file_by_model[robot_model_value]
 
     xacro_file = PathJoinSubstitution(
         [
@@ -27,10 +56,12 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             xacro_file,
+            " robot_model:=",
+            robot_model,
             " initial_positions_file:=",
             initial_positions_file,
             " mujoco_model_file:=",
-            mujoco_model_file,
+            mujoco_model_file_value,
         ]
     )
     robot_description = {
@@ -41,7 +72,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         namespace="/control/body",
-        parameters=[robot_description, controllers_yaml],
+        parameters=[robot_description, controllers_yaml_value],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
@@ -77,7 +108,7 @@ def generate_launch_description():
         ],
     )
 
-    def make_controller_spawner(controller_name, command_topic):
+    def make_controller_spawner(controller_name, command_topic, action_topic):
         return Node(
             package="controller_manager",
             executable="spawner",
@@ -89,42 +120,72 @@ def generate_launch_description():
                 "--ros-args --remap ~/joint_states:=/sensors/proprio/body/joint_states",
                 "--controller-ros-args",
                 f"--ros-args --remap ~/joint_trajectory:={command_topic}",
+                "--controller-ros-args",
+                f"--ros-args --remap ~/follow_joint_trajectory:={action_topic}",
                 "--ros-args",
                 "--log-level",
                 log_level,
             ],
         )
 
-    arm_right_controller_spawner = make_controller_spawner(
-        "arm_right_controller",
-        "/control/body/arm_right_controller/joint_trajectory",
-    )
-    arm_left_controller_spawner = make_controller_spawner(
-        "arm_left_controller",
-        "/control/body/arm_left_controller/joint_trajectory",
-    )
-    torso_controller_spawner = make_controller_spawner(
-        "torso_controller",
-        "/control/body/torso_controller/joint_trajectory",
-    )
-    leg_controller_spawner = make_controller_spawner(
-        "leg_controller",
-        "/control/body/leg_controller/joint_trajectory",
-    )
+    nodes = [
+        ros2_control_node,
+        robot_state_publisher_node,
+        joint_state_broadcaster_spawner,
+        make_controller_spawner(
+            "arm_right_controller",
+            "/control/body/arm_right_controller/joint_trajectory",
+            "/control/body/arm_right_controller/follow_joint_trajectory",
+        ),
+        make_controller_spawner(
+            "arm_left_controller",
+            "/control/body/arm_left_controller/joint_trajectory",
+            "/control/body/arm_left_controller/follow_joint_trajectory",
+        ),
+        make_controller_spawner(
+            "torso_controller",
+            "/control/body/torso_controller/joint_trajectory",
+            "/control/body/torso_controller/follow_joint_trajectory",
+        ),
+        make_controller_spawner(
+            "leg_controller",
+            "/control/body/leg_controller/joint_trajectory",
+            "/control/body/leg_controller/follow_joint_trajectory",
+        ),
+    ]
 
+    if robot_model_value == "g1_with_hands":
+        nodes.extend(
+            [
+                make_controller_spawner(
+                    "hand_left_controller",
+                    "/control/hand_left/hand_left_controller/joint_trajectory",
+                    "/control/hand_left/hand_left_controller/follow_joint_trajectory",
+                ),
+                make_controller_spawner(
+                    "hand_right_controller",
+                    "/control/hand_right/hand_right_controller/joint_trajectory",
+                    "/control/hand_right/hand_right_controller/follow_joint_trajectory",
+                ),
+            ]
+        )
+
+    return nodes
+
+
+def generate_launch_description():
     return LaunchDescription(
         [
             DeclareLaunchArgument(
+                "robot_model",
+                default_value="g1",
+                choices=["g1", "g1_with_hands"],
+                description="Unitree G1 MuJoCo Menagerie model",
+            ),
+            DeclareLaunchArgument(
                 "controllers_yaml",
-                default_value=PathJoinSubstitution(
-                    [
-                        FindPackageShare("g1_mujoco_description"),
-                        "config",
-                        "ros2_control",
-                        "g1_controllers.yaml",
-                    ]
-                ),
-                description="Controller configuration YAML",
+                default_value="auto",
+                description="Controller configuration YAML, or 'auto' to select by robot_model",
             ),
             DeclareLaunchArgument(
                 "initial_positions_file",
@@ -139,9 +200,11 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "mujoco_model_file",
-                default_value="g1_29dof_fixed.xml",
-                choices=["g1_29dof_fixed.xml", "g1_29dof.xml"],
-                description="MuJoCo model file. Use the floating model only with a balance controller.",
+                default_value="auto",
+                description=(
+                    "MuJoCo model file under g1_mujoco_description/mjcf, "
+                    "or 'auto' to select by robot_model"
+                ),
             ),
             DeclareLaunchArgument(
                 "log_level",
@@ -149,12 +212,6 @@ def generate_launch_description():
                 choices=["debug", "info", "warn", "error", "fatal"],
                 description="ROS log level",
             ),
-            ros2_control_node,
-            robot_state_publisher_node,
-            joint_state_broadcaster_spawner,
-            arm_right_controller_spawner,
-            arm_left_controller_spawner,
-            torso_controller_spawner,
-            leg_controller_spawner,
+            OpaqueFunction(function=launch_setup),
         ]
     )
