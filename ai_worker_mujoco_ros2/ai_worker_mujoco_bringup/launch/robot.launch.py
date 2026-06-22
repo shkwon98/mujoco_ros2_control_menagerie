@@ -81,27 +81,47 @@ def launch_setup(context, *args, **kwargs):
         ],
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        namespace="/control/body",
-        output="screen",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-ros-args",
-            "--ros-args --remap joint_states:=/sensors/proprio/body/joint_states",
-            "--ros-args",
-            "--log-level",
-            log_level,
-        ],
-    )
+    def make_joint_state_broadcaster_spawner(
+        controller_name,
+        joint_states_topic,
+        dynamic_joint_states_topic,
+    ):
+        return Node(
+            package="controller_manager",
+            executable="spawner",
+            namespace="/control/body",
+            output="screen",
+            arguments=[
+                controller_name,
+                "--controller-ros-args",
+                f"--ros-args --remap joint_states:={joint_states_topic}",
+                "--controller-ros-args",
+                f"--ros-args --remap dynamic_joint_states:={dynamic_joint_states_topic}",
+                "--ros-args",
+                "--log-level",
+                log_level,
+            ],
+        )
 
-    def make_controller_spawner(controller_name, command_topic=None, action_topic=None):
+    def make_controller_spawner(
+        controller_name,
+        command_topic=None,
+        action_topic=None,
+        controller_namespace=None,
+        joint_states_topic="/sensors/proprio/body/joint_states",
+    ):
         controller_args = [
             controller_name,
             "--controller-ros-args",
-            "--ros-args --remap ~/joint_states:=/sensors/proprio/body/joint_states",
+            f"--ros-args --remap ~/joint_states:={joint_states_topic}",
         ]
+        if controller_namespace:
+            controller_args.extend(
+                [
+                    "--controller-ros-args",
+                    f"--ros-args -r __ns:={controller_namespace}",
+                ]
+            )
         if command_topic:
             controller_args.extend(
                 [
@@ -165,17 +185,35 @@ def launch_setup(context, *args, **kwargs):
         "hand_left_controller",
         "/control/hand_left/hand_left_controller/joint_trajectory",
         "/control/hand_left/hand_left_controller/follow_joint_trajectory",
+        "/control/hand_left",
+        "/sensors/proprio/hand_left/joint_states",
     )
     hand_right_controller_spawner = make_controller_spawner(
         "hand_right_controller",
         "/control/hand_right/hand_right_controller/joint_trajectory",
         "/control/hand_right/hand_right_controller/follow_joint_trajectory",
+        "/control/hand_right",
+        "/sensors/proprio/hand_right/joint_states",
     )
 
     nodes = [
         ros2_control_node,
         robot_state_publisher_node,
-        joint_state_broadcaster_spawner,
+        make_joint_state_broadcaster_spawner(
+            "body_joint_state_broadcaster",
+            "/sensors/proprio/body/joint_states",
+            "/sensors/proprio/body/dynamic_joint_states",
+        ),
+        make_joint_state_broadcaster_spawner(
+            "hand_left_joint_state_broadcaster",
+            "/sensors/proprio/hand_left/joint_states",
+            "/sensors/proprio/hand_left/dynamic_joint_states",
+        ),
+        make_joint_state_broadcaster_spawner(
+            "hand_right_joint_state_broadcaster",
+            "/sensors/proprio/hand_right/joint_states",
+            "/sensors/proprio/hand_right/dynamic_joint_states",
+        ),
         arm_right_controller_spawner,
         arm_left_controller_spawner,
         torso_controller_spawner,

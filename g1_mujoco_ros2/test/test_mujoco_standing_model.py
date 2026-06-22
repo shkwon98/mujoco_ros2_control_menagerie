@@ -56,9 +56,33 @@ def test_default_xacro_uses_menagerie_scene_and_keeps_fixed_base_override():
 
     assert 'name="robot_model" default="g1"' in wrapper_text
     assert 'name="mujoco_model_file" default="auto"' in wrapper_text
-    assert "scene_with_hands.xml" in ros2_control.read_text()
+    assert "scene_with_hands_fixed.xml" in ros2_control.read_text()
     assert "mujoco_model_file" in ros2_control.read_text()
     assert (DESCRIPTION / "mjcf" / "g1_29dof_fixed.xml").is_file()
+    assert (DESCRIPTION / "mjcf" / "scene_with_hands_fixed.xml").is_file()
+
+
+def test_fixed_hand_mujoco_scene_keeps_pelvis_supported_for_upper_body_control():
+    mujoco = pytest.importorskip("mujoco")
+
+    model_path = DESCRIPTION / "mjcf" / "scene_with_hands_fixed.xml"
+    text = model_path.read_text()
+
+    assert 'include file="g1_with_hands.xml"' in text
+    assert 'weld body1="world" body2="pelvis"' in text
+
+    model = mujoco.MjModel.from_xml_path(str(model_path))
+    data = mujoco.MjData(model)
+    pelvis_id = mujoco.mj_name2id(
+        model, mujoco.mjtObj.mjOBJ_BODY, "pelvis"
+    )
+
+    mujoco.mj_forward(model, data)
+    initial_z = float(data.xpos[pelvis_id, 2])
+    for _ in range(int(2.0 / model.opt.timestep)):
+        mujoco.mj_step(model, data)
+
+    assert float(data.xpos[pelvis_id, 2]) == pytest.approx(initial_z, abs=1e-4)
 
 
 @pytest.mark.parametrize("model_name", ["g1_29dof_fixed.xml", "g1_29dof.xml"])

@@ -27,6 +27,7 @@ def test_description_provides_urdf_mjcf_meshes_and_ros2_control_xacro():
     assert (DESCRIPTION / "mjcf" / "g1_with_hands.xml").is_file()
     assert (DESCRIPTION / "mjcf" / "scene.xml").is_file()
     assert (DESCRIPTION / "mjcf" / "scene_with_hands.xml").is_file()
+    assert (DESCRIPTION / "mjcf" / "scene_with_hands_fixed.xml").is_file()
     assert (DESCRIPTION / "mjcf" / "g1_29dof.xml").is_file()
     assert (DESCRIPTION / "mjcf" / "g1_29dof_fixed.xml").is_file()
     assert (DESCRIPTION / "mjcf" / "assets" / "pelvis.STL").is_file()
@@ -89,6 +90,7 @@ def test_g1_mjcf_follows_google_deepmind_menagerie_model_split():
     scenes = {
         "scene.xml": "g1.xml",
         "scene_with_hands.xml": "g1_with_hands.xml",
+        "scene_with_hands_fixed.xml": "g1_with_hands.xml",
     }
     for scene_name, include_file in scenes.items():
         root = ET.parse(DESCRIPTION / "mjcf" / scene_name).getroot()
@@ -99,7 +101,7 @@ def test_controller_config_exposes_joint_trajectory_surfaces():
     config = DESCRIPTION / "config" / "ros2_control" / "g1_controllers.yaml"
     text = config.read_text()
 
-    assert "joint_state_broadcaster:" in text
+    assert "body_joint_state_broadcaster:" in text
     assert "arm_right_controller:" in text
     assert "arm_left_controller:" in text
     assert "torso_controller:" in text
@@ -111,6 +113,9 @@ def test_controller_config_exposes_joint_trajectory_surfaces():
 
     hand_config = DESCRIPTION / "config" / "ros2_control" / "g1_with_hands_controllers.yaml"
     hand_text = hand_config.read_text()
+    assert "body_joint_state_broadcaster:" in hand_text
+    assert "hand_left_joint_state_broadcaster:" in hand_text
+    assert "hand_right_joint_state_broadcaster:" in hand_text
     assert "hand_left_controller:" in hand_text
     assert "hand_right_controller:" in hand_text
     assert "left_hand_thumb_0_joint" in hand_text
@@ -131,17 +136,27 @@ def test_bringup_launch_starts_ros2_control_and_spawners():
     assert "controller_file_by_model" in text
     assert "mujoco_model_file_by_model" in text
     assert "scene.xml" in text
-    assert "scene_with_hands.xml" in text
+    assert "scene_with_hands_fixed.xml" in text
     assert 'executable="ros2_control_node"' in text
     assert 'executable="robot_state_publisher"' in text
-    assert 'joint_state_broadcaster' in text
+    assert 'body_joint_state_broadcaster' in text
+    assert 'hand_left_joint_state_broadcaster' in text
+    assert 'hand_right_joint_state_broadcaster' in text
     assert 'arm_right_controller' in text
     assert 'arm_left_controller' in text
     assert 'torso_controller' in text
     assert 'leg_controller' in text
     assert 'hand_left_controller' in text
     assert 'hand_right_controller' in text
+    assert "__ns:={controller_namespace}" in text
+    assert '"/control/hand_left",' in text
+    assert '"/control/hand_right",' in text
     assert "/sensors/proprio/body/joint_states" in text
+    assert "/sensors/proprio/body/dynamic_joint_states" in text
+    assert "/sensors/proprio/hand_left/joint_states" in text
+    assert "/sensors/proprio/hand_left/dynamic_joint_states" in text
+    assert "/sensors/proprio/hand_right/joint_states" in text
+    assert "/sensors/proprio/hand_right/dynamic_joint_states" in text
     assert "/control/body/robot_description" in text
     assert "/control/body/arm_right_controller/joint_trajectory" in text
     assert "/control/body/arm_left_controller/joint_trajectory" in text

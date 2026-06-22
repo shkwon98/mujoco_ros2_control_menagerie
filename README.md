@@ -73,11 +73,24 @@ Common body control topics:
 /control/hand_right/hand_right_controller/follow_joint_trajectory
 ```
 
+Common proprioception topics:
+
+```text
+/sensors/proprio/body/joint_states
+/sensors/proprio/body/dynamic_joint_states
+/sensors/proprio/hand_left/joint_states
+/sensors/proprio/hand_left/dynamic_joint_states
+/sensors/proprio/hand_right/joint_states
+/sensors/proprio/hand_right/dynamic_joint_states
+```
+
 `head_controller` is available only on robot models that expose controllable head joints.
 AI Worker `ffw_sg2` and `ffw_sh5` also expose `/control/body/base_steer_controller/joint_trajectory`
 and `/control/body/base_drive_controller/commands`. The drive controller uses
 `std_msgs/msg/Float64MultiArray` velocity commands in left, right, rear wheel order.
 
-G1 defaults to the Google DeepMind MuJoCo Menagerie scene for the selected
-`robot_model`. For fixed-base upper-body control bringup, override the model
-with `mujoco_model_file:=g1_29dof_fixed.xml`.
+G1 `robot_model:=g1` defaults to the Google DeepMind MuJoCo Menagerie floating-base
+scene. `robot_model:=g1_with_hands` defaults to `scene_with_hands_fixed.xml`, which
+welds the pelvis to the world for upper-body and hand control without a balance
+controller. Override `mujoco_model_file:=scene_with_hands.xml` when you explicitly
+want the floating-base hand scene.

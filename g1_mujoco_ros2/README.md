@@ -12,12 +12,11 @@ The primary MuJoCo models follow Google DeepMind MuJoCo Menagerie's
 `unitree_g1` split:
 
 - `robot_model:=g1`: 29-DoF body model, `mjcf/scene.xml`
-- `robot_model:=g1_with_hands`: 29-DoF body plus 14 hand joints, `mjcf/scene_with_hands.xml`
+- `robot_model:=g1_with_hands`: 29-DoF body plus 14 hand joints, `mjcf/scene_with_hands_fixed.xml`
 
 The older local `g1_29dof.xml` and `g1_29dof_fixed.xml` files are kept for
-compatibility and static upper-body bringup. The menagerie scenes use a
-floating base, so they need a balance controller if you expect the robot to
-stand dynamically.
+compatibility and static upper-body bringup. The default hand scene welds the
+pelvis to the world for upper-body and hand control without a balance controller.
 
 Build:
 
@@ -38,6 +37,12 @@ Launch the hand model:
 ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
 ```
 
+Use the original floating-base hand scene explicitly when testing balance:
+
+```bash
+ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands mujoco_model_file:=scene_with_hands.xml
+```
+
 For fixed-base upper-body testing with the body-only model:
 
 ```bash
@@ -53,6 +58,17 @@ Main trajectory topics:
 /control/body/leg_controller/joint_trajectory
 /control/hand_left/hand_left_controller/joint_trajectory
 /control/hand_right/hand_right_controller/joint_trajectory
+```
+
+Main proprioception topics for `robot_model:=g1_with_hands`:
+
+```text
+/sensors/proprio/body/joint_states
+/sensors/proprio/body/dynamic_joint_states
+/sensors/proprio/hand_left/joint_states
+/sensors/proprio/hand_left/dynamic_joint_states
+/sensors/proprio/hand_right/joint_states
+/sensors/proprio/hand_right/dynamic_joint_states
 ```
 
 Before using this for real task tuning, verify whether your physical or target

@@ -201,10 +201,22 @@ def test_ai_worker_exposes_hand_and_wheel_control_interfaces():
 
     assert 'command_interface name="velocity"' in control_xacro
     assert "controller_file_by_model" in launch_text
+    assert "body_joint_state_broadcaster" in launch_text
+    assert "hand_left_joint_state_broadcaster" in launch_text
+    assert "hand_right_joint_state_broadcaster" in launch_text
     assert "hand_left_controller" in launch_text
     assert "hand_right_controller" in launch_text
+    assert "__ns:={controller_namespace}" in launch_text
+    assert '"/control/hand_left",' in launch_text
+    assert '"/control/hand_right",' in launch_text
     assert "base_steer_controller" in launch_text
     assert "base_drive_controller" in launch_text
+    assert "/sensors/proprio/body/joint_states" in launch_text
+    assert "/sensors/proprio/body/dynamic_joint_states" in launch_text
+    assert "/sensors/proprio/hand_left/joint_states" in launch_text
+    assert "/sensors/proprio/hand_left/dynamic_joint_states" in launch_text
+    assert "/sensors/proprio/hand_right/joint_states" in launch_text
+    assert "/sensors/proprio/hand_right/dynamic_joint_states" in launch_text
 
     configs = {
         "ffw_bg2": {
@@ -233,6 +245,9 @@ def test_ai_worker_exposes_hand_and_wheel_control_interfaces():
         path = description / "config" / "ros2_control" / spec["file"]
         assert path.is_file()
         text = path.read_text()
+        assert "body_joint_state_broadcaster" in text
+        assert "hand_left_joint_state_broadcaster" in text
+        assert "hand_right_joint_state_broadcaster" in text
         for token in spec["include"]:
             assert token in text
         for token in spec["exclude"]:
