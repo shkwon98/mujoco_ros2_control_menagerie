@@ -140,7 +140,6 @@
                                 <include file="./assets/LINK_13_V1.1/geoms.xml" />
                                 <body name="EE_BODY_R" pos="0 0 -0.1261">
                                   <inertial pos="0.00212703 0.00000615 -0.04287176" mass="0.46704998" fullinertia="0.00032067 0.00059559 0.00052732 0.00002383 -0.00000785 -0.00000007" />
-                                  <include file="./assets/EE_BODY/geoms.xml" />
                                   <include file="./assets/wuji_hand/right_body.xml" />
                                 </body>
                               </body>
@@ -186,7 +185,6 @@
                                 <include file="./assets/LINK_20_V1.1/geoms.xml" />
                                 <body name="EE_BODY_L" pos="0 0 -0.1261">
                                   <inertial pos="0.00212703 0.00000615 -0.04287176" mass="0.46704998" fullinertia="0.00032067 0.00059559 0.00052732 0.00002383 -0.00000785 -0.00000007" />
-                                  <include file="./assets/EE_BODY/geoms.xml" />
                                   <include file="./assets/wuji_hand/left_body.xml" />
                                 </body>
                               </body>

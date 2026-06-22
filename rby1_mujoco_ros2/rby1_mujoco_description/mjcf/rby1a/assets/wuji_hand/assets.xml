@@ -1,4 +1,5 @@
 <mujoco>
+  <mesh name="hand_docking_link" content_type="model/stl" file="./assets/wuji_hand/docking/hand_docking_link.STL" />
   <mesh name="right_palm_link" content_type="model/stl" file="./assets/wuji_hand/right/right_palm_link.STL" />
   <mesh name="right_finger1_link1" content_type="model/stl" file="./assets/wuji_hand/right/right_finger1_link1.STL" />
   <mesh name="right_finger1_link2" content_type="model/stl" file="./assets/wuji_hand/right/right_finger1_link2.STL" />

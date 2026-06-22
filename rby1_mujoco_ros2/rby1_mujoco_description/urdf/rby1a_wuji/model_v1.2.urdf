@@ -1,0 +1,2531 @@
+<?xml version="1.0"?>
+<robot name="rby1a_v1.2_wuji">
+<mobile type="differential" xyz="0.228 0 0" rpy="0 0 0" joints="right_wheel left_wheel"
+    params="0.53 0.1" /> <!-- wheel_base, wheel_radius -->
+
+  <link name="base">
+    <inertial>
+      <mass value="60.08042639" />
+      <origin rpy="0 0 0" xyz="-0.06157942 -0.00142271 0.13513861" />
+      <inertia ixx="1.37742174" ixy="0.02521789" ixz="0.18565467" iyy="2.99386515"
+        iyz="-0.00641869"
+        izz="3.76085052" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/base.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="wheel_r">
+    <inertial>
+      <mass value="1.37783736" />
+      <origin rpy="0 0 0" xyz="0.0 -0.00073938 0.0" />
+      <inertia ixx="0.00426657" ixy="0.0" ixz="0.0" iyy="0.00811815" iyz="0.0"
+        izz="0.00426657" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/WHEEL.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="wheel_l">
+    <inertial>
+      <mass value="1.37783736" />
+      <origin rpy="0 0 0" xyz="0.0 0.00073938 0.0" />
+      <inertia ixx="0.00426657" ixy="0.0" ixz="0.0" iyy="0.00811815" iyz="0.0"
+        izz="0.00426657" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/WHEEL.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="link_torso_0">
+    <inertial>
+      <mass value="2.24282123" />
+      <origin rpy="0 0 0" xyz="-0.08848415 0.00021367 0.00000046" />
+      <inertia ixx="0.01413496" ixy="0.00092982" ixz="-0.00000010" iyy="0.01005357"
+        iyz="-0.00000008" izz="0.01892525" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_1.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.115 0 0" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.105" length="0.230" />
+        <!-- <cylinder radius="0.105" length="1" /> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_torso_1">
+    <inertial>
+      <mass value="9.72162676" />
+      <origin rpy="0 0 0" xyz="0.00728955 -0.01728522 0.06911380" />
+      <inertia ixx="0.14862640" ixy="-0.00142621" ixz="-0.00951385" iyy="0.13854733"
+        iyz="-0.00975351" izz="0.02912982" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_2.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0100 0 0.2400" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.115" length="0.220" />
+        <!-- <capsule sp="0.01 0.0 0.130" ep="0.01 0.0 0.350" radius="0.115"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_torso_2">
+    <inertial>
+      <mass value="9.21691850" />
+      <origin rpy="0 0 0" xyz="0.00653835 -0.01769536 0.05636582" />
+      <inertia ixx="0.12162270" ixy="-0.00127910" ixz="-0.00831678" iyy="0.11589190"
+        iyz="-0.00873271" izz="0.03094484" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_3.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0250 0 0.2300" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.095" length="0.1600" />
+        <!-- <capsule sp="0.025 0.0 0.15" ep="0.025 0.0 0.310" radius="0.095"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_torso_3">
+    <inertial>
+      <mass value="4.18679196" />
+      <origin rpy="0 0 0" xyz="-0.00574156 -0.01725975 0.00005610" />
+      <inertia ixx="0.00849870" ixy="0.00040861" ixz="-0.00000263" iyy="0.00929513"
+        iyz="-0.00001243" izz="0.00955442" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_4.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="link_torso_4">
+    <inertial>
+      <mass value="4.45566276" />
+      <origin rpy="0 0 0" xyz="-0.09097095 0.00005085 0.02601950" />
+      <inertia ixx="0.01545991" ixy="0.00001883" ixz="-0.00780349" iyy="0.02550888"
+        iyz="0.00000715"
+        izz="0.01952563" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_5.dae" />
+      </geometry>
+    </visual>
+
+
+    <collision>
+      <origin xyz="-0.070000 0 0.038500" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.105" length="0.2" />
+        <!-- <capsule sp="0.03 0.0 0.0385" ep="-0.170 0.0 0.0385" radius="0.105"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_torso_5">
+    <inertial>
+      <mass value="14.73283950" />
+      <origin rpy="0 0 0" xyz="-0.03419752 0.00073431 -0.02659420" />
+      <inertia ixx="0.23934353" ixy="0.00158316" ixz="0.02926509" iyy="0.23140544"
+        iyz="0.00018390"
+        izz="0.18873182" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_6.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.0075" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.155" length="0.1350" />
+        <!-- <capsule sp="0.0 0.0 -0.06" ep="0.0 0.0 0.075" radius="0.155"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_0">
+    <inertial>
+      <mass value="1.26164242" />
+      <origin rpy="0 0 0" xyz="-0.00316662 0.03437181 -0.00000030" />
+      <inertia ixx="0.00230621" ixy="0.00039024" ixz="-0.00000256" iyy="0.00426418"
+        iyz="0.00000118"
+        izz="0.00432156" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_7.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.015 0.018 -0.008" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.075" length="0.0700" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_1">
+    <inertial>
+      <mass value="2.27287031" />
+      <origin rpy="0 0 0" xyz="-0.00307855 -0.00124741 -0.01294324" />
+      <inertia ixx="0.00388490" ixy="-0.00001477" ixz="0.00011465" iyy="0.00447034"
+        iyz="-0.00010023" izz="0.00288341" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_8.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.1000" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.2" />
+        <!-- <capsule sp="0.0 0.0 0.0" ep="0.0 0.0 -0.200" radius="0.050"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_2">
+    <inertial>
+      <mass value="2.46909439" />
+      <origin rpy="0 0 0" xyz="0.00115434 0.00196635 -0.16192524" />
+      <inertia ixx="0.00980269" ixy="0.00005871" ixz="0.00051888" iyy="0.00924560"
+        iyz="-0.00045932"
+        izz="0.00329867" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_9.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0260 0 -0.2760" rpy="1.5708 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.080000" />
+        <!-- <capsule sp="0.026 -0.040 -0.276" ep="0.026 0.040 -0.276" radius="0.05"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_3">
+    <inertial>
+      <mass value="2.26099493" />
+      <origin rpy="0 0 0" xyz="-0.01603135 -0.00692891 -0.04549811" />
+      <inertia ixx="0.00822606" ixy="0.00027620" ixz="-0.00156570" iyy="0.00844870"
+        iyz="0.00076157"
+        izz="0.00236614" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_10.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.0310 0 -0.1075" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.1150" />
+        <!-- <capsule sp="-0.031 0.0 -0.05" ep="-0.031 0.0 -0.165" radius="0.04"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_4">
+    <inertial>
+      <mass value="0.42508710" />
+      <origin rpy="0 0 0" xyz="-0.00000011 -0.02696036 0.06182110" />
+      <inertia ixx="0.00082466" ixy="0.0" ixz="0.0" iyy="0.00075398" iyz="-0.00025338"
+        izz="0.00039794" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_11.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 -0.038 0.0175" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.035" length="0.095" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_5">
+    <inertial>
+      <mass value="1.60506693" />
+      <origin rpy="0 0 0" xyz="0.00592642 -0.00537804 -0.02584713" />
+      <inertia ixx="0.00247557" ixy="-0.00004984" ixz="-0.00009861" iyy="0.00268241"
+        iyz="0.00021452" izz="0.00166724" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_12_v1.1.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.08565" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.075" length="0.2213" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_right_arm_6">
+    <inertial>
+      <mass value="0.42751673" />
+      <origin rpy="0 0 0" xyz="0.00024951 -0.00019562 -0.10711314" />
+      <inertia ixx="0.00029613" ixy="-0.00000186" ixz="-0.00000157" iyy="0.00030651"
+        iyz="0.00000221" izz="0.00048946" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_13_v1.1.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="link_left_arm_0">
+    <inertial>
+      <mass value="1.26164242" />
+      <origin rpy="0 0 0" xyz="-0.00316662 -0.03437181 -0.00000030" />
+      <inertia ixx="0.00230621" ixy="-0.00039024" ixz="0.00000256" iyy="0.00426418"
+        iyz="0.00000118"
+        izz="0.00432156" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_14.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.015 -0.018 -0.008" rpy="0 1.5708 0" />
+      <geometry>
+        <cylinder radius="0.075" length="0.0700" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_left_arm_1">
+    <inertial>
+      <mass value="2.27287031" />
+      <origin rpy="0 0 0" xyz="-0.00307855 0.00124741 -0.01294324" />
+      <inertia ixx="0.00388490" ixy="-0.00001477" ixz="0.00011465" iyy="0.00447034"
+        iyz="0.00010023"
+        izz="0.00288341" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_15.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.1000" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.050" length="0.2000" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_left_arm_2">
+    <inertial>
+      <mass value="2.46909439" />
+      <origin rpy="0 0 0" xyz="0.00115434 -0.00196635 -0.16192524" />
+      <inertia ixx="0.00980269" ixy="0.00005871" ixz="0.00051888" iyy="0.00924560"
+        iyz="-0.00045932"
+        izz="0.00329867" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_16.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0260 0 -0.2760" rpy="1.5708 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.080000" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_left_arm_3">
+    <inertial>
+      <mass value="2.26099493" />
+      <origin rpy="0 0 0" xyz="-0.01603135 0.00692891 -0.04549811" />
+      <inertia ixx="0.00822606" ixy="-0.00027620" ixz="-0.00156570" iyy="0.00844870"
+        iyz="-0.00076157" izz="0.00236614" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_17.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.0310 0 -0.1075" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.04" length="0.1150" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_left_arm_4">
+    <inertial>
+      <mass value="0.42508710" />
+      <origin rpy="0 0 0" xyz="0.00000011 0.02696036 0.06182110" />
+      <inertia ixx="0.00082466" ixy="0.0" ixz="0.0" iyy="0.00075398" iyz="0.00025338"
+        izz="0.00039794" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_18.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0.038000 0.017500" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.035" length="0.095000" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_left_arm_5">
+    <inertial>
+      <mass value="1.60506693" />
+      <origin rpy="0 0 0" xyz="0.00592642 -0.00537804 -0.02584713" />
+      <inertia ixx="0.00247557" ixy="-0.00004984" ixz="-0.00009861" iyy="0.00268241"
+        iyz="0.00021452" izz="0.00166724" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_19_v1.1.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.08565" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.075" length="0.2213" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_left_arm_6">
+    <inertial>
+      <mass value="0.42751673" />
+      <origin rpy="0 0 0" xyz="-0.00024951 0.00019562 -0.10711314" />
+      <inertia ixx="0.00029613" ixy="-0.00000186" ixz="0.00000157" iyy="0.00030651"
+        iyz="-0.00000221" izz="0.00048946" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_20_v1.1.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="ee_right">
+    <inertial>
+      <mass value="0.46704998" />
+      <origin rpy="0 0 0" xyz="0.00212703 0.00000615 -0.04287176" />
+      <inertia ixx="0.00032067" ixy="0.00002383" ixz="-0.00000785" iyy="0.00059559"
+        iyz="-0.00000007" izz="0.00052732" />
+    </inertial>
+  </link>
+
+  <link name="ee_finger_r1">
+    <inertial>
+      <mass value="0.03326999" />
+      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
+      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
+        izz="0.00000224" />
+    </inertial>
+  </link>
+
+  <link name="ee_finger_r2">
+    <inertial>
+      <mass value="0.03326999" />
+      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
+      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
+        izz="0.00000224" />
+    </inertial>
+  </link>
+
+  <link name="ee_left">
+    <inertial>
+      <mass value="0.46704998" />
+      <origin rpy="0 0 0" xyz="0.00212703 0.00000615 -0.04287176" />
+      <inertia ixx="0.00032067" ixy="0.00002383" ixz="-0.00000785" iyy="0.00059559"
+        iyz="-0.00000007" izz="0.00052732" />
+    </inertial>
+  </link>
+
+  <link name="ee_finger_l1">
+    <inertial>
+      <mass value="0.03326999" />
+      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
+      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
+        izz="0.00000224" />
+    </inertial>
+  </link>
+
+  <link name="ee_finger_l2">
+    <inertial>
+      <mass value="0.03326999" />
+      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
+      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
+        izz="0.00000224" />
+    </inertial>
+  </link>
+
+  <link name="link_head_0">
+    <inertial>
+      <mass value="0.65731648" />
+      <origin rpy="0 0 0" xyz="0.00024733 0.00033306 -0.01029730" />
+      <inertia ixx="0.00046241" ixy="0.00000182" ixz="0.00001119" iyy="0.00043223"
+        iyz="0.00000061"
+        izz="0.00027509" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/NECK_0.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="link_head_1">
+    <inertial>
+      <mass value="0.70476502" />
+      <origin rpy="0 0 0" xyz="-0.00041643 0.00593524 -0.00289916" />
+      <inertia ixx="0.00066212" ixy="-0.00000515" ixz="0.00000093" iyy="0.00036078"
+        iyz="-0.00001312" izz="0.00059265" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/NECK_1.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="link_head_2">
+    <inertial>
+      <mass value="0.95262738" />
+      <origin rpy="0 0 0" xyz="0.05315320 0.00547509 0.05913909" />
+      <inertia ixx="0.00114243" ixy="0.00027678" ixz="-0.00035426" iyy="0.00107559"
+        iyz="0.00023641"
+        izz="0.00151415" />
+    </inertial>
+
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/NECK_2.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+
+  <!-- Joints -->
+  <joint name="right_wheel" type="continuous">
+    <parent link="base" />
+    <child link="wheel_r" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.228 -0.265 0.1" />
+    <axis xyz="0 -1 0" />
+    <limit velocity="15.707963268" acceleration="3.141592" effort="100" />
+  </joint>
+
+  <joint name="left_wheel" type="continuous">
+    <parent link="base" />
+    <child link="wheel_l" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.228 0.265 0.1" />
+    <axis xyz="0 -1 0" />
+    <limit velocity="15.707963268" acceleration="3.141592" effort="100" />
+  </joint>
+
+  <joint name="torso_0" type="revolute">
+    <parent link="base" />
+    <child link="link_torso_0" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2805" />
+    <axis xyz="1 0 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 270Nm, 5rad/s^2, 120deg/s, -15deg, 15deg -->
+    <limit effort="270.0"
+      acceleration="5.0"
+      velocity="2.09439510"
+      lower="-0.261799388"
+      upper="0.261799388"
+    />
+  </joint>
+
+  <joint name="torso_1" type="revolute">
+    <parent link="link_torso_0" />
+    <child link="link_torso_1" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 270Nm, 5rad/s^2, 120deg/s, -30deg, 90deg -->
+    <limit effort="270.0"
+      acceleration="5.0"
+      velocity="2.09439510"
+      lower="-0.523598776"
+      upper="1.570796327"
+    />
+  </joint>
+
+  <joint name="torso_2" type="revolute">
+    <parent link="link_torso_1" />
+    <child link="link_torso_2" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.350" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 270Nm, 5rad/s^2, 120deg/s, -150deg, 90deg -->
+    <limit effort="270.0"
+      acceleration="5.0"
+      velocity="2.09439510"
+      lower="-2.617993878"
+      upper="1.570796327"
+    />
+  </joint>
+
+  <joint name="torso_3" type="revolute">
+    <parent link="link_torso_2" />
+    <child link="link_torso_3" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.350" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 120Nm, 5rad/s^2, 180deg/s, -45deg, 90deg -->
+    <limit effort="120.0"
+      acceleration="5.0"
+      velocity="3.141592654"
+      lower="-0.785398163"
+      upper="1.570796327"
+    />
+  </joint>
+
+  <joint name="torso_4" type="revolute">
+    <parent link="link_torso_3" />
+    <child link="link_torso_4" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 120Nm, 5rad/s^2, 180deg/s, -30deg, 30deg -->
+    <limit effort="120.0"
+      acceleration="5.0"
+      velocity="3.141592654"
+      lower="-0.523598776"
+      upper="0.523598776"
+    />
+  </joint>
+
+  <joint name="torso_5" type="revolute">
+    <parent link="link_torso_4" />
+    <child link="link_torso_5" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.309426548461" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 120Nm, 5rad/s^2, 180deg/s, -135deg, 135deg -->
+    <limit effort="120.0"
+      acceleration="5.0"
+      velocity="3.141592654"
+      lower="-2.35619449"
+      upper="2.35619449"
+    />
+  </joint>
+
+  <joint name="right_arm_0" type="revolute">
+    <parent link="link_torso_5" />
+    <child link="link_right_arm_0" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.220 0.080073451539 " />
+    <axis xyz="0.0 0.93969262 -0.34202014" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 70Nm, 10rad/s^2, 180deg/s, -180deg, 180deg -->
+    <limit effort="70.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-3.141592654"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="right_arm_1" type="revolute">
+    <parent link="link_right_arm_0" />
+    <child link="link_right_arm_1" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 70Nm, 10rad/s^2, 180deg/s, -180deg, 1deg -->
+    <limit effort="70.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-3.141592654"
+      upper="0.017453293"
+    />
+  </joint>
+
+  <joint name="right_arm_2" type="revolute">
+    <parent link="link_right_arm_1" />
+    <child link="link_right_arm_2" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 70Nm, 10rad/s^2, 180deg/s, -180deg, 180deg -->
+    <limit effort="70.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-3.141592654"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="right_arm_3" type="revolute">
+    <parent link="link_right_arm_2" />
+    <child link="link_right_arm_3" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.031 0.0 -0.276" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 40Nm, 10rad/s^2, 180deg/s, -150deg, 1deg -->
+    <limit effort="40.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-2.617993878"
+      upper="0.017453293"
+    />
+  </joint>
+
+  <joint name="right_arm_4" type="revolute">
+    <parent link="link_right_arm_3" />
+    <child link="link_right_arm_4" />
+    <origin rpy="0.0 0.0 0.0" xyz="-0.031 0.0 -0.256" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 10Nm, 10rad/s^2, 360deg/s, -180deg, 180deg -->
+    <limit effort="10.0"
+      acceleration="10.0"
+      velocity="6.283185308"
+      lower="-3.141592654"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="right_arm_5" type="revolute">
+    <parent link="link_right_arm_4" />
+    <child link="link_right_arm_5" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 10Nm, 10rad/s^2, 360deg/s, -90deg, 110deg -->
+    <limit effort="10.0"
+      acceleration="10.0"
+      velocity="6.283185308"
+      lower="-1.570796327"
+      upper="1.919862177"
+    />
+  </joint>
+
+  <joint name="right_arm_6" type="revolute">
+    <parent link="link_right_arm_5" />
+    <child link="link_right_arm_6" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 8Nm, 10rad/s^2, 120deg/s, -155deg, 155deg -->
+    <limit effort="8.0"
+      acceleration="10.0"
+      velocity="2.094395102"
+      lower="-2.705260340"
+      upper="2.705260340"
+    />
+  </joint>
+
+  <joint name="left_arm_0" type="revolute">
+    <parent link="link_torso_5" />
+    <child link="link_left_arm_0" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.220 0.080073452 " />
+    <axis xyz="0.0 0.93969262 0.34202014" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 70Nm, 10rad/s^2, 180deg/s, -180deg, 180deg -->
+    <limit effort="70.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-3.141592654"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="left_arm_1" type="revolute">
+    <parent link="link_left_arm_0" />
+    <child link="link_left_arm_1" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="1 0 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 70Nm, 10rad/s^2, 180deg/s, -1deg, 180deg -->
+    <limit effort="70.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-0.017453293"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="left_arm_2" type="revolute">
+    <parent link="link_left_arm_1" />
+    <child link="link_left_arm_2" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 70Nm, 10rad/s^2, 180deg/s, -180deg, 180deg -->
+    <limit effort="70.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-3.141592654"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="left_arm_3" type="revolute">
+    <parent link="link_left_arm_2" />
+    <child link="link_left_arm_3" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.031 0.0 -0.276" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 40Nm, 10rad/s^2, 180deg/s, -150deg, 1deg -->
+    <limit effort="40.0"
+      acceleration="10.0"
+      velocity="3.141592654"
+      lower="-2.617993878"
+      upper="0.017453293"
+    />
+  </joint>
+
+  <joint name="left_arm_4" type="revolute">
+    <parent link="link_left_arm_3" />
+    <child link="link_left_arm_4" />
+    <origin rpy="0.0 0.0 0.0" xyz="-0.031 0.0 -0.256" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 10Nm, 10rad/s^2, 360deg/s, -180deg, 180deg -->
+    <limit effort="10.0"
+      acceleration="10.0"
+      velocity="6.283185308"
+      lower="-3.141592654"
+      upper="3.141592654"
+    />
+  </joint>
+
+  <joint name="left_arm_5" type="revolute">
+    <parent link="link_left_arm_4" />
+    <child link="link_left_arm_5" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 10Nm, 10rad/s^2, 360deg/s, -90deg, 110deg -->
+    <limit effort="10.0"
+      acceleration="10.0"
+      velocity="6.283185308"
+      lower="-1.570796327"
+      upper="1.919862177"
+    />
+  </joint>
+
+  <joint name="left_arm_6" type="revolute">
+    <parent link="link_left_arm_5" />
+    <child link="link_left_arm_6" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 0 1" />
+    <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
+    <!-- 8Nm, 10rad/s^2, 120deg/s, -155deg, 155deg -->
+    <limit effort="8.0"
+      acceleration="10.0"
+      velocity="2.094395102"
+      lower="-2.705260340"
+      upper="2.705260340"
+    />
+  </joint>
+
+  <joint name="tool_right" type="fixed">
+    <parent link="link_right_arm_6" />
+    <child link="ee_right" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.1261" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <joint name="gripper_finger_r1" type="prismatic" in_model_type="fixed">
+    <parent link="ee_right" />
+    <child link="ee_finger_r1" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.003 0.0 -0.075" />
+    <axis xyz="-1 0 0" />
+    <limit effort="1000" velocity="0.05" lower="-0.05" upper="0" />
+  </joint>
+
+  <joint name="gripper_finger_r2" type="prismatic" in_model_type="fixed">
+    <parent link="ee_right" />
+    <child link="ee_finger_r2" />
+    <origin rpy="0.0 0.0 3.1415926535" xyz="-0.003 0.0 -0.075" />
+    <axis xyz="1 0 0" />
+    <limit effort="1000" velocity="0.05" lower="0" upper="0.05" />
+  </joint>
+
+  <joint name="tool_left" type="fixed">
+    <parent link="link_left_arm_6" />
+    <child link="ee_left" />
+    <origin rpy="0.0 0.0 0" xyz="0.0 0.0 -0.1261" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <joint name="gripper_finger_l1" type="prismatic" in_model_type="fixed">
+    <parent link="ee_left" />
+    <child link="ee_finger_l1" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.003 0.0 -0.075" />
+    <axis xyz="-1 0 0" />
+    <limit effort="1000" velocity="0.05" lower="-0.05" upper="0" />
+  </joint>
+
+  <joint name="gripper_finger_l2" type="prismatic" in_model_type="fixed">
+    <parent link="ee_left" />
+    <child link="ee_finger_l2" />
+    <origin rpy="0.0 0.0 3.1415926535" xyz="-0.003 0.0 -0.075" />
+    <axis xyz="1 0 0" />
+    <limit effort="1000" velocity="0.05" lower="0" upper="0.05" />
+  </joint>
+
+  <joint name="head_base" type="fixed">
+    <parent link="link_torso_5" />
+    <child link="link_head_0" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.022 0.0 0.120073451525" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <joint name="head_0" type="revolute">
+    <parent link="link_head_0" />
+    <child link="link_head_1" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.080" />
+    <axis xyz="0 0 1" />
+    <limit effort="1000" velocity="3.14" lower="-1.57" upper="1.57" />
+  </joint>
+
+  <joint name="head_1" type="revolute">
+    <parent link="link_head_1" />
+    <child link="link_head_2" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+    <axis xyz="0 1 0" />
+    <limit effort="1000" velocity="3.14" lower="-1.57" upper="1.57" />
+  </joint>
+
+  <!-- <joint name="head_mount" type="fixed">
+      <parent link="link_head_2"/>
+      <child link="Arbitrary device"/>
+      <origin rpy="0.0 0.0 0.0" xyz="0.022 0.0 0.04"/>
+      <axis xyz="0 0 1"/>
+    </joint> -->
+
+
+  <link name="right_hand_docking_link">
+    <inertial>
+      <origin xyz="0.0 0.000613 0.008094" rpy="0 0 0" />
+      <mass value="0.051956" />
+      <inertia ixx="1.814727e-05" ixy="-2.035277e-10" ixz="8.570371e-11" iyy="1.736668e-05" iyz="-4.906137e-07" izz="1.920788e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
+      </geometry>
+      <material name="wuji_docking_color">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<link name="right_palm_link">
+    <inertial>
+      <origin xyz="-0.002979471 0.0004557176 0.03665409" rpy="0 0 0" />
+      <mass value="0.16914" />
+      <inertia ixx="0.00014" ixy="2.54e-06" ixz="6.91e-06" iyy="9.47e-05" iyz="-6.63e-06" izz="6e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_palm_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_palm_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_finger1_link1">
+    <inertial>
+      <origin xyz="-0.002462817 -0.001242813 0.007780151" rpy="0 0 0" />
+      <mass value="0.0075" />
+      <inertia ixx="3.2e-07" ixy="-2e-08" ixz="0" iyy="3e-07" iyz="4e-08" izz="2.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger1_joint1" type="revolute">
+    <origin xyz="0.0084399 0.020587 0.028893" rpy="-1.328 -0.37161 -0.7307" />
+    <parent link="right_palm_link" />
+    <child link="right_finger1_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="0.0475" upper="1.6033" effort="0.4452" velocity="8.587" />
+  </joint>
+  <link name="right_finger1_link2">
+    <inertial>
+      <origin xyz="-0.00116283 1.22067e-05 0.01566454" rpy="0 0 0" />
+      <mass value="0.0248" />
+      <inertia ixx="2.76e-06" ixy="2e-08" ixz="1e-08" iyy="2.81e-06" iyz="2e-08" izz="6.8e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger1_joint2" type="revolute">
+    <origin xyz="-0.0047549 -0.0058191 0.014132" rpy="0.57428 0.23677 -1.3382" />
+    <parent link="right_finger1_link1" />
+    <child link="right_finger1_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1387" upper="0.9324" effort="0.4259" velocity="11.1" />
+  </joint>
+  <link name="right_finger1_link3">
+    <inertial>
+      <origin xyz="-0.001123534 -1.578957e-05 0.01305615" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.46e-06" ixy="0" ixz="-2e-08" iyy="1.42e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger1_joint3" type="revolute">
+    <origin xyz="-0.000266705 0.0009915016 0.03466562" rpy="0.04904945 0.01731124 1.233052" />
+    <parent link="right_finger1_link2" />
+    <child link="right_finger1_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4642" upper="1.5623" effort="0.1888" velocity="12.863" />
+  </joint>
+  <link name="right_finger1_link4">
+    <inertial>
+      <origin xyz="-0.001192304 -0.0002139726 0.008211456" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.18e-06" ixy="0" ixz="1.2e-07" iyy="1.25e-06" iyz="0" izz="5.1e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger1_joint4" type="revolute">
+    <origin xyz="0 0.0002 0.0295" rpy="0 0 0" />
+    <parent link="right_finger1_link3" />
+    <child link="right_finger1_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4699" upper="1.5568" effort="0.1468" velocity="13.578" />
+  </joint>
+  <link name="right_finger1_tip_link">
+    <inertial>
+      <origin xyz="-0.0001585375 8.133107e-05 -0.007177649" rpy="0 0 0" />
+      <mass value="0.0041" />
+      <inertia ixx="5.5e-07" ixy="0" ixz="2e-08" iyy="5.2e-07" iyz="0" izz="2.7e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger1_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger1_tip_fixed" type="fixed">
+    <origin xyz="-0.00105 -0.0002 0.0313" rpy="0 0 0" />
+    <parent link="right_finger1_link4" />
+    <child link="right_finger1_tip_link" />
+  </joint>
+  <link name="right_finger2_link1">
+    <inertial>
+      <origin xyz="-0.001329148 -3.291059e-08 0.000319873" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger2_joint1" type="revolute">
+    <origin xyz="-0.0058701 0.029434 0.091917" rpy="-0.11071 -0.071139 -0.21822" />
+    <parent link="right_palm_link" />
+    <child link="right_finger2_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1585" upper="1.5604" effort="0.6188" velocity="8.203" />
+  </joint>
+  <link name="right_finger2_link2">
+    <inertial>
+      <origin xyz="-4.118201e-07 0.006157724 0.02091115" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger2_joint2" type="revolute">
+    <origin xyz="0.0022 0 0.004000006" rpy="0 0 1.570796" />
+    <parent link="right_finger2_link1" />
+    <child link="right_finger2_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1822" velocity="8.115" />
+  </joint>
+  <link name="right_finger2_link3">
+    <inertial>
+      <origin xyz="-0.001121421 4.361278e-06 0.01576281" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger2_joint3" type="revolute">
+    <origin xyz="0 0.004750282 0.04361766" rpy="0 0 -1.571065" />
+    <parent link="right_finger2_link2" />
+    <child link="right_finger2_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4777" upper="1.5485" effort="0.2251" velocity="12.863" />
+  </joint>
+  <link name="right_finger2_link4">
+    <inertial>
+      <origin xyz="-0.0008943811 0.0002170428 0.005351763" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger2_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="right_finger2_link3" />
+    <child link="right_finger2_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4683" upper="1.5753" effort="0.2170" velocity="13.578" />
+  </joint>
+  <link name="right_finger2_tip_link">
+    <inertial>
+      <origin xyz="-0.0002011089 3.863762e-06 -0.008610984" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger2_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger2_tip_fixed" type="fixed">
+    <origin xyz="-0.00105 0.0002 0.0267" rpy="0 0 0" />
+    <parent link="right_finger2_link4" />
+    <child link="right_finger2_tip_link" />
+  </joint>
+  <link name="right_finger3_link1">
+    <inertial>
+      <origin xyz="-0.001329137 3.498697e-09 0.0003199368" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger3_joint1" type="revolute">
+    <origin xyz="-0.01046 0.0074615 0.089544" rpy="-5.0886e-05 -0.087266 0.00058387" />
+    <parent link="right_palm_link" />
+    <child link="right_finger3_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1644" upper="1.5516" effort="0.6494" velocity="8.203" />
+  </joint>
+  <link name="right_finger3_link2">
+    <inertial>
+      <origin xyz="-4.164417e-07 0.006157583 0.02091119" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger3_joint2" type="revolute">
+    <origin xyz="0.0022 0 0.004000006" rpy="0 0 1.570796" />
+    <parent link="right_finger3_link1" />
+    <child link="right_finger3_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1827" velocity="8.115" />
+  </joint>
+  <link name="right_finger3_link3">
+    <inertial>
+      <origin xyz="-0.001121418 4.330992e-06 0.01576282" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger3_joint3" type="revolute">
+    <origin xyz="0 0.00475 0.04361769" rpy="0 0 -1.571065" />
+    <parent link="right_finger3_link2" />
+    <child link="right_finger3_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4739" upper="1.5512" effort="0.2078" velocity="12.863" />
+  </joint>
+  <link name="right_finger3_link4">
+    <inertial>
+      <origin xyz="-0.0008943605 0.00021705 0.005351766" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger3_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="right_finger3_link3" />
+    <child link="right_finger3_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4684" upper="1.5745" effort="0.2018" velocity="13.578" />
+  </joint>
+  <link name="right_finger3_tip_link">
+    <inertial>
+      <origin xyz="-0.0001897161 1.397167e-06 -0.009137505" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger3_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger3_tip_fixed" type="fixed">
+    <origin xyz="-0.001049087 0.0002010395 0.0267" rpy="0 0 0" />
+    <parent link="right_finger3_link4" />
+    <child link="right_finger3_tip_link" />
+  </joint>
+  <link name="right_finger4_link1">
+    <inertial>
+      <origin xyz="-0.001329139 1.004755e-08 0.0003199476" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger4_joint1" type="revolute">
+    <origin xyz="-0.0076649 -0.013712 0.084429" rpy="0.090375 -0.083436 0.047127" />
+    <parent link="right_palm_link" />
+    <child link="right_finger4_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1554" upper="1.5585" effort="0.6389" velocity="8.203" />
+  </joint>
+  <link name="right_finger4_link2">
+    <inertial>
+      <origin xyz="-4.161973e-07 0.006157583 0.02091119" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger4_joint2" type="revolute">
+    <origin xyz="0.002200001 0 0.004000005" rpy="0 0 1.570796" />
+    <parent link="right_finger4_link1" />
+    <child link="right_finger4_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1832" velocity="8.115" />
+  </joint>
+  <link name="right_finger4_link3">
+    <inertial>
+      <origin xyz="-0.001121411 4.349371e-06 0.01576282" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger4_joint3" type="revolute">
+    <origin xyz="0 0.004749999 0.04361769" rpy="0 0 -1.571065" />
+    <parent link="right_finger4_link2" />
+    <child link="right_finger4_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4765" upper="1.5487" effort="0.2249" velocity="12.863" />
+  </joint>
+  <link name="right_finger4_link4">
+    <inertial>
+      <origin xyz="-0.0008943615 0.0002170593 0.005351766" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger4_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="right_finger4_link3" />
+    <child link="right_finger4_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4777" upper="1.5634" effort="0.2044" velocity="13.578" />
+  </joint>
+  <link name="right_finger4_tip_link">
+    <inertial>
+      <origin xyz="-0.0002017576 -2.430502e-05 -0.008610591" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger4_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger4_tip_fixed" type="fixed">
+    <origin xyz="-0.00105961 0.0001904508 0.0267" rpy="0 0 0" />
+    <parent link="right_finger4_link4" />
+    <child link="right_finger4_tip_link" />
+  </joint>
+  <link name="right_finger5_link1">
+    <inertial>
+      <origin xyz="-0.00132914 1.723477e-08 0.0003199686" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger5_joint1" type="revolute">
+    <origin xyz="-0.002268651 -0.03400111 0.07428134" rpy="0.1924837 -0.09251723 0.1576728" />
+    <parent link="right_palm_link" />
+    <child link="right_finger5_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1626" upper="1.5585" effort="0.6441" velocity="8.203" />
+  </joint>
+  <link name="right_finger5_link2">
+    <inertial>
+      <origin xyz="-4.149393e-07 0.006157585 0.02091118" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger5_joint2" type="revolute">
+    <origin xyz="0.002200001 0 0.004000005" rpy="0 0 1.570796" />
+    <parent link="right_finger5_link1" />
+    <child link="right_finger5_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1798" velocity="8.115" />
+  </joint>
+  <link name="right_finger5_link3">
+    <inertial>
+      <origin xyz="-0.00112141 4.370313e-06 0.01576283" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger5_joint3" type="revolute">
+    <origin xyz="0 0.004749999 0.04361769" rpy="0 0 -1.571065" />
+    <parent link="right_finger5_link2" />
+    <child link="right_finger5_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4768" upper="1.5490" effort="0.2384" velocity="12.863" />
+  </joint>
+  <link name="right_finger5_link4">
+    <inertial>
+      <origin xyz="-0.0008943728 0.0002170646 0.005351761" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger5_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="right_finger5_link3" />
+    <child link="right_finger5_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4683" upper="1.5735" effort="0.1866" velocity="13.578" />
+  </joint>
+  <link name="right_finger5_tip_link">
+    <inertial>
+      <origin xyz="-0.0002033175 1.487152e-06 -0.008611063" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.8980392 0.9176471 0.9294118 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/right/right_finger5_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_finger5_tip_fixed" type="fixed">
+    <origin xyz="-0.001044639 0.0002113095 0.0267" rpy="0 0 0" />
+    <parent link="right_finger5_link4" />
+    <child link="right_finger5_tip_link" />
+  </joint>
+
+
+  <link name="left_hand_docking_link">
+    <inertial>
+      <origin xyz="0.0 0.000613 0.008094" rpy="0 0 0" />
+      <mass value="0.051956" />
+      <inertia ixx="1.814727e-05" ixy="-2.035277e-10" ixz="8.570371e-11" iyy="1.736668e-05" iyz="-4.906137e-07" izz="1.920788e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
+      </geometry>
+      <material name="wuji_docking_color">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<link name="left_palm_link">
+    <inertial>
+      <origin xyz="-0.002978793 -0.0004525509 0.03665471" rpy="0 0 0" />
+      <mass value="0.16914" />
+      <inertia ixx="0.00014" ixy="2.54e-06" ixz="6.91e-06" iyy="9.47e-05" iyz="-6.63e-06" izz="6e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_palm_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_palm_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="left_finger1_link1">
+    <inertial>
+      <origin xyz="-0.002466361 0.001243356 0.007796453" rpy="0 0 0" />
+      <mass value="0.0075" />
+      <inertia ixx="3.2e-07" ixy="-2e-08" ixz="0" iyy="3e-07" iyz="4e-08" izz="2.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger1_joint1" type="revolute">
+    <origin xyz="0.0084399 -0.020587 0.028893" rpy="1.328 -0.37161 0.7307" />
+    <parent link="left_palm_link" />
+    <child link="left_finger1_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="0.0475" upper="1.6033" effort="0.4452" velocity="8.587" />
+  </joint>
+  <link name="left_finger1_link2">
+    <inertial>
+      <origin xyz="0.001165924 1.466029e-05 0.01565596" rpy="0 0 0" />
+      <mass value="0.0248" />
+      <inertia ixx="2.76e-06" ixy="2e-08" ixz="1e-08" iyy="2.81e-06" iyz="2e-08" izz="6.8e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger1_joint2" type="revolute">
+    <origin xyz="-0.0047549 0.0058191 0.014132" rpy="0.57428 -0.23677 -1.8034" />
+    <parent link="left_finger1_link1" />
+    <child link="left_finger1_link2" />
+    <axis xyz="0 -1 0" />
+    <limit lower="-0.1387" upper="0.9324" effort="0.4259" velocity="11.1" />
+  </joint>
+  <link name="left_finger1_link3">
+    <inertial>
+      <origin xyz="-0.001123197 1.572991e-05 0.01305658" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.46e-06" ixy="0" ixz="-2e-08" iyy="1.42e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger1_joint3" type="revolute">
+    <origin xyz="0.00026671 0.0009915 0.034666" rpy="-0.049049 0.017311 1.9085" />
+    <parent link="left_finger1_link2" />
+    <child link="left_finger1_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4642" upper="1.5623" effort="0.1888" velocity="12.863" />
+  </joint>
+  <link name="left_finger1_link4">
+    <inertial>
+      <origin xyz="-0.0011922 0.00021414 0.0082113" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.18e-06" ixy="0" ixz="1.2e-07" iyy="1.25e-06" iyz="0" izz="5.1e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger1_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="left_finger1_link3" />
+    <child link="left_finger1_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4699" upper="1.5568" effort="0.1468" velocity="13.578" />
+  </joint>
+  <link name="left_finger1_tip_link">
+    <inertial>
+      <origin xyz="-0.00017019 1.7524e-05 -0.0071779" rpy="0 0 0" />
+      <mass value="0.0041" />
+      <inertia ixx="5.5e-07" ixy="0" ixz="2e-08" iyy="5.2e-07" iyz="0" izz="2.7e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger1_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger1_tip_fixed" type="fixed">
+    <origin xyz="-0.00105 0.0002 0.0313" rpy="0 0 0" />
+    <parent link="left_finger1_link4" />
+    <child link="left_finger1_tip_link" />
+  </joint>
+  <link name="left_finger2_link1">
+    <inertial>
+      <origin xyz="-0.0013291 -5.6587e-09 0.00031994" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger2_joint1" type="revolute">
+    <origin xyz="-0.0058701 -0.029434 0.091917" rpy="0.11071 -0.071139 0.21822" />
+    <parent link="left_palm_link" />
+    <child link="left_finger2_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1585" upper="1.5604" effort="0.6188" velocity="8.203" />
+  </joint>
+  <link name="left_finger2_link2">
+    <inertial>
+      <origin xyz="4.378686e-07 0.006157522 0.02091104" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger2_joint2" type="revolute">
+    <origin xyz="0.0022 0 0.004000006" rpy="0 0 1.570796" />
+    <parent link="left_finger2_link1" />
+    <child link="left_finger2_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1822" velocity="8.115" />
+  </joint>
+  <link name="left_finger2_link3">
+    <inertial>
+      <origin xyz="-0.001121873 3.276186e-05 0.01571884" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger2_joint3" type="revolute">
+    <origin xyz="0 0.004749999 0.04361769" rpy="0 0 -1.570528" />
+    <parent link="left_finger2_link2" />
+    <child link="left_finger2_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4777" upper="1.5485" effort="0.2251" velocity="12.863" />
+  </joint>
+  <link name="left_finger2_link4">
+    <inertial>
+      <origin xyz="-0.0008943786 0.0002170653 0.005351759" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger2_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="left_finger2_link3" />
+    <child link="left_finger2_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4683" upper="1.5753" effort="0.2170" velocity="13.578" />
+  </joint>
+  <link name="left_finger2_tip_link">
+    <inertial>
+      <origin xyz="-0.0001897323 3.534942e-06 -0.009137204" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger2_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger2_tip_fixed" type="fixed">
+    <origin xyz="-0.0010521 0.0002108692 0.0267" rpy="0 0 0" />
+    <parent link="left_finger2_link4" />
+    <child link="left_finger2_tip_link" />
+  </joint>
+  <link name="left_finger3_link1">
+    <inertial>
+      <origin xyz="-0.0013291 -1.4994e-08 0.0003199" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger3_joint1" type="revolute">
+    <origin xyz="-0.01046 -0.0074615 0.089544" rpy="5.0894e-05 -0.087266 -0.00058387" />
+    <parent link="left_palm_link" />
+    <child link="left_finger3_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1644" upper="1.5516" effort="0.6494" velocity="8.203" />
+  </joint>
+  <link name="left_finger3_link2">
+    <inertial>
+      <origin xyz="4.38062e-07 0.006157535 0.02091104" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger3_joint2" type="revolute">
+    <origin xyz="0.0022 0 0.004000006" rpy="0 0 1.570796" />
+    <parent link="left_finger3_link1" />
+    <child link="left_finger3_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1827" velocity="8.115" />
+  </joint>
+  <link name="left_finger3_link3">
+    <inertial>
+      <origin xyz="-0.001121872 3.278072e-05 0.01571884" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger3_joint3" type="revolute">
+    <origin xyz="0 0.004749999 0.04361769" rpy="0 0 -1.570528" />
+    <parent link="left_finger3_link2" />
+    <child link="left_finger3_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4739" upper="1.5512" effort="0.2078" velocity="12.863" />
+  </joint>
+  <link name="left_finger3_link4">
+    <inertial>
+      <origin xyz="-0.0008943612 0.0002170501 0.005351766" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger3_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="left_finger3_link3" />
+    <child link="left_finger3_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4684" upper="1.5745" effort="0.2018" velocity="13.578" />
+  </joint>
+  <link name="left_finger3_tip_link">
+    <inertial>
+      <origin xyz="-0.0001897293 -6.958438e-07 -0.009137151" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger3_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger3_tip_fixed" type="fixed">
+    <origin xyz="-0.0010504 0.0002026723 0.0267" rpy="0 0 0" />
+    <parent link="left_finger3_link4" />
+    <child link="left_finger3_tip_link" />
+  </joint>
+  <link name="left_finger4_link1">
+    <inertial>
+      <origin xyz="-0.0013291 -9.6993e-09 0.00031986" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger4_joint1" type="revolute">
+    <origin xyz="-0.0076649 0.013712 0.084429" rpy="-0.090375 -0.083436 -0.047127" />
+    <parent link="left_palm_link" />
+    <child link="left_finger4_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1554" upper="1.5585" effort="0.6389" velocity="8.203" />
+  </joint>
+  <link name="left_finger4_link2">
+    <inertial>
+      <origin xyz="4.368958e-07 0.006157536 0.02091104" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger4_joint2" type="revolute">
+    <origin xyz="0.0022 0 0.004000005" rpy="0 0 1.570796" />
+    <parent link="left_finger4_link1" />
+    <child link="left_finger4_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1832" velocity="8.115" />
+  </joint>
+  <link name="left_finger4_link3">
+    <inertial>
+      <origin xyz="-0.001121877 3.279418e-05 0.01571884" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger4_joint3" type="revolute">
+    <origin xyz="0 0.004749999 0.04361769" rpy="0 0 -1.570528" />
+    <parent link="left_finger4_link2" />
+    <child link="left_finger4_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4765" upper="1.5487" effort="0.2249" velocity="12.863" />
+  </joint>
+  <link name="left_finger4_link4">
+    <inertial>
+      <origin xyz="-0.0008943647 0.0002170417 0.005351769" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger4_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="left_finger4_link3" />
+    <child link="left_finger4_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4777" upper="1.5634" effort="0.2044" velocity="13.578" />
+  </joint>
+  <link name="left_finger4_tip_link">
+    <inertial>
+      <origin xyz="-0.00018961 -6.059208e-06 -0.009137119" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger4_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger4_tip_fixed" type="fixed">
+    <origin xyz="-0.001049983 0.0002025572 0.0267" rpy="0 0 0" />
+    <parent link="left_finger4_link4" />
+    <child link="left_finger4_tip_link" />
+  </joint>
+  <link name="left_finger5_link1">
+    <inertial>
+      <origin xyz="-0.001329093 -2.352751e-08 0.0003198447" rpy="0 0 0" />
+      <mass value="0.0032" />
+      <inertia ixx="8e-08" ixy="0" ixz="-3e-08" iyy="7e-08" iyz="0" izz="8e-08" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link1.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger5_joint1" type="revolute">
+    <origin xyz="-0.002268651 0.03400111 0.07428134" rpy="-0.1924837 -0.09251723 -0.1576728" />
+    <parent link="left_palm_link" />
+    <child link="left_finger5_link1" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.1626" upper="1.5585" effort="0.6441" velocity="8.203" />
+  </joint>
+  <link name="left_finger5_link2">
+    <inertial>
+      <origin xyz="4.367533e-07 0.006157528 0.02091104" rpy="0 0 0" />
+      <mass value="0.033" />
+      <inertia ixx="6.31e-06" ixy="0" ixz="-1.6e-07" iyy="6.34e-06" iyz="0" izz="8.9e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link2.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger5_joint2" type="revolute">
+    <origin xyz="0.002200001 0 0.004000005" rpy="0 0 1.570796" />
+    <parent link="left_finger5_link1" />
+    <child link="left_finger5_link2" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.3700" upper="0.3700" effort="0.1798" velocity="8.115" />
+  </joint>
+  <link name="left_finger5_link3">
+    <inertial>
+      <origin xyz="-0.001121876 3.280675e-05 0.01571885" rpy="0 0 0" />
+      <mass value="0.0165" />
+      <inertia ixx="1.47e-06" ixy="0" ixz="3e-08" iyy="1.44e-06" iyz="0" izz="4.5e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link3.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.627451 0.627451 0.627451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger5_joint3" type="revolute">
+    <origin xyz="0 0.00475 0.04361769" rpy="0 0 -1.570528" />
+    <parent link="left_finger5_link2" />
+    <child link="left_finger5_link3" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4768" upper="1.5490" effort="0.2384" velocity="12.863" />
+  </joint>
+  <link name="left_finger5_link4">
+    <inertial>
+      <origin xyz="-0.0008943768 0.0002170416 0.005351765" rpy="0 0 0" />
+      <mass value="0.014" />
+      <inertia ixx="9.5e-07" ixy="0" ixz="1.4e-07" iyy="8.6e-07" iyz="-1e-08" izz="3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link4.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger5_joint4" type="revolute">
+    <origin xyz="0 -0.0002 0.0295" rpy="0 0 0" />
+    <parent link="left_finger5_link3" />
+    <child link="left_finger5_link4" />
+    <axis xyz="0 1 0" />
+    <limit lower="-0.4683" upper="1.5735" effort="0.1866" velocity="13.578" />
+  </joint>
+  <link name="left_finger5_tip_link">
+    <inertial>
+      <origin xyz="-0.000189703 5.010497e-07 -0.009137113" rpy="0 0 0" />
+      <mass value="0.00318" />
+      <inertia ixx="2e-07" ixy="0" ixz="0" iyy="2.1e-07" iyz="0" izz="1.3e-07" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_tip_link.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0.5294118 0.5490196 0.5490196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/left/left_finger5_tip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_finger5_tip_fixed" type="fixed">
+    <origin xyz="-0.001050407 0.0002010472 0.0267" rpy="0 0 0" />
+    <parent link="left_finger5_link4" />
+    <child link="left_finger5_tip_link" />
+  </joint>
+
+
+  <joint name="right_wuji_mount_joint" type="fixed">
+    <parent link="ee_right" />
+    <child link="right_hand_docking_link" />
+    <origin xyz="0.0 0.0 -0.02725" rpy="-3.14159265359 0.0 -3.92699081699" />
+  </joint>
+
+  <joint name="right_hand_docking_joint" type="fixed">
+    <parent link="right_hand_docking_link" />
+    <child link="right_palm_link" />
+    <origin xyz="0.00065 0 0.022" rpy="0 0 1.57079632679" />
+  </joint>
+
+  <joint name="left_wuji_mount_joint" type="fixed">
+    <parent link="ee_left" />
+    <child link="left_hand_docking_link" />
+    <origin xyz="0.0 0.0 -0.02725" rpy="3.14159265359 0.0 3.92699081699" />
+  </joint>
+
+  <joint name="left_hand_docking_joint" type="fixed">
+    <parent link="left_hand_docking_link" />
+    <child link="left_palm_link" />
+    <origin xyz="0.00065 0 0.022" rpy="0 0 -1.57079632679" />
+  </joint>
+</robot>

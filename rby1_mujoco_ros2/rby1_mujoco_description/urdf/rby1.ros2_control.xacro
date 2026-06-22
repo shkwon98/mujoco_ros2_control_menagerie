@@ -67,9 +67,9 @@
       </hardware>
 
       <xacro:if value="${base_robot_model == 'a'}">
-        <xacro:velocity_joint joint_name="right_wheel" initial_positions="${initial_positions}"
-          include_temperature="${include_temperature}" />
         <xacro:velocity_joint joint_name="left_wheel" initial_positions="${initial_positions}"
+          include_temperature="${include_temperature}" />
+        <xacro:velocity_joint joint_name="right_wheel" initial_positions="${initial_positions}"
           include_temperature="${include_temperature}" />
         <xacro:position_joint joint_name="torso_0" initial_positions="${initial_positions}"
           include_temperature="${include_temperature}" />
@@ -145,6 +145,11 @@
       <xacro:position_joint joint_name="left_arm_6" initial_positions="${initial_positions}"
         include_temperature="${include_temperature}" />
 
+      <xacro:position_joint joint_name="head_0" initial_positions="${initial_positions}"
+        include_temperature="${include_temperature}" />
+      <xacro:position_joint joint_name="head_1" initial_positions="${initial_positions}"
+        include_temperature="${include_temperature}" />
+
       <xacro:if value="${robot_model != 'a_wuji'}">
         <xacro:position_joint joint_name="right_trigger" initial_positions="${initial_positions}"
           include_temperature="${include_temperature}" />
@@ -195,11 +200,6 @@
         <xacro:position_joint joint_name="left_finger5_joint3" initial_positions="${initial_positions}" />
         <xacro:position_joint joint_name="left_finger5_joint4" initial_positions="${initial_positions}" />
       </xacro:if>
-
-      <xacro:position_joint joint_name="head_0" initial_positions="${initial_positions}"
-        include_temperature="${include_temperature}" />
-      <xacro:position_joint joint_name="head_1" initial_positions="${initial_positions}"
-        include_temperature="${include_temperature}" />
     </ros2_control>
   </xacro:macro>
 </robot>
