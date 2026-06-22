@@ -1,0 +1,112 @@
+/dexgraft/control/**:
+  ros__parameters:
+    urdf_path: "$(find-pkg-share g1_mujoco_description)/urdf/g1_29dof.urdf"
+    srdf_path: ""
+    locked_joint_names:
+      - left_hip_pitch_joint
+      - left_hip_roll_joint
+      - left_hip_yaw_joint
+      - left_knee_joint
+      - left_ankle_pitch_joint
+      - left_ankle_roll_joint
+      - right_hip_pitch_joint
+      - right_hip_roll_joint
+      - right_hip_yaw_joint
+      - right_knee_joint
+      - right_ankle_pitch_joint
+      - right_ankle_roll_joint
+
+    control_frequency: 100.0
+    time_step: 0.01
+    trajectory_time: 0.0
+
+    target_position_low_pass_cutoff_hz: 6.0
+    target_orientation_low_pass_cutoff_hz: 10.0
+    target_linear_velocity_limit: 0.5
+    target_angular_velocity_limit: 3.0
+
+    joint_states_topic: "/sensors/proprio/g1/joint_states"
+    right_traj_topic: "/control/g1/right_arm_controller/joint_trajectory"
+    left_traj_topic: "/control/g1/left_arm_controller/joint_trajectory"
+    torso_traj_topic: "/control/g1/waist_controller/joint_trajectory"
+
+    right_arm_joint_names:
+      - right_shoulder_pitch_joint
+      - right_shoulder_roll_joint
+      - right_shoulder_yaw_joint
+      - right_elbow_joint
+      - right_wrist_roll_joint
+      - right_wrist_pitch_joint
+      - right_wrist_yaw_joint
+    left_arm_joint_names:
+      - left_shoulder_pitch_joint
+      - left_shoulder_roll_joint
+      - left_shoulder_yaw_joint
+      - left_elbow_joint
+      - left_wrist_roll_joint
+      - left_wrist_pitch_joint
+      - left_wrist_yaw_joint
+    torso_joint_names:
+      - waist_yaw_joint
+      - waist_roll_joint
+      - waist_pitch_joint
+    torso_velocity_bounds: [0.0, 0.0, 0.0]
+
+    right_control_frame: "right_wrist_yaw_link"
+    left_control_frame: "left_wrist_yaw_link"
+    right_elbow_control_frame: "right_elbow_link"
+    left_elbow_control_frame: "left_elbow_link"
+    right_shoulder_control_frame: "right_shoulder_pitch_link"
+    left_shoulder_control_frame: "left_shoulder_pitch_link"
+    right_elbow_preferred_direction: [-0.3, -0.4, -1.0]
+    left_elbow_preferred_direction: [-0.3, 0.4, -1.0]
+
+    kp_position: 50.0
+    kp_orientation: 50.0
+    weight_position: 10.0
+    weight_orientation: 1.0
+    weight_elbow_position: 10.0
+    weight_damping: 0.1
+    collision_buffer: 0.2
+    collision_safe_distance: 0.12
+    slack_penalty: 1000.0
+    cbf_alpha: 50.0
+    singularity_sigma_min_safe: 0.1
+    singularity_finite_difference_eps: 0.0001
+
+/dexgraft/control/teleop_controller:
+  ros__parameters:
+    activate_topic: "/dexgraft/control/activate"
+    right_target_pose_topic: "/teleop/human/wrist_right/pose"
+    left_target_pose_topic: "/teleop/human/wrist_left/pose"
+    right_target_offset_rpy_deg: [0.0, 0.0, 0.0]
+    left_target_offset_rpy_deg: [0.0, 0.0, 0.0]
+    right_elbow_target_pose_topic: ""
+    left_elbow_target_pose_topic: ""
+    startup_ref_pos_threshold: 0.3
+    startup_ref_ori_threshold_deg: 180.0
+
+/dexgraft/control/movel_controller:
+  ros__parameters:
+    right_movel_topic: "/r_goal_move"
+    left_movel_topic: "/l_goal_move"
+    controller_error_topic: "~/controller_error"
+
+/dexgraft/control/reference_guard:
+  ros__parameters:
+    ref_pos_jump_threshold: 0.3
+    ref_ori_jump_threshold_deg: 180.0
+    right_target_pose_topic: "/teleop/human/wrist_right/pose"
+    left_target_pose_topic: "/teleop/human/wrist_left/pose"
+
+/dexgraft/visualization/right_goal_marker:
+  ros__parameters:
+    base_frame: "pelvis"
+    right_control_frame: "right_wrist_yaw_link"
+    right_movel_topic: "/r_goal_move"
+
+/dexgraft/visualization/left_goal_marker:
+  ros__parameters:
+    base_frame: "pelvis"
+    left_control_frame: "left_wrist_yaw_link"
+    left_movel_topic: "/l_goal_move"

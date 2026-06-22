@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="position_joint" params="joint_name initial_positions">
+    <joint name="${joint_name}">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">${initial_positions[joint_name]}</param>
+      </state_interface>
+      <state_interface name="velocity">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="effort">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="g1_mujoco_ros2_control" params="name hardware_type initial_positions_file mujoco_model_file">
+    <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <xacro:if value="${hardware_type == 'mujoco'}">
+          <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+          <!-- Package-share equivalent: $(find-pkg-share g1_mujoco_description)/mjcf/g1_29dof_fixed.xml -->
+          <param name="mujoco_model">$(find g1_mujoco_description)/mjcf/${mujoco_model_file}</param>
+          <param name="sim_speed_factor">1.0</param>
+          <param name="headless">false</param>
+        </xacro:if>
+        <xacro:if value="${hardware_type == 'mock'}">
+          <plugin>mock_components/GenericSystem</plugin>
+        </xacro:if>
+      </hardware>
+
+      <xacro:position_joint joint_name="left_hip_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_hip_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_hip_yaw_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_knee_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_ankle_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_ankle_roll_joint" initial_positions="${initial_positions}"/>
+
+      <xacro:position_joint joint_name="right_hip_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_hip_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_hip_yaw_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_knee_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_ankle_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_ankle_roll_joint" initial_positions="${initial_positions}"/>
+
+      <xacro:position_joint joint_name="waist_yaw_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="waist_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="waist_pitch_joint" initial_positions="${initial_positions}"/>
+
+      <xacro:position_joint joint_name="left_shoulder_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_shoulder_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_shoulder_yaw_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_elbow_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_wrist_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_wrist_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="left_wrist_yaw_joint" initial_positions="${initial_positions}"/>
+
+      <xacro:position_joint joint_name="right_shoulder_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_shoulder_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_shoulder_yaw_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_elbow_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_wrist_roll_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_wrist_pitch_joint" initial_positions="${initial_positions}"/>
+      <xacro:position_joint joint_name="right_wrist_yaw_joint" initial_positions="${initial_positions}"/>
+    </ros2_control>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,87 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 100
+
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+
+      arm_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+      arm_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+      torso_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+      head_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+  arm_right_controller:
+    ros__parameters:
+      joints:
+        - right_arm_0
+        - right_arm_1
+        - right_arm_2
+        - right_arm_3
+        - right_arm_4
+        - right_arm_5
+        - right_arm_6
+        - right_trigger
+      command_interfaces:
+        - position
+      state_interfaces:
+        - position
+        - velocity
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+
+  arm_left_controller:
+    ros__parameters:
+      joints:
+        - left_arm_0
+        - left_arm_1
+        - left_arm_2
+        - left_arm_3
+        - left_arm_4
+        - left_arm_5
+        - left_arm_6
+        - left_trigger
+      command_interfaces:
+        - position
+      state_interfaces:
+        - position
+        - velocity
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+
+  torso_controller:
+    ros__parameters:
+      joints:
+        - torso_hp
+        - torso_5
+      command_interfaces:
+        - position
+      state_interfaces:
+        - position
+        - velocity
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+
+  head_controller:
+    ros__parameters:
+      joints:
+        - head_0
+        - head_1
+      command_interfaces:
+        - position
+      state_interfaces:
+        - position
+        - velocity
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true

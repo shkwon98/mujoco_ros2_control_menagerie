@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rby1">
+  <xacro:arg name="robot_model" default="a" />
+  <xacro:arg name="robot_version" default="v1.2" />
+  <xacro:arg name="hardware_type" default="mujoco" />
+  <xacro:arg name="initial_positions_file"
+    default="$(find rby1_mujoco_description)/config/initial_positions/rby1$(arg robot_model).yaml" />
+
+  <xacro:property name="robot_model" value="$(arg robot_model)" />
+  <xacro:property name="robot_version" value="$(arg robot_version)" />
+  <xacro:property name="gripper_z_offset"
+    value="${0 if robot_model == 'a' and robot_version == 'v1.0' else -0.035}" />
+
+  <xacro:if value="${robot_model == 'a'}">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1a/model_${robot_version}.urdf" />
+  </xacro:if>
+  <xacro:if value="${robot_model == 'm'}">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m/model_${robot_version}.urdf" />
+  </xacro:if>
+  <xacro:if value="${robot_model == 'ub'}">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1ub/model.urdf" />
+  </xacro:if>
+
+  <!-- Virtual gripper joints for unified ros2_control interfaces. -->
+  <link name="right_gripper_link" />
+  <joint name="right_trigger" type="prismatic">
+    <parent link="ee_right" />
+    <child link="right_gripper_link" />
+    <origin xyz="0 0 ${gripper_z_offset}" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="0" upper="1" effort="1" velocity="10" />
+  </joint>
+
+  <link name="left_gripper_link" />
+  <joint name="left_trigger" type="prismatic">
+    <parent link="ee_left" />
+    <child link="left_gripper_link" />
+    <origin xyz="0 0 ${gripper_z_offset}" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="0" upper="1" effort="1" velocity="10" />
+  </joint>
+
+  <link name="world" />
+  <joint name="world_to_base" type="planar">
+    <parent link="world" />
+    <child link="base" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+  <!-- ros2_control -->
+  <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1.ros2_control.xacro" />
+  <xacro:rby1_mujoco_ros2_control
+    name="rby1_mujoco_system"
+    robot_model="$(arg robot_model)"
+    robot_version="$(arg robot_version)"
+    initial_positions_file="$(arg initial_positions_file)"
+    hardware_type="$(arg hardware_type)"
+  />
+</robot>
