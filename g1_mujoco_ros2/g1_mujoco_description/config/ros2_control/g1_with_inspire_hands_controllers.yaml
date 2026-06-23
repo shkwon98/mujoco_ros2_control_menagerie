@@ -70,12 +70,12 @@
   hand_left_joint_state_broadcaster:
     ros__parameters:
       joints:
-        - l_ih_thumb_proximal_yaw
-        - l_ih_thumb_proximal_pitch
-        - l_ih_index_proximal
-        - l_ih_middle_proximal
-        - l_ih_ring_proximal
-        - l_ih_pinky_proximal
+        - left_thumb_1_joint
+        - left_thumb_2_joint
+        - left_index_1_joint
+        - left_middle_1_joint
+        - left_ring_1_joint
+        - left_little_1_joint
       interfaces:
         - position
         - velocity
@@ -84,12 +84,12 @@
   hand_right_joint_state_broadcaster:
     ros__parameters:
       joints:
-        - r_ih_thumb_proximal_yaw
-        - r_ih_thumb_proximal_pitch
-        - r_ih_index_proximal
-        - r_ih_middle_proximal
-        - r_ih_ring_proximal
-        - r_ih_pinky_proximal
+        - right_thumb_1_joint
+        - right_thumb_2_joint
+        - right_index_1_joint
+        - right_middle_1_joint
+        - right_ring_1_joint
+        - right_little_1_joint
       interfaces:
         - position
         - velocity
@@ -175,12 +175,12 @@
   hand_left_controller:
     ros__parameters:
       joints:
-        - l_ih_thumb_proximal_yaw
-        - l_ih_thumb_proximal_pitch
-        - l_ih_index_proximal
-        - l_ih_middle_proximal
-        - l_ih_ring_proximal
-        - l_ih_pinky_proximal
+        - left_thumb_1_joint
+        - left_thumb_2_joint
+        - left_index_1_joint
+        - left_middle_1_joint
+        - left_ring_1_joint
+        - left_little_1_joint
       command_interfaces:
         - position
       state_interfaces:
@@ -193,12 +193,12 @@
   hand_right_controller:
     ros__parameters:
       joints:
-        - r_ih_thumb_proximal_yaw
-        - r_ih_thumb_proximal_pitch
-        - r_ih_index_proximal
-        - r_ih_middle_proximal
-        - r_ih_ring_proximal
-        - r_ih_pinky_proximal
+        - right_thumb_1_joint
+        - right_thumb_2_joint
+        - right_index_1_joint
+        - right_middle_1_joint
+        - right_ring_1_joint
+        - right_little_1_joint
       command_interfaces:
         - position
       state_interfaces:

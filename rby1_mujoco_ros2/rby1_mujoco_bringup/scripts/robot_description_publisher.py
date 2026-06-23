@@ -30,7 +30,6 @@ class RobotDescriptionPublisher(Node):
             durability=DurabilityPolicy.TRANSIENT_LOCAL,
         )
         self._publisher = self.create_publisher(String, "robot_description", qos)
-        self._timer = self.create_timer(1.0, self._publish_robot_description)
         self._publish_robot_description()
 
     def _publish_robot_description(self):

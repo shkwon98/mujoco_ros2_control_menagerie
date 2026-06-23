@@ -2,9 +2,13 @@
 
 import os
 
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import (
+    PackageNotFoundError,
+    get_package_prefix,
+    get_package_share_directory,
+)
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, LogInfo, OpaqueFunction
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -16,6 +20,7 @@ ROBOT_MODELS = {
         "base_model": "a",
         "initial_positions": "rby1a.yaml",
         "controllers": "rby1a_controllers.yaml",
+        "mobile_base_controller_package": "diff_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": False,
     },
@@ -23,6 +28,7 @@ ROBOT_MODELS = {
         "base_model": "m",
         "initial_positions": "rby1m.yaml",
         "controllers": "rby1m_controllers.yaml",
+        "mobile_base_controller_package": "mecanum_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": False,
     },
@@ -30,6 +36,7 @@ ROBOT_MODELS = {
         "base_model": "a",
         "initial_positions": "rby1a_wuji.yaml",
         "controllers": "rby1a_wuji_controllers.yaml",
+        "mobile_base_controller_package": "diff_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": True,
     },
@@ -37,6 +44,7 @@ ROBOT_MODELS = {
         "base_model": "m",
         "initial_positions": "rby1m_wuji.yaml",
         "controllers": "rby1m_wuji_controllers.yaml",
+        "mobile_base_controller_package": "mecanum_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": True,
     },
@@ -152,6 +160,14 @@ def make_controller_spawner(
     )
 
 
+def has_package(package_name):
+    try:
+        get_package_prefix(package_name)
+    except PackageNotFoundError:
+        return False
+    return True
+
+
 def launch_setup(context, *args, **kwargs):
     robot_model = LaunchConfiguration("robot_model")
     robot_version = LaunchConfiguration("robot_version")
@@ -206,7 +222,7 @@ def launch_setup(context, *args, **kwargs):
             package="controller_manager",
             executable="ros2_control_node",
             namespace="/control/body",
-            parameters=[control_robot_description, controllers_yaml_value],
+            parameters=[controllers_yaml_value],
             output="screen",
             arguments=["--ros-args", "--log-level", log_level],
             remappings=[
@@ -332,7 +348,9 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    if model_config["has_mobile_base"]:
+    if model_config["has_mobile_base"] and has_package(
+        model_config["mobile_base_controller_package"]
+    ):
         nodes.append(
             Node(
                 package="controller_manager",
@@ -347,6 +365,16 @@ def launch_setup(context, *args, **kwargs):
                     "--log-level",
                     log_level,
                 ],
+            )
+        )
+    elif model_config["has_mobile_base"]:
+        nodes.append(
+            LogInfo(
+                msg=(
+                    "Skipping mobile_base_controller: package "
+                    f"'{model_config['mobile_base_controller_package']}' is not installed. "
+                    "Install it to enable /cmd_vel mobile-base control."
+                )
             )
         )
 

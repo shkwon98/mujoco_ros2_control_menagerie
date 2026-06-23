@@ -103,7 +103,7 @@ def launch_setup(context, *args, **kwargs):
         package="controller_manager",
         executable="ros2_control_node",
         namespace="/control/body",
-        parameters=[control_robot_description, controllers_yaml_value],
+        parameters=[controllers_yaml_value],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
