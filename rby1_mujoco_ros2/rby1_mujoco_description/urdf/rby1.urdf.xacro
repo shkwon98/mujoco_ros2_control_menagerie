@@ -8,25 +8,30 @@
   <xacro:property name="robot_model" value="$(arg robot_model)" />
   <xacro:property name="robot_version" value="$(arg robot_version)" />
   <xacro:property name="base_robot_model"
-    value="${'a' if robot_model == 'a_wuji' else robot_model}" />
+    value="${'a' if robot_model == 'a_wuji' else ('m' if robot_model == 'm_wuji' else robot_model)}" />
   <xacro:property name="gripper_z_offset"
     value="${0 if base_robot_model == 'a' and robot_version == 'v1.0' else -0.035}" />
 
   <xacro:if value="${robot_model == 'a_wuji'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1a_wuji/model_v1.2.urdf" />
   </xacro:if>
+  <xacro:if value="${robot_model == 'm_wuji'}">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m_wuji/model_v1.2.urdf" />
+  </xacro:if>
   <xacro:if value="${base_robot_model == 'a' and robot_model != 'a_wuji'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1a/model_${robot_version}.urdf" />
   </xacro:if>
-  <xacro:if value="${base_robot_model == 'm'}">
+  <xacro:if value="${base_robot_model == 'm' and robot_model != 'm_wuji'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m/model_${robot_version}.urdf" />
   </xacro:if>
-  <xacro:if value="${base_robot_model == 'ub'}">
-    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1ub/model.urdf" />
+
+  <xacro:if value="${robot_model == 'a_wuji' or robot_model == 'm_wuji'}">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/rby1_mount.urdf.xacro" />
+    <xacro:rby1_wuji_hand_mounts />
   </xacro:if>
 
   <!-- Virtual gripper joints for unified ros2_control interfaces. -->
-  <xacro:if value="${robot_model != 'a_wuji'}">
+  <xacro:if value="${robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
     <link name="right_gripper_link" />
     <joint name="right_trigger" type="prismatic">
       <parent link="ee_right" />

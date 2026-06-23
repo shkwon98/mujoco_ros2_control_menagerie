@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="rby1_wuji_hand_mounts">
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right_with_docking.urdf.xacro" />
+    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left_with_docking.urdf.xacro" />
+
+    <joint name="right_wuji_mount_joint" type="fixed">
+      <parent link="ee_right" />
+      <child link="right_hand_docking_link" />
+      <origin xyz="0.0 0.0 -0.02725" rpy="-3.14159265359 0.0 -3.92699081699" />
+    </joint>
+
+    <joint name="left_wuji_mount_joint" type="fixed">
+      <parent link="ee_left" />
+      <child link="left_hand_docking_link" />
+      <origin xyz="0.0 0.0 -0.02725" rpy="3.14159265359 0.0 3.92699081699" />
+    </joint>
+  </xacro:macro>
+</robot>

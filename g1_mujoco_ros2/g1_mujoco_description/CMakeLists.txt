@@ -9,7 +9,7 @@ install(
 )
 
 install(
-  FILES LICENSE.unitree_ros LICENSE.mujoco_menagerie_unitree_g1 THIRD_PARTY_NOTICES.md
+  FILES LICENSE.unitree_ros LICENSE.mujoco_menagerie_unitree_g1
   DESTINATION share/${PROJECT_NAME}
 )
 

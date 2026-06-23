@@ -1,50 +1,75 @@
 <?xml version="1.0"?>
-<robot name="rby1a_v1.2_wuji">
-<mobile type="differential" xyz="0.228 0 0" rpy="0 0 0" joints="right_wheel left_wheel"
-    params="0.53 0.1" /> <!-- wheel_base, wheel_radius -->
+<robot name="RBY1_M_v1.2">
+  <mobile type="mecanum" xyz="0 0 0" rpy="0 0 0" joints="wheel_fr wheel_fl wheel_rr wheel_rl"
+    params="0.245 0.245 0.076" /> <!-- Lx, Ly, wheel_radius -->
 
   <link name="base">
     <inertial>
-      <mass value="60.08042639" />
-      <origin rpy="0 0 0" xyz="-0.06157942 -0.00142271 0.13513861" />
-      <inertia ixx="1.37742174" ixy="0.02521789" ixz="0.18565467" iyy="2.99386515"
-        iyz="-0.00641869"
-        izz="3.76085052" />
+      <mass value="82.93082168" />
+      <origin rpy="0 0 0" xyz="-0.05361531 -0.00279946 0.13500266" />
+      <inertia ixx="2.38184773" ixy="0.00958286" ixz="0.32695003" iyy="4.04857218"
+        iyz="-0.01527373" izz="5.45210782" />
     </inertial>
-
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/base.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/base.dae" />
       </geometry>
     </visual>
   </link>
 
-  <link name="wheel_r">
+  <link name="wheel_fr_link">
     <inertial>
-      <mass value="1.37783736" />
-      <origin rpy="0 0 0" xyz="0.0 -0.00073938 0.0" />
-      <inertia ixx="0.00426657" ixy="0.0" ixz="0.0" iyy="0.00811815" iyz="0.0"
-        izz="0.00426657" />
+      <mass value="2.54410022" />
+      <origin rpy="0 0 3.1415926535897932384626433832795" xyz="-0.00010511 0.00094580 0.0" />
+      <inertia ixx="0.00470985" ixy="-0.00000025" ixz="0.0" iyy="0.00616429" iyz="0.0"
+        izz="0.00470754" />
     </inertial>
-
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/WHEEL.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/MECANUM_WHEEL.dae" />
       </geometry>
     </visual>
   </link>
 
-  <link name="wheel_l">
+  <link name="wheel_fl_link">
     <inertial>
-      <mass value="1.37783736" />
-      <origin rpy="0 0 0" xyz="0.0 0.00073938 0.0" />
-      <inertia ixx="0.00426657" ixy="0.0" ixz="0.0" iyy="0.00811815" iyz="0.0"
-        izz="0.00426657" />
+      <mass value="2.54417879" />
+      <origin rpy="0 0 0" xyz="-0.00010433 -0.00094577 0.0" />
+      <inertia ixx="0.00471013" ixy="0.00000025" ixz="0.0" iyy="0.00616468" iyz="0.0"
+        izz="0.00470782" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/MECANUM_WHEEL_M.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="wheel_rr_link">
+    <inertial>
+      <mass value="2.54410022" />
+      <origin rpy="0 0 0" xyz="-0.00010511 0.00094580 0.0" />
+      <inertia ixx="0.00470985" ixy="-0.00000025" ixz="0.0" iyy="0.00616429" iyz="0.0"
+        izz="0.00470754" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/MECANUM_WHEEL_M.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="wheel_rl_link">
+    <inertial>
+      <mass value="2.54417879" />
+      <origin rpy="0 0 3.1415926535897932384626433832795" xyz="-0.00010433 -0.00094577 0.0" />
+      <inertia ixx="0.00471013" ixy="0.00000025" ixz="0.0" iyy="0.00616468" iyz="0.0"
+        izz="0.00470782" />
     </inertial>
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/WHEEL.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/MECANUM_WHEEL.dae" />
       </geometry>
     </visual>
   </link>
@@ -59,7 +84,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_1.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_1.dae" />
       </geometry>
     </visual>
 
@@ -82,7 +107,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_2.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_2.dae" />
       </geometry>
     </visual>
 
@@ -90,7 +115,7 @@
       <origin xyz="0.0100 0 0.2400" rpy="0 0 0" />
       <geometry>
         <cylinder radius="0.115" length="0.220" />
-        <!-- <capsule sp="0.01 0.0 0.130" ep="0.01 0.0 0.350" radius="0.115"/> -->
+        <!-- <capsule sp="0.01 0.0 0.130" ep="0.01 0.0 0.350" radius="0.115" /> -->
       </geometry>
     </collision>
   </link>
@@ -105,7 +130,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_3.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_3.dae" />
       </geometry>
     </visual>
 
@@ -113,7 +138,7 @@
       <origin xyz="0.0250 0 0.2300" rpy="0 0 0" />
       <geometry>
         <cylinder radius="0.095" length="0.1600" />
-        <!-- <capsule sp="0.025 0.0 0.15" ep="0.025 0.0 0.310" radius="0.095"/> -->
+        <!-- <capsule sp="0.025 0.0 0.15" ep="0.025 0.0 0.310" radius="0.095" /> -->
       </geometry>
     </collision>
   </link>
@@ -128,7 +153,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_4.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_4.dae" />
       </geometry>
     </visual>
   </link>
@@ -144,7 +169,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_5.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_5.dae" />
       </geometry>
     </visual>
 
@@ -153,7 +178,7 @@
       <origin xyz="-0.070000 0 0.038500" rpy="0 1.5708 0" />
       <geometry>
         <cylinder radius="0.105" length="0.2" />
-        <!-- <capsule sp="0.03 0.0 0.0385" ep="-0.170 0.0 0.0385" radius="0.105"/> -->
+        <!-- <capsule sp="0.03 0.0 0.0385" ep="-0.170 0.0 0.0385" radius="0.105" /> -->
       </geometry>
     </collision>
   </link>
@@ -169,7 +194,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_6.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_6.dae" />
       </geometry>
     </visual>
 
@@ -177,7 +202,7 @@
       <origin xyz="0 0 0.0075" rpy="0 0 0" />
       <geometry>
         <cylinder radius="0.155" length="0.1350" />
-        <!-- <capsule sp="0.0 0.0 -0.06" ep="0.0 0.0 0.075" radius="0.155"/> -->
+        <!-- <capsule sp="0.0 0.0 -0.06" ep="0.0 0.0 0.075" radius="0.155" /> -->
       </geometry>
     </collision>
   </link>
@@ -193,7 +218,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_7.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_7.dae" />
       </geometry>
     </visual>
 
@@ -215,7 +240,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_8.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_8.dae" />
       </geometry>
     </visual>
 
@@ -223,7 +248,7 @@
       <origin xyz="0 0 -0.1000" rpy="0 0 0" />
       <geometry>
         <cylinder radius="0.05" length="0.2" />
-        <!-- <capsule sp="0.0 0.0 0.0" ep="0.0 0.0 -0.200" radius="0.050"/> -->
+        <!-- <capsule sp="0.0 0.0 0.0" ep="0.0 0.0 -0.200" radius="0.050" /> -->
       </geometry>
     </collision>
   </link>
@@ -239,7 +264,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_9.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_9.dae" />
       </geometry>
     </visual>
 
@@ -247,7 +272,7 @@
       <origin xyz="0.0260 0 -0.2760" rpy="1.5708 0 0" />
       <geometry>
         <cylinder radius="0.05" length="0.080000" />
-        <!-- <capsule sp="0.026 -0.040 -0.276" ep="0.026 0.040 -0.276" radius="0.05"/> -->
+        <!-- <capsule sp="0.026 -0.040 -0.276" ep="0.026 0.040 -0.276" radius="0.05" /> -->
       </geometry>
     </collision>
   </link>
@@ -263,7 +288,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_10.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_10.dae" />
       </geometry>
     </visual>
 
@@ -271,7 +296,7 @@
       <origin xyz="-0.0310 0 -0.1075" rpy="0 0 0" />
       <geometry>
         <cylinder radius="0.04" length="0.1150" />
-        <!-- <capsule sp="-0.031 0.0 -0.05" ep="-0.031 0.0 -0.165" radius="0.04"/> -->
+        <!-- <capsule sp="-0.031 0.0 -0.05" ep="-0.031 0.0 -0.165" radius="0.04" /> -->
       </geometry>
     </collision>
   </link>
@@ -286,7 +311,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_11.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_11.dae" />
       </geometry>
     </visual>
 
@@ -308,7 +333,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_12_v1.1.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_12_v1.1.dae" />
       </geometry>
     </visual>
 
@@ -330,7 +355,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_13_v1.1.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_13_v1.1.dae" />
       </geometry>
     </visual>
   </link>
@@ -346,7 +371,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_14.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_14.dae" />
       </geometry>
     </visual>
 
@@ -369,7 +394,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_15.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_15.dae" />
       </geometry>
     </visual>
 
@@ -392,7 +417,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_16.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_16.dae" />
       </geometry>
     </visual>
 
@@ -414,7 +439,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_17.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_17.dae" />
       </geometry>
     </visual>
 
@@ -436,7 +461,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_18.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_18.dae" />
       </geometry>
     </visual>
 
@@ -458,7 +483,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_19_v1.1.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_19_v1.1.dae" />
       </geometry>
     </visual>
 
@@ -480,7 +505,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/LINK_20_v1.1.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/LINK_20_v1.1.dae" />
       </geometry>
     </visual>
   </link>
@@ -550,7 +575,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/NECK_0.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/NECK_0.dae" />
       </geometry>
     </visual>
   </link>
@@ -565,7 +590,7 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/NECK_1.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/NECK_1.dae" />
       </geometry>
     </visual>
   </link>
@@ -581,33 +606,49 @@
 
     <visual>
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/NECK_2.dae" />
+        <mesh filename="package://rby1_mujoco_description/meshes/rby1m/NECK_2.dae" />
       </geometry>
     </visual>
   </link>
 
 
   <!-- Joints -->
-  <joint name="right_wheel" type="continuous">
+  <joint name="wheel_fr" type="continuous">
     <parent link="base" />
-    <child link="wheel_r" />
-    <origin rpy="0.0 0.0 0.0" xyz="0.228 -0.265 0.1" />
-    <axis xyz="0 -1 0" />
-    <limit velocity="15.707963268" acceleration="3.141592" effort="100" />
+    <child link="wheel_fr_link" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.243 -0.245 0.076" />
+    <axis xyz="0 1 0" />
+    <limit effort="100" velocity="100" />
   </joint>
 
-  <joint name="left_wheel" type="continuous">
+  <joint name="wheel_fl" type="continuous">
     <parent link="base" />
-    <child link="wheel_l" />
-    <origin rpy="0.0 0.0 0.0" xyz="0.228 0.265 0.1" />
-    <axis xyz="0 -1 0" />
-    <limit velocity="15.707963268" acceleration="3.141592" effort="100" />
+    <child link="wheel_fl_link" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.243 0.245 0.076" />
+    <axis xyz="0 1 0" />
+    <limit effort="100" velocity="100" />
+  </joint>
+
+  <joint name="wheel_rr" type="continuous">
+    <parent link="base" />
+    <child link="wheel_rr_link" />
+    <origin rpy="0.0 0.0 0.0" xyz="-0.247 -0.245 0.076" />
+    <axis xyz="0 1 0" />
+    <limit effort="100" velocity="100" />
+  </joint>
+
+  <joint name="wheel_rl" type="continuous">
+    <parent link="base" />
+    <child link="wheel_rl_link" />
+    <origin rpy="0.0 0.0 0.0" xyz="-0.247 0.245 0.076" />
+    <axis xyz="0 1 0" />
+    <limit effort="100" velocity="100" />
   </joint>
 
   <joint name="torso_0" type="revolute">
     <parent link="base" />
     <child link="link_torso_0" />
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2805" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2965" />
     <axis xyz="1 0 0" />
     <!-- Nm, rad/s^2, rad/s, (min) rad, (max) rad -->
     <!-- 270Nm, 5rad/s^2, 120deg/s, -15deg, 15deg -->
@@ -974,9 +1015,9 @@
   </joint>
 
   <!-- <joint name="head_mount" type="fixed">
-      <parent link="link_head_2"/>
-      <child link="Arbitrary device"/>
-      <origin rpy="0.0 0.0 0.0" xyz="0.022 0.0 0.04"/>
-      <axis xyz="0 0 1"/>
+      <parent link="link_head_2" />
+      <child link="Arbitrary device" />
+      <origin rpy="0.0 0.0 0.0" xyz="0.022 0.0 0.04" />
+      <axis xyz="0 0 1" />
     </joint> -->
 </robot>

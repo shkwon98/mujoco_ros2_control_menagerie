@@ -33,6 +33,16 @@ def launch_setup(context, *args, **kwargs):
         "g1_with_hands": "scene_with_hands_fixed.xml",
         "g1_with_inspire_hands": "scene_inspire_hand_fixed.xml",
     }
+    hand_xacro_files_by_model = {
+        "g1_with_hands": (
+            "g1_hand_left.urdf.xacro",
+            "g1_hand_right.urdf.xacro",
+        ),
+        "g1_with_inspire_hands": (
+            "g1_inspire_hand_left.urdf.xacro",
+            "g1_inspire_hand_right.urdf.xacro",
+        ),
+    }
 
     if controllers_yaml_value == "auto":
         controllers_yaml_value = os.path.join(
@@ -53,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    robot_description_content = Command(
+    control_robot_description_content = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
@@ -66,31 +76,58 @@ def launch_setup(context, *args, **kwargs):
             mujoco_model_file_value,
         ]
     )
-    robot_description = {
-        "robot_description": ParameterValue(robot_description_content, value_type=str)
+    control_robot_description = {
+        "robot_description": ParameterValue(
+            control_robot_description_content, value_type=str
+        )
+    }
+
+    body_robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            xacro_file,
+            " robot_model:=g1",
+            " initial_positions_file:=",
+            initial_positions_file,
+            " mujoco_model_file:=scene.xml",
+        ]
+    )
+    body_robot_description = {
+        "robot_description": ParameterValue(
+            body_robot_description_content, value_type=str
+        )
     }
 
     ros2_control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         namespace="/control/body",
-        parameters=[robot_description, controllers_yaml_value],
+        parameters=[control_robot_description, controllers_yaml_value],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
             ("robot_description", "/control/body/robot_description"),
         ],
     )
+    robot_description_publisher_node = Node(
+        package="g1_mujoco_bringup",
+        executable="robot_description_publisher.py",
+        namespace="/control/body",
+        parameters=[control_robot_description],
+        output="screen",
+        arguments=["--ros-args", "--log-level", log_level],
+    )
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         namespace="/sensors/proprio/body",
-        parameters=[robot_description],
+        parameters=[body_robot_description],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
-            ("robot_description", "/control/body/robot_description"),
+            ("robot_description", "/sensors/proprio/body/robot_description"),
             ("joint_states", "/sensors/proprio/body/joint_states"),
         ],
     )
@@ -157,6 +194,7 @@ def launch_setup(context, *args, **kwargs):
 
     nodes = [
         ros2_control_node,
+        robot_description_publisher_node,
         robot_state_publisher_node,
         make_joint_state_broadcaster_spawner(
             "body_joint_state_broadcaster",
@@ -186,8 +224,71 @@ def launch_setup(context, *args, **kwargs):
     ]
 
     if robot_model_value in ["g1_with_hands", "g1_with_inspire_hands"]:
+        left_hand_xacro_file, right_hand_xacro_file = hand_xacro_files_by_model[
+            robot_model_value
+        ]
+        left_hand_robot_description = {
+            "robot_description": ParameterValue(
+                Command(
+                    [
+                        PathJoinSubstitution([FindExecutable(name="xacro")]),
+                        " ",
+                        PathJoinSubstitution(
+                            [
+                                FindPackageShare("g1_mujoco_description"),
+                                "urdf",
+                                left_hand_xacro_file,
+                            ]
+                        ),
+                    ]
+                ),
+                value_type=str,
+            )
+        }
+        right_hand_robot_description = {
+            "robot_description": ParameterValue(
+                Command(
+                    [
+                        PathJoinSubstitution([FindExecutable(name="xacro")]),
+                        " ",
+                        PathJoinSubstitution(
+                            [
+                                FindPackageShare("g1_mujoco_description"),
+                                "urdf",
+                                right_hand_xacro_file,
+                            ]
+                        ),
+                    ]
+                ),
+                value_type=str,
+            )
+        }
         nodes.extend(
             [
+                Node(
+                    package="robot_state_publisher",
+                    executable="robot_state_publisher",
+                    namespace="/sensors/proprio/hand_left",
+                    parameters=[left_hand_robot_description],
+                    output="screen",
+                    arguments=["--ros-args", "--log-level", log_level],
+                    remappings=[
+                        ("robot_description", "/control/hand_left/robot_description"),
+                        ("joint_states", "/sensors/proprio/hand_left/joint_states"),
+                    ],
+                ),
+                Node(
+                    package="robot_state_publisher",
+                    executable="robot_state_publisher",
+                    namespace="/sensors/proprio/hand_right",
+                    parameters=[right_hand_robot_description],
+                    output="screen",
+                    arguments=["--ros-args", "--log-level", log_level],
+                    remappings=[
+                        ("robot_description", "/control/hand_right/robot_description"),
+                        ("joint_states", "/sensors/proprio/hand_right/joint_states"),
+                    ],
+                ),
                 make_joint_state_broadcaster_spawner(
                     "hand_left_joint_state_broadcaster",
                     "/sensors/proprio/hand_left/joint_states",

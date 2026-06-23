@@ -18,7 +18,7 @@ Those packages should depend on this repository, not the other way around.
 | --- | --- | --- | --- |
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
-| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `ub`, `a_wuji` | `a_wuji` is RBY1A v1.2 with Wuji hands |
+| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants are v1.2 body models with separate hand controllers |
 
 Each robot follows the same package split:
 
@@ -114,12 +114,22 @@ Examples:
 
 ```bash
 ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m robot_version:=v1.2
-ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=ub robot_version:=v1.2
 ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=a_wuji robot_version:=v1.2
+ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m_wuji robot_version:=v1.2
 ```
 
-`robot_model:=a_wuji` is a v1.2-only variant. It uses the RBY1A body and
-replaces the stock grippers with separate Wuji hand controllers.
+`robot_model:=a_wuji` and `robot_model:=m_wuji` are v1.2-only variants. They
+use the RBY1A/RBY1M bodies and replace the stock grippers with separate Wuji
+hand controllers.
+
+Useful RBY1 launch arguments:
+
+| Argument | Default | Description |
+| --- | --- | --- |
+| `robot_model` | `a` | `a`, `m`, `a_wuji`, or `m_wuji` |
+| `robot_version` | `v1.2` | RBY1 model version for non-Wuji variants |
+| `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
+| `log_level` | `info` | ROS log level |
 
 ## Common ROS Interface
 
@@ -173,8 +183,8 @@ Robots with separate hand controllers use:
 /sensors/proprio/hand_right/dynamic_joint_states
 ```
 
-RBY1 `a`, `m`, and `ub` publish all joint states through body proprioception.
-AI Worker, G1 hand variants, and RBY1 `a_wuji` split hand proprioception into
+RBY1 `a` and `m` publish all joint states through body proprioception. AI Worker,
+G1 hand variants, and RBY1 Wuji variants split hand proprioception into
 `hand_left` and `hand_right` when hand controllers are present.
 
 ### Mobile base

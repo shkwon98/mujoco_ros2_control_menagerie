@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="g1_hand_right">
+  <link name="right_wrist_yaw_link"/>
+  <xacro:include filename="$(find g1_mujoco_description)/urdf/g1_hands.urdf.xacro"/>
+  <xacro:g1_right_hand_urdf/>
+</robot>
