@@ -32,6 +32,13 @@
   </xacro:macro>
 
   <xacro:macro name="g1_left_hand_urdf">
+    <link name="left_g1_hand_mount"/>
+    <joint name="left_g1_hand_mount_joint" type="fixed">
+      <origin xyz="0 0 0.05" rpy="0 1.57079632679 0"/>
+      <parent link="left_hand_base"/>
+      <child link="left_g1_hand_mount"/>
+    </joint>
+
     <xacro:g1_hand_link name="left_hand_palm_link" mesh="left_hand_palm_link.STL"/>
     <xacro:g1_hand_link name="left_hand_thumb_0_link" mesh="left_hand_thumb_0_link.STL"/>
     <xacro:g1_hand_link name="left_hand_thumb_1_link" mesh="left_hand_thumb_1_link.STL"/>
@@ -43,12 +50,12 @@
 
     <xacro:g1_hand_fixed_joint
       name="left_hand_palm_mount_joint"
-      parent="left_wrist_yaw_link"
+      parent="left_g1_hand_mount"
       child="left_hand_palm_link"
       xyz="0.0415 0.003 0"/>
     <xacro:g1_hand_revolute_joint
       name="left_hand_thumb_0_joint"
-      parent="left_wrist_yaw_link"
+      parent="left_g1_hand_mount"
       child="left_hand_thumb_0_link"
       xyz="0.067 0.003 0"
       axis="0 1 0"
@@ -72,7 +79,7 @@
       upper="1.74533"/>
     <xacro:g1_hand_revolute_joint
       name="left_hand_middle_0_joint"
-      parent="left_wrist_yaw_link"
+      parent="left_g1_hand_mount"
       child="left_hand_middle_0_link"
       xyz="0.1192 0.0046 -0.0285"
       axis="0 0 1"
@@ -88,7 +95,7 @@
       upper="0"/>
     <xacro:g1_hand_revolute_joint
       name="left_hand_index_0_joint"
-      parent="left_wrist_yaw_link"
+      parent="left_g1_hand_mount"
       child="left_hand_index_0_link"
       xyz="0.1192 0.0046 0.0285"
       axis="0 0 1"
@@ -105,6 +112,13 @@
   </xacro:macro>
 
   <xacro:macro name="g1_right_hand_urdf">
+    <link name="right_g1_hand_mount"/>
+    <joint name="right_g1_hand_mount_joint" type="fixed">
+      <origin xyz="0 0 0.05" rpy="0 1.57079632679 0"/>
+      <parent link="right_hand_base"/>
+      <child link="right_g1_hand_mount"/>
+    </joint>
+
     <xacro:g1_hand_link name="right_hand_palm_link" mesh="right_hand_palm_link.STL"/>
     <xacro:g1_hand_link name="right_hand_thumb_0_link" mesh="right_hand_thumb_0_link.STL"/>
     <xacro:g1_hand_link name="right_hand_thumb_1_link" mesh="right_hand_thumb_1_link.STL"/>
@@ -116,12 +130,12 @@
 
     <xacro:g1_hand_fixed_joint
       name="right_hand_palm_mount_joint"
-      parent="right_wrist_yaw_link"
+      parent="right_g1_hand_mount"
       child="right_hand_palm_link"
       xyz="0.0415 -0.003 0"/>
     <xacro:g1_hand_revolute_joint
       name="right_hand_thumb_0_joint"
-      parent="right_wrist_yaw_link"
+      parent="right_g1_hand_mount"
       child="right_hand_thumb_0_link"
       xyz="0.067 -0.003 0"
       axis="0 1 0"
@@ -145,7 +159,7 @@
       upper="0"/>
     <xacro:g1_hand_revolute_joint
       name="right_hand_middle_0_joint"
-      parent="right_wrist_yaw_link"
+      parent="right_g1_hand_mount"
       child="right_hand_middle_0_link"
       xyz="0.1192 -0.0046 -0.0285"
       axis="0 0 1"
@@ -161,7 +175,7 @@
       upper="1.74533"/>
     <xacro:g1_hand_revolute_joint
       name="right_hand_index_0_joint"
-      parent="right_wrist_yaw_link"
+      parent="right_g1_hand_mount"
       child="right_hand_index_0_link"
       xyz="0.1192 -0.0046 0.0285"
       axis="0 0 1"
@@ -179,16 +193,16 @@
 
   <xacro:macro name="g1_inspire_left_hand_urdf">
     <xacro:rh56f1_left_hand
-      parent="left_wrist_yaw_link"
-      mount_xyz="0.05 0 0"
-      mount_rpy="0 1.5708 0"/>
+      parent="left_hand_base"
+      mount_xyz="0 0 0"
+      mount_rpy="0 0 0"/>
   </xacro:macro>
 
   <xacro:macro name="g1_inspire_right_hand_urdf">
     <xacro:rh56f1_right_hand
-      parent="right_wrist_yaw_link"
-      mount_xyz="0.05 0 0"
-      mount_rpy="0 1.5708 0"/>
+      parent="right_hand_base"
+      mount_xyz="0 0 0"
+      mount_rpy="0 0 0"/>
   </xacro:macro>
 
   <xacro:macro name="g1_optional_hands" params="robot_model">

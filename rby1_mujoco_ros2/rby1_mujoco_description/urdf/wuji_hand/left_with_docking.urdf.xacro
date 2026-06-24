@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rby1_wuji_hand_left">
+  <link name="left_hand_base" />
+
   <link name="left_hand_docking_link">
     <inertial>
       <origin xyz="0.0 0.000613 0.008094" rpy="0 0 0" />
       <mass value="0.051956" />
-      <inertia ixx="1.814727e-05" ixy="-2.035277e-10" ixz="8.570371e-11" iyy="1.736668e-05" iyz="-4.906137e-07" izz="1.920788e-05" />
+      <inertia ixx="1.814727e-05" ixy="-2.035277e-10" ixz="8.570371e-11" iyy="1.736668e-05"
+        iyz="-4.906137e-07" izz="1.920788e-05" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
+        <mesh
+          filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
       </geometry>
       <material name="wuji_docking_color">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
@@ -18,12 +22,19 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
+        <mesh
+          filename="package://rby1_mujoco_description/meshes/wuji_hand/docking/hand_docking_link.STL" />
       </geometry>
     </collision>
   </link>
 
   <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left.urdf" />
+
+  <joint name="left_wuji_mount_joint" type="fixed">
+    <parent link="left_hand_base" />
+    <child link="left_hand_docking_link" />
+    <origin xyz="0.0 0.0 -0.02725" rpy="3.14159265359 0.0 2.35619449019" />
+  </joint>
 
   <joint name="left_hand_docking_joint" type="fixed">
     <parent link="left_hand_docking_link" />

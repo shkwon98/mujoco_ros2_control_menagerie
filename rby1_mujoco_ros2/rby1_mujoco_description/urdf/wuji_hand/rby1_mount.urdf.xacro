@@ -1,19 +1,37 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:macro name="rby1_wuji_hand_mounts">
-    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right_with_docking.urdf.xacro" />
-    <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left_with_docking.urdf.xacro" />
-
-    <joint name="right_wuji_mount_joint" type="fixed">
+  <xacro:macro name="rby1_hand_base_frames">
+    <link name="right_hand_base" />
+    <joint name="right_hand_base_joint" type="fixed">
       <parent link="ee_right" />
-      <child link="right_hand_docking_link" />
-      <origin xyz="0.0 0.0 -0.02725" rpy="-3.14159265359 0.0 -3.92699081699" />
+      <child link="right_hand_base" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
-    <joint name="left_wuji_mount_joint" type="fixed">
+    <link name="left_hand_base" />
+    <joint name="left_hand_base_joint" type="fixed">
       <parent link="ee_left" />
-      <child link="left_hand_docking_link" />
-      <origin xyz="0.0 0.0 -0.02725" rpy="3.14159265359 0.0 3.92699081699" />
+      <child link="left_hand_base" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="rby1_wuji_hand_mounts">
+    <xacro:include
+      filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right_with_docking.urdf.xacro" />
+    <xacro:include
+      filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left_with_docking.urdf.xacro" />
+
+    <joint name="right_hand_base_joint" type="fixed">
+      <parent link="ee_right" />
+      <child link="right_hand_base" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <joint name="left_hand_base_joint" type="fixed">
+      <parent link="ee_left" />
+      <child link="left_hand_base" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
   </xacro:macro>
 </robot>

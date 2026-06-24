@@ -48,7 +48,6 @@
         - right_arm_4
         - right_arm_5
         - right_arm_6
-        - right_trigger
       command_interfaces:
         - position
       state_interfaces:
@@ -68,7 +67,6 @@
         - left_arm_4
         - left_arm_5
         - left_arm_6
-        - left_trigger
       command_interfaces:
         - position
       state_interfaces:

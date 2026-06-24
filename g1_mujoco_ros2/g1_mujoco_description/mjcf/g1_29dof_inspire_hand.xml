@@ -366,7 +366,8 @@
                           <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_wrist_yaw_link" />
 
                           <!-- ===== LEFT RH56F1 INSPIRE HAND ===== -->
-<body name="left_inspire_base_link" pos="0.05 0 0" euler="0 1.5708 0">
+                          <body name="left_hand_base" pos="0.05 0 0" quat="0.70710678119 0 -0.70710678119 0">
+                          <body name="left_inspire_base_link">
                             <inertial pos="0.000631583768841232 -4.98983354635385E-11 0.0185710296512339" mass="0.0793945339384899" fullinertia="2.73302961659096E-05 2.62165201865506E-05 3.56824415579562E-05 -1.14020192447604E-12 2.86317776549754E-08 -9.86803596469321E-13" />
                             <geom type="mesh" rgba="1 1 1 1" mesh="rh56f1_l_base_link" contype="0" conaffinity="0" group="1" density="0" />
                             <geom pos="0 0 0.0305" type="mesh" rgba="1 1 1 1" mesh="rh56f1_l_plam_1" contype="0" conaffinity="0" group="1" density="0" />
@@ -443,6 +444,7 @@
                                 <geom pos="0.0051203 0.032544 -0.0063511" quat="0.690832 -0.0769627 0.70225 0.15386" type="mesh" rgba="0.25 0.25 0.25 1" mesh="rh56f1_l_little_tip" contype="0" conaffinity="0" group="1" density="0" />
                               </body>
                             </body>
+                          </body>
                           </body>
                           <!-- ===== END LEFT RH56F1 INSPIRE HAND ===== -->
 
@@ -522,7 +524,8 @@
                           <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_wrist_yaw_link" />
 
                           <!-- ===== RIGHT RH56F1 INSPIRE HAND ===== -->
-<body name="right_inspire_base_link" pos="0.05 0 0" euler="0 1.5708 0">
+                          <body name="right_hand_base" pos="0.05 0 0" quat="0.70710678119 0 -0.70710678119 0">
+                          <body name="right_inspire_base_link">
                             <inertial pos="0.000631584180168987 1.55468476565051E-09 0.0185710308410627" mass="0.0793945003608915" fullinertia="2.73302869871105E-05 2.62165141408126E-05 3.5682432554866E-05 4.73396056660905E-13 2.86328005285174E-08 1.90463743334758E-12" />
                             <geom type="mesh" rgba="1 1 1 1" mesh="rh56f1_r_base_link" contype="0" conaffinity="0" group="1" density="0" />
                             <geom pos="0 0 0.0305" quat="1 0 0 0" type="mesh" rgba="0.866667 0.866667 0.890196 1" mesh="rh56f1_r_plam_1" contype="0" conaffinity="0" group="1" density="0" />
@@ -599,6 +602,7 @@
                                 <geom pos="0.0051203 0.032544 0.0059927" quat="0.703455 -0.153947 0.689619 0.0766592" type="mesh" rgba="0.25 0.25 0.25 1" mesh="rh56f1_r_little_tip" contype="0" conaffinity="0" group="1" density="0" />
                               </body>
                             </body>
+                          </body>
                           </body>
                           <!-- ===== END RIGHT RH56F1 INSPIRE HAND ===== -->
 

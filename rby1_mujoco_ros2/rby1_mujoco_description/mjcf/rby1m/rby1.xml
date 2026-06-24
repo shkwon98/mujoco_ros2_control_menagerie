@@ -24,8 +24,6 @@
     <include file="./assets/MECANUM_WHEEL/assets.xml" />
     <include file="./assets/MECANUM_WHEEL_M/assets.xml" />
     <include file="./assets/WHEEL/assets.xml" />
-    <include file="./assets/EE_BODY/assets.xml" />
-    <include file="./assets/EE_FINGER/assets.xml" />
     <include file="./assets/FT_SENSOR_L/assets.xml" />
     <include file="./assets/FT_SENSOR_R/assets.xml" />
     <include file="./assets/LINK_1/assets.xml" />
@@ -158,17 +156,6 @@
                                 </body>
                                 <body name="EE_BODY_R" pos="0 0 -0.1548">
                                   <inertial pos="0 0 0" mass="0" />
-                                  <include file="./assets/EE_BODY/geoms.xml" />
-                                </body>
-                                <body name="ee_finger_r1" pos="0.003 0 -0.2278">
-                                  <inertial pos="0.00278346 -3.29e-06 -0.0257011" quat="0.999784 0 0.0208044 0" mass="0.03327" diaginertia="1.23275e-05 1.066e-05 2.22251e-06" />
-                                  <joint name="gripper_finger_r1" pos="0 0 0" axis="-1 0 0" type="slide" limited="true" range="-0.05 0" />
-                                  <include file="./assets/EE_FINGER/geoms.xml" />
-                                </body>
-                                <body name="ee_finger_r2" pos="-0.003 0 -0.2278" quat="4.48966e-11 0 0 1">
-                                  <inertial pos="0.00278346 -3.29e-06 -0.0257011" quat="0.999784 0 0.0208044 0" mass="0.03327" diaginertia="1.23275e-05 1.066e-05 2.22251e-06" />
-                                  <joint name="gripper_finger_r2" pos="0 0 0" axis="1 0 0" type="slide" limited="true" range="0 0.05" />
-                                  <include file="./assets/EE_FINGER/geoms.xml" />
                                 </body>
                               </body>
                             </body>
@@ -217,17 +204,6 @@
                                 </body>
                                 <body name="EE_BODY_L" pos="0 0 -0.1548">
                                   <inertial pos="0 0 0" mass="0" />
-                                  <include file="./assets/EE_BODY/geoms.xml" />
-                                </body>
-                                <body name="ee_finger_l1" pos="-0.003 0 -0.2278" quat="4.48966e-11 0 0 1">
-                                  <inertial pos="0.00278346 -3.29e-06 -0.0257011" quat="0.999784 0 0.0208044 0" mass="0.03327" diaginertia="1.23275e-05 1.066e-05 2.22251e-06" />
-                                  <joint name="gripper_finger_l1" pos="0 0 0" axis="-1 0 0" type="slide" limited="true" range="-0.05 0" />
-                                  <include file="./assets/EE_FINGER/geoms.xml" />
-                                </body>
-                                <body name="ee_finger_l2" pos="0.003 0 -0.2278" quat="-1 0 0 8.97932e-11">
-                                  <inertial pos="0.00278346 -3.29e-06 -0.0257011" quat="0.999784 0 0.0208044 0" mass="0.03327" diaginertia="1.23275e-05 1.066e-05 2.22251e-06" />
-                                  <joint name="gripper_finger_l2" pos="0 0 0" axis="1 0 0" type="slide" limited="true" range="0 0.05" />
-                                  <include file="./assets/EE_FINGER/geoms.xml" />
                                 </body>
                               </body>
                             </body>
@@ -256,7 +232,5 @@
   </worldbody>
 
   <equality>
-    <joint name="right_finger" joint1="gripper_finger_r1" joint2="gripper_finger_r2" polycoef="0 -1 0 0 0" />
-    <joint name="left_finger" joint1="gripper_finger_l1" joint2="gripper_finger_l2" polycoef="0 -1 0 0 0" />
   </equality>
 </mujoco>

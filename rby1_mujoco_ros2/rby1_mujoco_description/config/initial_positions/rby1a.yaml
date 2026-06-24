@@ -21,11 +21,5 @@ initial_positions:
   left_arm_4: 0
   left_arm_5: 0
   left_arm_6: 0
-  right_trigger: 0
-  left_trigger: 0
-  gripper_finger_r1: 0
-  gripper_finger_r2: 0
-  gripper_finger_l1: 0
-  gripper_finger_l2: 0
   head_0: 0
   head_1: 0

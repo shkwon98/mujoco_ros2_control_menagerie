@@ -425,84 +425,8 @@
       </geometry>
     </visual>
   </link>
-  <link name="ee_right">
-    <inertial>
-      <mass value="0.46704998" />
-      <origin rpy="0 0 0" xyz="0.00212703 0.00000615 -0.04287176" />
-      <inertia ixx="0.00032067" ixy="0.00002383" ixz="-0.00000785" iyy="0.00059559"
-        iyz="-0.00000007" izz="0.00052732" />
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/EE_BODY.dae" />
-      </geometry>
-    </visual>
-  </link>
-  <link name="ee_finger_r1">
-    <inertial>
-      <mass value="0.03326999" />
-      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
-      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
-        izz="0.00000224" />
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/EE_FINGER.dae" />
-      </geometry>
-    </visual>
-  </link>
-  <link name="ee_finger_r2">
-    <inertial>
-      <mass value="0.03326999" />
-      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
-      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
-        izz="0.00000224" />
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/EE_FINGER.dae" />
-      </geometry>
-    </visual>
-  </link>
-  <link name="ee_left">
-    <inertial>
-      <mass value="0.46704998" />
-      <origin rpy="0 0 0" xyz="0.00212703 0.00000615 -0.04287176" />
-      <inertia ixx="0.00032067" ixy="0.00002383" ixz="-0.00000785" iyy="0.00059559"
-        iyz="-0.00000007" izz="0.00052732" />
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/EE_BODY.dae" />
-      </geometry>
-    </visual>
-  </link>
-  <link name="ee_finger_l1">
-    <inertial>
-      <mass value="0.03326999" />
-      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
-      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
-        izz="0.00000224" />
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/EE_FINGER.dae" />
-      </geometry>
-    </visual>
-  </link>
-  <link name="ee_finger_l2">
-    <inertial>
-      <mass value="0.03326999" />
-      <origin rpy="0 0 0" xyz="0.00278346 -0.00000329 -0.02570112" />
-      <inertia ixx="0.00001231" ixy="0.0" ixz="-0.00000042" iyy="0.00001066" iyz="0.0"
-        izz="0.00000224" />
-    </inertial>
-    <visual>
-      <geometry>
-        <mesh filename="package://rby1_mujoco_description/meshes/rby1a/EE_FINGER.dae" />
-      </geometry>
-    </visual>
-  </link>
+  <link name="ee_right" />
+  <link name="ee_left" />
   <link name="link_head_0">
     <inertial>
       <mass value="0.07582110" />
@@ -728,20 +652,6 @@
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.0461" />
     <axis xyz="0 0 1" />
   </joint>
-  <joint name="gripper_finger_r1" type="prismatic" in_model_type="fixed">
-    <parent link="ee_right" />
-    <child link="ee_finger_r1" />
-    <origin rpy="0.0 0.0 0.0" xyz="0.003 0.0 -0.073" />
-    <axis xyz="-1 0 0" />
-    <limit effort="1000" velocity="0.05" lower="-0.05" upper="0" />
-  </joint>
-  <joint name="gripper_finger_r2" type="prismatic" in_model_type="fixed">
-    <parent link="ee_right" />
-    <child link="ee_finger_r2" />
-    <origin rpy="0.0 0.0 3.1415926535" xyz="-0.003 0.0 -0.073" />
-    <axis xyz="1 0 0" />
-    <limit effort="1000" velocity="0.05" lower="0" upper="0.05" />
-  </joint>
   <joint name="tool_left" type="fixed">
     <parent link="link_left_arm_6" />
     <child link="FT_sensor_L" />
@@ -753,20 +663,6 @@
     <child link="ee_left" />
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.0461" />
     <axis xyz="0 0 1" />
-  </joint>
-  <joint name="gripper_finger_l1" type="prismatic" in_model_type="fixed">
-    <parent link="ee_left" />
-    <child link="ee_finger_l1" />
-    <origin rpy="0.0 0.0 0.0" xyz="0.003 0.0 -0.073" />
-    <axis xyz="-1 0 0" />
-    <limit effort="1000" velocity="0.05" lower="-0.05" upper="0" />
-  </joint>
-  <joint name="gripper_finger_l2" type="prismatic" in_model_type="fixed">
-    <parent link="ee_left" />
-    <child link="ee_finger_l2" />
-    <origin rpy="0.0 0.0 3.1415926535" xyz="-0.003 0.0 -0.073" />
-    <axis xyz="1 0 0" />
-    <limit effort="1000" velocity="0.05" lower="0" upper="0.05" />
   </joint>
   <joint name="head_base" type="fixed">
     <parent link="link_torso_5" />

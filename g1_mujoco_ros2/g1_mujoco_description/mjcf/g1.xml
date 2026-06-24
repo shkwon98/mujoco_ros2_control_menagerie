@@ -50,7 +50,6 @@
     <mesh file="left_wrist_roll_link.STL"/>
     <mesh file="left_wrist_pitch_link.STL"/>
     <mesh file="left_wrist_yaw_link.STL"/>
-    <mesh file="left_rubber_hand.STL"/>
     <mesh file="right_shoulder_pitch_link.STL"/>
     <mesh file="right_shoulder_roll_link.STL"/>
     <mesh file="right_shoulder_yaw_link.STL"/>
@@ -58,7 +57,6 @@
     <mesh file="right_wrist_roll_link.STL"/>
     <mesh file="right_wrist_pitch_link.STL"/>
     <mesh file="right_wrist_yaw_link.STL"/>
-    <mesh file="right_rubber_hand.STL"/>
   </asset>
 
   <worldbody>
@@ -230,7 +228,6 @@
                             actuatorfrcrange="-5 5"/>
                           <geom class="visual" mesh="left_wrist_yaw_link"/>
                           <geom class="collision" mesh="left_wrist_yaw_link"/>
-                          <geom pos="0.0415 0.003 0" quat="1 0 0 0" class="visual" mesh="left_rubber_hand"/>
                         </body>
                       </body>
                     </body>
@@ -286,7 +283,6 @@
                             actuatorfrcrange="-5 5"/>
                           <geom class="visual" mesh="right_wrist_yaw_link"/>
                           <geom class="collision" mesh="right_wrist_yaw_link"/>
-                          <geom pos="0.0415 -0.003 0" quat="1 0 0 0" class="visual" mesh="right_rubber_hand"/>
                         </body>
                       </body>
                     </body>

@@ -60,11 +60,5 @@
 
     <position name="head_0_act" joint="head_0" ctrlrange="-0.523 0.523" />
     <position name="head_1_act" joint="head_1" ctrlrange="-0.35 1.57" />
-
-    <position name="right_trigger_act" joint="right_trigger" ctrlrange="0 1" />
-    <position name="left_trigger_act" joint="left_trigger" ctrlrange="0 1" />
-
-    <motor name="right_finger_act" joint="gripper_finger_r2" />
-    <motor name="left_finger_act" joint="gripper_finger_l1" />
   </actuator>
 </mujoco>

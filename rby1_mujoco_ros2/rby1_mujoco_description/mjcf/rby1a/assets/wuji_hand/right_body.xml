@@ -1,5 +1,5 @@
 <mujoco>
-  <body name="right_hand_docking_link" pos="0 0 -0.02725" euler="-3.14159265359 0 -3.92699081699">
+  <body name="right_hand_docking_link" pos="0 0 -0.02725" euler="-3.14159265359 0 -2.35619449019">
     <inertial pos="0.0 0.000613 0.008094" mass="0.051956" diaginertia="1.814727e-05 1.736668e-05 1.920788e-05" />
     <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" mesh="hand_docking_link" />
     <geom type="mesh" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" mesh="hand_docking_link" contype="1" conaffinity="1" />
