@@ -195,14 +195,14 @@
     <xacro:rh56f1_left_hand
       parent="left_hand_base"
       mount_xyz="0 0 0"
-      mount_rpy="0 0 0"/>
+      mount_rpy="0 3.14159265359 1.57079632679"/>
   </xacro:macro>
 
   <xacro:macro name="g1_inspire_right_hand_urdf">
     <xacro:rh56f1_right_hand
       parent="right_hand_base"
       mount_xyz="0 0 0"
-      mount_rpy="0 0 0"/>
+      mount_rpy="0 3.14159265359 -1.57079632679"/>
   </xacro:macro>
 
   <xacro:macro name="g1_optional_hands" params="robot_model">

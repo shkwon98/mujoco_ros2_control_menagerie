@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:macro name="rby1_hand_base_frames">
+  <xacro:macro name="rby1_hand_base_frames" params="hand_base_offset_z:=0">
     <link name="right_hand_base" />
     <joint name="right_hand_base_joint" type="fixed">
       <parent link="ee_right" />
       <child link="right_hand_base" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 ${hand_base_offset_z}" rpy="0 0 0" />
     </joint>
 
     <link name="left_hand_base" />
     <joint name="left_hand_base_joint" type="fixed">
       <parent link="ee_left" />
       <child link="left_hand_base" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 ${hand_base_offset_z}" rpy="0 0 0" />
     </joint>
   </xacro:macro>
 
-  <xacro:macro name="rby1_wuji_hand_mounts">
+  <xacro:macro name="rby1_wuji_hand_mounts" params="robot_model robot_version">
     <xacro:include
       filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right_with_docking.urdf.xacro" />
     <xacro:include
@@ -25,13 +25,17 @@
     <joint name="right_hand_base_joint" type="fixed">
       <parent link="ee_right" />
       <child link="right_hand_base" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin
+        xyz="${'0 0 0.066384' if robot_model == 'm_wuji' and robot_version == 'v1.3' else '0 0 0'}"
+        rpy="0 0 0" />
     </joint>
 
     <joint name="left_hand_base_joint" type="fixed">
       <parent link="ee_left" />
       <child link="left_hand_base" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin
+        xyz="${'0 0 0.066384' if robot_model == 'm_wuji' and robot_version == 'v1.3' else '0 0 0'}"
+        rpy="0 0 0" />
     </joint>
   </xacro:macro>
 </robot>

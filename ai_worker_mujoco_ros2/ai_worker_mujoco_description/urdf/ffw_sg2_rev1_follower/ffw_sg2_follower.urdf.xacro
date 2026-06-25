@@ -158,7 +158,7 @@
     </visual>
   </link>
 
-  <joint name="$(arg prefix)left_wheel_steer" type="revolute">
+  <joint name="$(arg prefix)left_wheel_steer_joint" type="revolute">
       <parent link="$(arg prefix)base_link"/>
       <child link="$(arg prefix)left_wheel_steer_link"/>
       <origin xyz="0.1371 0.2554 0.27555" rpy="0 0 0"/>
@@ -189,7 +189,7 @@
        izz="1.683594000e-03" />
     </inertial>
   </link>
-  <joint name="$(arg prefix)left_wheel_drive" type="continuous">
+  <joint name="$(arg prefix)left_wheel_drive_joint" type="continuous">
       <parent link="$(arg prefix)left_wheel_steer_link"/>
       <child link="$(arg prefix)left_wheel_drive_link"/>
       <origin xyz="0 0 -0.18905" rpy="0 0 0"/>
@@ -227,7 +227,7 @@
     </inertial>
   </link>
 
-  <joint name="$(arg prefix)right_wheel_steer" type="revolute">
+  <joint name="$(arg prefix)right_wheel_steer_joint" type="revolute">
       <parent link="$(arg prefix)base_link"/>
       <child link="$(arg prefix)right_wheel_steer_link"/>
       <origin xyz="0.1371 -0.2554 0.27555" rpy="0 0 0"/>
@@ -258,7 +258,7 @@
        izz="1.683595100e-03" />
     </inertial>
   </link>
-  <joint name="$(arg prefix)right_wheel_drive" type="continuous">
+  <joint name="$(arg prefix)right_wheel_drive_joint" type="continuous">
       <parent link="$(arg prefix)right_wheel_steer_link"/>
       <child link="$(arg prefix)right_wheel_drive_link"/>
       <origin xyz="0 0 -0.18905" rpy="0 0 0"/>
@@ -296,7 +296,7 @@
     </inertial>
   </link>
 
-  <joint name="$(arg prefix)rear_wheel_steer" type="revolute">
+  <joint name="$(arg prefix)rear_wheel_steer_joint" type="revolute">
       <parent link="$(arg prefix)base_link"/>
       <child link="$(arg prefix)rear_wheel_steer_link"/>
       <origin xyz="-0.2899 0 0.27555" rpy="0 0 0"/>
@@ -327,7 +327,7 @@
        izz="1.683595100e-03" />
     </inertial>
   </link>
-  <joint name="$(arg prefix)rear_wheel_drive" type="continuous">
+  <joint name="$(arg prefix)rear_wheel_drive_joint" type="continuous">
       <parent link="$(arg prefix)rear_wheel_steer_link"/>
       <child link="$(arg prefix)rear_wheel_drive_link"/>
       <origin xyz="0 0 -0.18905" rpy="0 0 0"/>

@@ -118,16 +118,15 @@ ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=a_wuji robot_versio
 ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m_wuji robot_version:=v1.2
 ```
 
-`robot_model:=a_wuji` and `robot_model:=m_wuji` are v1.2-only variants. They
-use the RBY1A/RBY1M bodies and replace the stock grippers with separate Wuji
-hand controllers.
+`robot_model:=a_wuji` and `robot_model:=m_wuji` use the RBY1A/RBY1M bodies and
+replace the stock grippers with separate Wuji hand controllers.
 
 Useful RBY1 launch arguments:
 
 | Argument | Default | Description |
 | --- | --- | --- |
 | `robot_model` | `a` | `a`, `m`, `a_wuji`, or `m_wuji` |
-| `robot_version` | `v1.2` | RBY1 model version for non-Wuji variants |
+| `robot_version` | `v1.2` | `a/a_wuji`: `v1.0`, `v1.1`, `v1.2`; `m/m_wuji`: `v1.0`, `v1.1`, `v1.2`, `v1.3` |
 | `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
 | `log_level` | `info` | ROS log level |
 
@@ -138,6 +137,7 @@ All bringup files use the same top-level control and sensor namespaces.
 ### Description and controller manager
 
 ```text
+/robot_description
 /control/body/robot_description
 /control/body/controller_manager
 ```
@@ -213,7 +213,7 @@ For body controllers:
 ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller \
   --clear-config --force-discover \
   --ros-args \
-  -r robot_description:=/control/body/robot_description
+  -r robot_description:=/robot_description
 ```
 
 In the GUI, select:
@@ -229,7 +229,7 @@ For hand controllers, some models remap the controller runtime namespace to
 ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller \
   --clear-config --force-discover \
   --ros-args \
-  -r robot_description:=/control/body/robot_description \
+  -r robot_description:=/robot_description \
   -r /control/body/hand_left_controller/controller_state:=/control/hand_left/hand_left_controller/controller_state \
   -r /control/body/hand_left_controller/joint_trajectory:=/control/hand_left/hand_left_controller/joint_trajectory \
   -r /control/body/hand_right_controller/controller_state:=/control/hand_right/hand_right_controller/controller_state \

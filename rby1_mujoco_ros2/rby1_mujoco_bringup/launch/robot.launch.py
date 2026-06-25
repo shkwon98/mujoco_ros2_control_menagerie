@@ -23,6 +23,7 @@ ROBOT_MODELS = {
         "mobile_base_controller_package": "diff_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": False,
+        "versions": ("v1.0", "v1.1", "v1.2"),
     },
     "m": {
         "base_model": "m",
@@ -31,6 +32,7 @@ ROBOT_MODELS = {
         "mobile_base_controller_package": "mecanum_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": False,
+        "versions": ("v1.0", "v1.1", "v1.2", "v1.3"),
     },
     "a_wuji": {
         "base_model": "a",
@@ -39,6 +41,7 @@ ROBOT_MODELS = {
         "mobile_base_controller_package": "diff_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": True,
+        "versions": ("v1.0", "v1.1", "v1.2"),
     },
     "m_wuji": {
         "base_model": "m",
@@ -47,11 +50,18 @@ ROBOT_MODELS = {
         "mobile_base_controller_package": "mecanum_drive_controller",
         "has_mobile_base": True,
         "has_wuji_hands": True,
+        "versions": ("v1.0", "v1.1", "v1.2", "v1.3"),
     },
 }
 
 
-def make_robot_description(xacro_file, robot_model, robot_version, initial_positions_file):
+def make_robot_description(
+    xacro_file,
+    robot_model,
+    robot_version,
+    initial_positions_file,
+    hand_base_offset_z="0",
+):
     return {
         "robot_description": ParameterValue(
             Command(
@@ -65,6 +75,8 @@ def make_robot_description(xacro_file, robot_model, robot_version, initial_posit
                     robot_version,
                     " initial_positions_file:=",
                     initial_positions_file,
+                    " hand_base_offset_z:=",
+                    hand_base_offset_z,
                 ]
             ),
             value_type=str,
@@ -179,6 +191,13 @@ def launch_setup(context, *args, **kwargs):
     controllers_yaml_value = controllers_yaml.perform(context)
     model_config = ROBOT_MODELS[robot_model_value]
 
+    if robot_version_value not in model_config["versions"]:
+        raise RuntimeError(
+            f"Unsupported robot_version '{robot_version_value}' for "
+            f"robot_model '{robot_model_value}'. "
+            f"Supported versions: {', '.join(model_config['versions'])}"
+        )
+
     description_share = get_package_share_directory("rby1_mujoco_description")
     if controllers_yaml_value == "auto":
         controllers_yaml_value = os.path.join(
@@ -203,8 +222,13 @@ def launch_setup(context, *args, **kwargs):
         "initial_positions",
         f"rby1{model_config['base_model']}.yaml",
     )
+    body_hand_base_offset_z = (
+        "0.066384"
+        if robot_model_value == "m_wuji" and robot_version_value == "v1.3"
+        else "0"
+    )
 
-    control_robot_description = make_robot_description(
+    full_robot_description = make_robot_description(
         xacro_file,
         robot_model_value,
         robot_version_value,
@@ -215,6 +239,7 @@ def launch_setup(context, *args, **kwargs):
         model_config["base_model"],
         robot_version_value,
         body_initial_positions_file,
+        body_hand_base_offset_z,
     )
 
     nodes = [
@@ -226,14 +251,13 @@ def launch_setup(context, *args, **kwargs):
             output="screen",
             arguments=["--ros-args", "--log-level", log_level],
             remappings=[
-                ("robot_description", "/control/body/robot_description"),
+                ("robot_description", "/robot_description"),
             ],
         ),
         Node(
             package="rby1_mujoco_bringup",
             executable="robot_description_publisher.py",
-            namespace="/control/body",
-            parameters=[control_robot_description],
+            parameters=[full_robot_description],
             output="screen",
             arguments=["--ros-args", "--log-level", log_level],
         ),
@@ -245,7 +269,7 @@ def launch_setup(context, *args, **kwargs):
             output="screen",
             arguments=["--ros-args", "--log-level", log_level],
             remappings=[
-                ("robot_description", "/sensors/proprio/body/robot_description"),
+                ("robot_description", "/control/body/robot_description"),
                 ("joint_states", "/sensors/proprio/body/joint_states"),
             ],
         ),
@@ -415,7 +439,11 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "robot_version",
                 default_value="v1.2",
-                description="RBY1 model version",
+                description=(
+                    "RBY1 model version. a/a_wuji: v1.0, v1.1, v1.2; "
+                    "m: v1.0, v1.1, v1.2, v1.3; "
+                    "m_wuji: v1.0, v1.1, v1.2, v1.3"
+                ),
             ),
             DeclareLaunchArgument(
                 "controllers_yaml",

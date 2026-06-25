@@ -54,10 +54,10 @@
       <hardware>
         <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
         <xacro:if value="${robot_model == 'a_wuji'}">
-          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1a/model_act_v1.2_wuji.xml</param>
+          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1a/model_act_${robot_version}_wuji.xml</param>
         </xacro:if>
         <xacro:if value="${robot_model == 'm_wuji'}">
-          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1m/model_act_v1.2_wuji.xml</param>
+          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1m/model_act_${robot_version}_wuji.xml</param>
         </xacro:if>
         <xacro:if value="${(base_robot_model == 'a' or base_robot_model == 'm') and robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
           <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>

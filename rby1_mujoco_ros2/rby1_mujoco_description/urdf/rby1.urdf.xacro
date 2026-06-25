@@ -4,6 +4,7 @@
   <xacro:arg name="robot_version" default="v1.2" />
   <xacro:arg name="initial_positions_file"
     default="$(find rby1_mujoco_description)/config/initial_positions/rby1$(arg robot_model).yaml" />
+  <xacro:arg name="hand_base_offset_z" default="0" />
 
   <xacro:property name="robot_model" value="$(arg robot_model)" />
   <xacro:property name="robot_version" value="$(arg robot_version)" />
@@ -11,24 +12,18 @@
     value="${'a' if robot_model == 'a_wuji' else ('m' if robot_model == 'm_wuji' else robot_model)}" />
   <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/rby1_mount.urdf.xacro" />
 
-  <xacro:if value="${robot_model == 'a_wuji'}">
-    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1a_wuji/model_v1.2.urdf" />
-  </xacro:if>
-  <xacro:if value="${robot_model == 'm_wuji'}">
-    <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m_wuji/model_v1.2.urdf" />
-  </xacro:if>
-  <xacro:if value="${base_robot_model == 'a' and robot_model != 'a_wuji'}">
+  <xacro:if value="${base_robot_model == 'a'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1a/model_${robot_version}.urdf" />
   </xacro:if>
-  <xacro:if value="${base_robot_model == 'm' and robot_model != 'm_wuji'}">
+  <xacro:if value="${base_robot_model == 'm'}">
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m/model_${robot_version}.urdf" />
   </xacro:if>
 
   <xacro:if value="${robot_model == 'a_wuji' or robot_model == 'm_wuji'}">
-    <xacro:rby1_wuji_hand_mounts />
+    <xacro:rby1_wuji_hand_mounts robot_model="${robot_model}" robot_version="${robot_version}" />
   </xacro:if>
   <xacro:if value="${robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
-    <xacro:rby1_hand_base_frames />
+    <xacro:rby1_hand_base_frames hand_base_offset_z="$(arg hand_base_offset_z)" />
   </xacro:if>
 
   <link name="world" />

@@ -1,9 +1,9 @@
 <mujoco>
-  <body name="right_hand_docking_link" pos="0 0 -0.02725" euler="-3.14159265359 0 -2.35619449019">
+  <body name="right_hand_docking_link" pos="0 0 -0.02725" quat="0 -0.38268343236509 0.923879532511287 0">
     <inertial pos="0.0 0.000613 0.008094" mass="0.051956" diaginertia="1.814727e-05 1.736668e-05 1.920788e-05" />
     <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" mesh="hand_docking_link" />
     <geom type="mesh" rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" mesh="hand_docking_link" contype="1" conaffinity="1" />
-    <body name="right_palm_link" pos="0.00065 0 0.022" euler="0 0 1.57079632679">
+    <body name="right_palm_link" pos="0.00065 0 0.022" quat="0.707106781186548 0 0 0.707106781186548">
       <inertial pos="-0.00297947143114252 0.000455717622711663 0.0366540864104669" mass="0.16914" quat="-0.01772809 -0.04274722 0.09308295 0.99458230" diaginertia="1.40677446e-04 9.58896475e-05 5.81329061e-05" />
       <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.6 0.8 0.9 1" mesh="right_palm_link" />
       <geom type="mesh" rgba="0.6 0.8 0.9 1" mesh="right_palm_link" contype="1" conaffinity="1" />
