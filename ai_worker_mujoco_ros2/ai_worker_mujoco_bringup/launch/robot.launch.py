@@ -2,13 +2,18 @@
 
 import os
 
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
-from ament_index_python.packages import get_package_share_directory
 
 
 def launch_setup(context, *args, **kwargs):
@@ -197,6 +202,23 @@ def launch_setup(context, *args, **kwargs):
     )
 
     nodes = [
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="map_to_base_link",
+            # fmt: off
+            arguments=[
+                "--x", "0",
+                "--y", "0",
+                "--z", "0",
+                "--yaw", "0",
+                "--pitch", "0",
+                "--roll", "0",
+                "--frame-id", "map",
+                "--child-frame-id", "base_link",
+            ],
+            # fmt: on
+        ),
         ros2_control_node,
         robot_state_publisher_node,
         make_joint_state_broadcaster_spawner(

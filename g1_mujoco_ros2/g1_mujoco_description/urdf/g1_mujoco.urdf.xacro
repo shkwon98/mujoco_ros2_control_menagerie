@@ -8,13 +8,6 @@
   <xacro:include filename="$(find g1_mujoco_description)/urdf/g1_hands.urdf.xacro"/>
   <xacro:include filename="$(find g1_mujoco_description)/urdf/g1.ros2_control.xacro"/>
 
-  <link name="world"/>
-  <joint name="world_to_pelvis" type="fixed">
-    <parent link="world"/>
-    <child link="pelvis"/>
-    <origin xyz="0 0 0.793" rpy="0 0 0"/>
-  </joint>
-
   <link name="left_hand_base"/>
   <joint name="left_hand_base_joint" type="fixed">
     <parent link="left_wrist_yaw_link"/>

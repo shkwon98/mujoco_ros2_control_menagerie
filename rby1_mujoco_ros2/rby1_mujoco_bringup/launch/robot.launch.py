@@ -9,11 +9,15 @@ from ament_index_python.packages import (
 )
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, LogInfo, OpaqueFunction
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
-
 
 ROBOT_MODELS = {
     "a": {
@@ -208,7 +212,8 @@ def launch_setup(context, *args, **kwargs):
         )
 
     xacro_file = PathJoinSubstitution(
-        [FindPackageShare("rby1_mujoco_description"), "urdf", "rby1.urdf.xacro"]
+        [FindPackageShare("rby1_mujoco_description"),
+         "urdf", "rby1.urdf.xacro"]
     )
     initial_positions_file = os.path.join(
         description_share,
@@ -239,10 +244,27 @@ def launch_setup(context, *args, **kwargs):
         model_config["base_model"],
         robot_version_value,
         body_initial_positions_file,
-        body_hand_base_offset_z,
+        hand_base_offset_z=body_hand_base_offset_z,
     )
 
     nodes = [
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="map_to_odom",
+            # fmt: off
+            arguments=[
+                "--x", "0",
+                "--y", "0",
+                "--z", "0",
+                "--yaw", "0",
+                "--pitch", "0",
+                "--roll", "0",
+                "--frame-id", "map",
+                "--child-frame-id", "odom",
+            ],
+            # fmt: on
+        ),
         Node(
             package="controller_manager",
             executable="ros2_control_node",
@@ -298,7 +320,8 @@ def launch_setup(context, *args, **kwargs):
                     package="robot_state_publisher",
                     executable="robot_state_publisher",
                     namespace="/sensors/proprio/hand_left",
-                    parameters=[make_hand_robot_description(left_hand_xacro_file)],
+                    parameters=[make_hand_robot_description(
+                        left_hand_xacro_file)],
                     output="screen",
                     arguments=["--ros-args", "--log-level", log_level],
                     remappings=[
@@ -310,7 +333,8 @@ def launch_setup(context, *args, **kwargs):
                     package="robot_state_publisher",
                     executable="robot_state_publisher",
                     namespace="/sensors/proprio/hand_right",
-                    parameters=[make_hand_robot_description(right_hand_xacro_file)],
+                    parameters=[make_hand_robot_description(
+                        right_hand_xacro_file)],
                     output="screen",
                     arguments=["--ros-args", "--log-level", log_level],
                     remappings=[

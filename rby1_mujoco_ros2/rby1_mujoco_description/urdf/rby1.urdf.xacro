@@ -26,13 +26,6 @@
     <xacro:rby1_hand_base_frames hand_base_offset_z="$(arg hand_base_offset_z)" />
   </xacro:if>
 
-  <link name="world" />
-  <joint name="world_to_base" type="planar">
-    <parent link="world" />
-    <child link="base" />
-    <origin xyz="0 0 0" rpy="0 0 0" />
-  </joint>
-
   <!-- ros2_control -->
   <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1.ros2_control.xacro" />
   <xacro:rby1_mujoco_ros2_control

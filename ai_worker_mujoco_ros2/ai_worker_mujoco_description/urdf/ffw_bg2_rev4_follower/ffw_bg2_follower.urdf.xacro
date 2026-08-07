@@ -9,14 +9,6 @@
 
   <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/common/rh_p12_rn_a/rh_p12_rn_a.urdf.xacro" />
 
-  <link name="world"/>
-
-  <joint name="$(arg prefix)world_fixed" type="fixed">
-    <parent link="world"/>
-    <child link="$(arg prefix)base_link"/>
-    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
-  </joint>
-
   <link name="$(arg prefix)base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
