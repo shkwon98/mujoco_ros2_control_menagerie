@@ -129,6 +129,7 @@
       allow_nonzero_velocity_at_trajectory_end: true
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
 
   arm_left_controller:
     ros__parameters:
@@ -148,6 +149,7 @@
       allow_nonzero_velocity_at_trajectory_end: true
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
 
   torso_controller:
     ros__parameters:
@@ -161,6 +163,7 @@
       allow_nonzero_velocity_at_trajectory_end: true
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
 
   head_controller:
     ros__parameters:
@@ -175,6 +178,7 @@
       allow_nonzero_velocity_at_trajectory_end: true
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
 
   hand_left_controller:
     ros__parameters:
@@ -207,6 +211,7 @@
       allow_nonzero_velocity_at_trajectory_end: true
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
 
   hand_right_controller:
     ros__parameters:
@@ -239,3 +244,4 @@
       allow_nonzero_velocity_at_trajectory_end: true
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
