@@ -150,22 +150,6 @@ def launch_setup(context, *args, **kwargs):
             arguments=controller_args,
         )
 
-    def make_forward_controller_spawner(controller_name, command_topic):
-        return Node(
-            package="controller_manager",
-            executable="spawner",
-            namespace="/control/body",
-            output="screen",
-            arguments=[
-                controller_name,
-                "--controller-ros-args",
-                f"--ros-args --remap ~/commands:={command_topic}",
-                "--ros-args",
-                "--log-level",
-                log_level,
-            ],
-        )
-
     arm_right_controller_spawner = make_controller_spawner(
         "arm_right_controller",
         "/control/body/arm_right_controller/joint_trajectory",
@@ -201,11 +185,14 @@ def launch_setup(context, *args, **kwargs):
         "/sensors/proprio/hand_right/joint_states",
     )
 
+    is_swerve = robot_model_value in ("ffw_sg2", "ffw_sh5")
+    fixed_frame_child = "odom" if is_swerve else "base_link"
+
     nodes = [
         Node(
             package="tf2_ros",
             executable="static_transform_publisher",
-            name="map_to_base_link",
+            name=f"map_to_{fixed_frame_child}",
             # fmt: off
             arguments=[
                 "--x", "0",
@@ -215,7 +202,7 @@ def launch_setup(context, *args, **kwargs):
                 "--pitch", "0",
                 "--roll", "0",
                 "--frame-id", "map",
-                "--child-frame-id", "base_link",
+                "--child-frame-id", fixed_frame_child,
             ],
             # fmt: on
         ),
@@ -244,19 +231,20 @@ def launch_setup(context, *args, **kwargs):
         hand_right_controller_spawner,
     ]
 
-    if robot_model_value in ("ffw_sg2", "ffw_sh5"):
-        nodes.extend(
-            [
-                make_controller_spawner(
-                    "base_steer_controller",
-                    "/control/body/base_steer_controller/joint_trajectory",
-                    "/control/body/base_steer_controller/follow_joint_trajectory",
-                ),
-                make_forward_controller_spawner(
-                    "base_drive_controller",
-                    "/control/body/base_drive_controller/commands",
-                ),
-            ]
+    if is_swerve:
+        nodes.append(
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                namespace="/control/body",
+                output="screen",
+                arguments=[
+                    "swerve_drive_controller",
+                    "--ros-args",
+                    "--log-level",
+                    log_level,
+                ],
+            )
         )
 
     return nodes

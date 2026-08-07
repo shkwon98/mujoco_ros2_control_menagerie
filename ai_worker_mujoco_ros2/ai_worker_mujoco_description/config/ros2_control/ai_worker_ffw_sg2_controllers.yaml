@@ -30,11 +30,8 @@
       hand_right_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
-      base_steer_controller:
-        type: joint_trajectory_controller/JointTrajectoryController
-
-      base_drive_controller:
-        type: velocity_controllers/JointGroupVelocityController
+      swerve_drive_controller:
+        type: ffw_swerve_drive_controller/SwerveDriveController
 
   body_joint_state_broadcaster:
     ros__parameters:
@@ -182,25 +179,38 @@
       interpolate_from_desired_state: true
       set_last_command_interface_value_as_state_on_activation: false
 
-  base_steer_controller:
+  swerve_drive_controller:
     ros__parameters:
-      joints:
+      steering_joint_names:
         - left_wheel_steer_joint
         - right_wheel_steer_joint
         - rear_wheel_steer_joint
-      command_interfaces:
-        - position
-      state_interfaces:
-        - position
-        - velocity
-      allow_nonzero_velocity_at_trajectory_end: true
-      allow_partial_joints_goal: true
-      interpolate_from_desired_state: true
-
-  base_drive_controller:
-    ros__parameters:
-      joints:
+      wheel_joint_names:
         - left_wheel_drive_joint
         - right_wheel_drive_joint
         - rear_wheel_drive_joint
-      interface_name: velocity
+
+      wheel_radius: 0.0865
+      module_x_offsets: [0.1371, 0.1371, -0.2899]
+      module_y_offsets: [0.2554, -0.2554, 0.0]
+      module_angle_offsets: [0.0, 0.0, 0.0]
+      module_steering_limit_lower: [-6.28, -6.28, -6.28]
+      module_steering_limit_upper: [6.28, 6.28, 6.28]
+      module_wheel_speed_limit_lower: [-50.0, -50.0, -50.0]
+      module_wheel_speed_limit_upper: [50.0, 50.0, 50.0]
+
+      enabled_steering_angular_velocity_limit: true
+      steering_angular_velocity_limit: 100.0
+      steering_alignment_angle_error_threshold: 1.0
+      steering_alignment_start_angle_error_threshold: 0.01
+      steering_alignment_start_speed_error_threshold: 0.1
+      enabled_open_loop: false
+
+      cmd_vel_topic: /cmd_vel
+      cmd_vel_timeout: 1.0
+      odom_solver_method: svd
+      odom_source: feedback
+      base_frame_id: base_link
+      odom_frame_id: odom
+      enable_odom_tf: true
+      velocity_rolling_window_size: 10
