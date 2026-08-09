@@ -2,13 +2,9 @@
 
 import os
 
-from ament_index_python.packages import (
-    PackageNotFoundError,
-    get_package_prefix,
-    get_package_share_directory,
-)
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, LogInfo, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import (
     Command,
     FindExecutable,
@@ -24,8 +20,6 @@ ROBOT_MODELS = {
         "base_model": "a",
         "initial_positions": "rby1a.yaml",
         "controllers": "rby1a_controllers.yaml",
-        "mobile_base_controller_package": "diff_drive_controller",
-        "has_mobile_base": True,
         "has_wuji_hands": False,
         "versions": ("v1.0", "v1.1", "v1.2"),
     },
@@ -33,8 +27,6 @@ ROBOT_MODELS = {
         "base_model": "m",
         "initial_positions": "rby1m.yaml",
         "controllers": "rby1m_controllers.yaml",
-        "mobile_base_controller_package": "mecanum_drive_controller",
-        "has_mobile_base": True,
         "has_wuji_hands": False,
         "versions": ("v1.0", "v1.1", "v1.2", "v1.3"),
     },
@@ -42,8 +34,6 @@ ROBOT_MODELS = {
         "base_model": "a",
         "initial_positions": "rby1a_wuji.yaml",
         "controllers": "rby1a_wuji_controllers.yaml",
-        "mobile_base_controller_package": "diff_drive_controller",
-        "has_mobile_base": True,
         "has_wuji_hands": True,
         "versions": ("v1.0", "v1.1", "v1.2"),
     },
@@ -51,8 +41,6 @@ ROBOT_MODELS = {
         "base_model": "m",
         "initial_positions": "rby1m_wuji.yaml",
         "controllers": "rby1m_wuji_controllers.yaml",
-        "mobile_base_controller_package": "mecanum_drive_controller",
-        "has_mobile_base": True,
         "has_wuji_hands": True,
         "versions": ("v1.0", "v1.1", "v1.2", "v1.3"),
     },
@@ -174,14 +162,6 @@ def make_controller_spawner(
         output="screen",
         arguments=arguments,
     )
-
-
-def has_package(package_name):
-    try:
-        get_package_prefix(package_name)
-    except PackageNotFoundError:
-        return False
-    return True
 
 
 def launch_setup(context, *args, **kwargs):
@@ -396,36 +376,27 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    if model_config["has_mobile_base"] and has_package(
-        model_config["mobile_base_controller_package"]
-    ):
-        nodes.append(
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                namespace="/control/body",
-                output="screen",
-                arguments=[
-                    "mobile_base_controller",
-                    "--controller-ros-args",
-                    "--ros-args --remap ~/cmd_vel:=/cmd_vel --remap ~/reference:=/cmd_vel",
-                    "--ros-args",
-                    "--log-level",
-                    log_level,
-                ],
-            )
+    controller_ros_args = (
+        "--ros-args --remap ~/cmd_vel:=/cmd_vel --remap ~/reference:=/cmd_vel "
+        "--remap ~/odom:=/odom --remap ~/odometry:=/odom "
+        "--remap ~/tf_odometry:=/tf"
+    )
+    nodes.append(
+        Node(
+            package="controller_manager",
+            executable="spawner",
+            namespace="/control/body",
+            output="screen",
+            arguments=[
+                "mobile_base_controller",
+                "--controller-ros-args",
+                controller_ros_args,
+                "--ros-args",
+                "--log-level",
+                log_level,
+            ],
         )
-    elif model_config["has_mobile_base"]:
-        nodes.append(
-            LogInfo(
-                msg=(
-                    "Skipping mobile_base_controller: package "
-                    f"'{model_config['mobile_base_controller_package']}' is not installed. "
-                    "Install it to enable /cmd_vel mobile-base control."
-                )
-            )
-        )
-
+    )
     if model_config["has_wuji_hands"]:
         nodes.extend(
             [
