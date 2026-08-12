@@ -3,6 +3,7 @@
   <xacro:arg name="initial_positions_file" default="$(find g1_mujoco_description)/config/initial_positions.yaml"/>
   <xacro:arg name="robot_model" default="g1"/>
   <xacro:arg name="mujoco_model_file" default="auto"/>
+  <xacro:arg name="headless" default="false"/>
 
   <xacro:include filename="$(find g1_mujoco_description)/urdf/g1_29dof.urdf"/>
   <xacro:include filename="$(find g1_mujoco_description)/urdf/g1_hands.urdf.xacro"/>
@@ -28,5 +29,6 @@
     name="g1_mujoco"
     initial_positions_file="$(arg initial_positions_file)"
     robot_model="$(arg robot_model)"
-    mujoco_model_file="$(arg mujoco_model_file)"/>
+    mujoco_model_file="$(arg mujoco_model_file)"
+    headless="$(arg headless)"/>
 </robot>

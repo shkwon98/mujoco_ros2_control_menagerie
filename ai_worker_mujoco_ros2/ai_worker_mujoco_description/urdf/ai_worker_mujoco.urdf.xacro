@@ -2,6 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ai_worker_mujoco">
   <xacro:arg name="robot_model" default="ffw_bg2"/>
   <xacro:arg name="initial_positions_file" default="$(find ai_worker_mujoco_description)/config/initial_positions.yaml"/>
+  <xacro:arg name="headless" default="false"/>
   <xacro:property name="robot_model" value="$(arg robot_model)"/>
 
   <xacro:if value="${robot_model == 'ffw_bg2'}">
@@ -22,5 +23,6 @@
   <xacro:ai_worker_mujoco_ros2_control
     name="ai_worker_mujoco"
     initial_positions_file="$(arg initial_positions_file)"
-    robot_model="${robot_model}"/>
+    robot_model="${robot_model}"
+    headless="$(arg headless)"/>
 </robot>

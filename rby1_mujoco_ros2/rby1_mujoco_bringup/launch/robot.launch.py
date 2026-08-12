@@ -52,6 +52,7 @@ def make_robot_description(
     robot_model,
     robot_version,
     initial_positions_file,
+    headless,
     hand_base_offset_z="0",
 ):
     return {
@@ -67,6 +68,8 @@ def make_robot_description(
                     robot_version,
                     " initial_positions_file:=",
                     initial_positions_file,
+                    " headless:=",
+                    headless,
                     " hand_base_offset_z:=",
                     hand_base_offset_z,
                 ]
@@ -168,6 +171,7 @@ def launch_setup(context, *args, **kwargs):
     robot_model = LaunchConfiguration("robot_model")
     robot_version = LaunchConfiguration("robot_version")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
+    headless = LaunchConfiguration("headless")
     log_level = LaunchConfiguration("log_level")
 
     robot_model_value = robot_model.perform(context)
@@ -218,12 +222,14 @@ def launch_setup(context, *args, **kwargs):
         robot_model_value,
         robot_version_value,
         initial_positions_file,
+        headless,
     )
     body_robot_description = make_robot_description(
         xacro_file,
         model_config["base_model"],
         robot_version_value,
         body_initial_positions_file,
+        headless,
         hand_base_offset_z=body_hand_base_offset_z,
     )
 
@@ -444,6 +450,12 @@ def generate_launch_description():
                 "controllers_yaml",
                 default_value="auto",
                 description="Controller configuration YAML, or 'auto' to select by robot_model",
+            ),
+            DeclareLaunchArgument(
+                "headless",
+                default_value="false",
+                choices=["true", "false"],
+                description="Run MuJoCo without its graphical window",
             ),
             DeclareLaunchArgument(
                 "log_level",

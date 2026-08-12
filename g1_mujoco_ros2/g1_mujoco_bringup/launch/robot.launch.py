@@ -21,6 +21,7 @@ def launch_setup(context, *args, **kwargs):
     controllers_yaml = LaunchConfiguration("controllers_yaml")
     initial_positions_file = LaunchConfiguration("initial_positions_file")
     mujoco_model_file = LaunchConfiguration("mujoco_model_file")
+    headless = LaunchConfiguration("headless")
     log_level = LaunchConfiguration("log_level")
 
     robot_model_value = robot_model.perform(context)
@@ -79,6 +80,8 @@ def launch_setup(context, *args, **kwargs):
             initial_positions_file,
             " mujoco_model_file:=",
             mujoco_model_file_value,
+            " headless:=",
+            headless,
         ]
     )
     control_robot_description = {
@@ -96,6 +99,8 @@ def launch_setup(context, *args, **kwargs):
             " initial_positions_file:=",
             initial_positions_file,
             " mujoco_model_file:=scene.xml",
+            " headless:=",
+            headless,
         ]
     )
     body_robot_description = {
@@ -373,6 +378,12 @@ def generate_launch_description():
                     "MuJoCo model file under g1_mujoco_description/mjcf, "
                     "or 'auto' to select by robot_model"
                 ),
+            ),
+            DeclareLaunchArgument(
+                "headless",
+                default_value="false",
+                choices=["true", "false"],
+                description="Run MuJoCo without its graphical window",
             ),
             DeclareLaunchArgument(
                 "log_level",

@@ -43,7 +43,7 @@
   </xacro:macro>
 
   <xacro:macro name="rby1_mujoco_ros2_control"
-    params="name robot_model robot_version initial_positions_file">
+    params="name robot_model robot_version initial_positions_file headless">
     <xacro:property name="initial_positions"
       value="${xacro.load_yaml(initial_positions_file)['initial_positions']}" />
     <xacro:property name="include_temperature" value="false" />
@@ -63,7 +63,7 @@
           <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>
         </xacro:if>
         <param name="sim_speed_factor">1.0</param>
-        <param name="headless">false</param>
+        <param name="headless">${'true' if headless else 'false'}</param>
       </hardware>
 
       <xacro:if value="${base_robot_model == 'a'}">

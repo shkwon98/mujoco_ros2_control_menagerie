@@ -53,7 +53,7 @@
     <xacro:position_joint joint_name="finger_${side}_joint20" initial_positions="${initial_positions}"/>
   </xacro:macro>
 
-  <xacro:macro name="ai_worker_mujoco_ros2_control" params="name initial_positions_file robot_model">
+  <xacro:macro name="ai_worker_mujoco_ros2_control" params="name initial_positions_file robot_model headless">
     <xacro:property name="initial_positions" value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
 
     <ros2_control name="${name}" type="system">
@@ -61,7 +61,7 @@
         <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
         <param name="mujoco_model">$(find ai_worker_mujoco_description)/mjcf/scene_${robot_model}.xml</param>
         <param name="sim_speed_factor">1.0</param>
-        <param name="headless">false</param>
+        <param name="headless">${'true' if headless else 'false'}</param>
       </hardware>
 
       <xacro:position_joint joint_name="lift_joint" initial_positions="${initial_positions}"/>

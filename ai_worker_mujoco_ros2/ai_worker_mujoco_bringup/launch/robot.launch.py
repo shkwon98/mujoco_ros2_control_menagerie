@@ -20,6 +20,7 @@ def launch_setup(context, *args, **kwargs):
     robot_model = LaunchConfiguration("robot_model")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
     initial_positions_file = LaunchConfiguration("initial_positions_file")
+    headless = LaunchConfiguration("headless")
     log_level = LaunchConfiguration("log_level")
     robot_model_value = robot_model.perform(context)
     controllers_yaml_value = controllers_yaml.perform(context)
@@ -55,6 +56,8 @@ def launch_setup(context, *args, **kwargs):
             robot_model,
             " initial_positions_file:=",
             initial_positions_file,
+            " headless:=",
+            headless,
         ]
     )
     robot_description = {
@@ -279,6 +282,12 @@ def generate_launch_description():
                     ]
                 ),
                 description="Initial joint positions YAML",
+            ),
+            DeclareLaunchArgument(
+                "headless",
+                default_value="false",
+                choices=["true", "false"],
+                description="Run MuJoCo without its graphical window",
             ),
             DeclareLaunchArgument(
                 "log_level",

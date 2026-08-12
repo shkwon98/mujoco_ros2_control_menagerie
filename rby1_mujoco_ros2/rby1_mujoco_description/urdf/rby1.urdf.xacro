@@ -4,6 +4,7 @@
   <xacro:arg name="robot_version" default="v1.2" />
   <xacro:arg name="initial_positions_file"
     default="$(find rby1_mujoco_description)/config/initial_positions/rby1$(arg robot_model).yaml" />
+  <xacro:arg name="headless" default="false" />
   <xacro:arg name="hand_base_offset_z" default="0" />
 
   <xacro:property name="robot_model" value="$(arg robot_model)" />
@@ -33,5 +34,6 @@
     robot_model="$(arg robot_model)"
     robot_version="$(arg robot_version)"
     initial_positions_file="$(arg initial_positions_file)"
+    headless="$(arg headless)"
   />
 </robot>
