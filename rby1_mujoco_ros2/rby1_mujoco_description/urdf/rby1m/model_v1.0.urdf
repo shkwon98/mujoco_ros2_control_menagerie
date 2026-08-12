@@ -599,7 +599,7 @@
     <child link="wheel_fr_link" />
     <origin rpy="0.0 0.0 0.0" xyz="0.243 -0.245 0.076" />
     <axis xyz="0 1 0" />
-    <limit effort="100" velocity="100" />
+    <limit effort="100" velocity="19.7" />
   </joint>
 
   <joint name="wheel_fl" type="continuous">
@@ -607,7 +607,7 @@
     <child link="wheel_fl_link" />
     <origin rpy="0.0 0.0 0.0" xyz="0.243 0.245 0.076" />
     <axis xyz="0 1 0" />
-    <limit effort="100" velocity="100" />
+    <limit effort="100" velocity="19.7" />
   </joint>
 
   <joint name="wheel_rr" type="continuous">
@@ -615,7 +615,7 @@
     <child link="wheel_rr_link" />
     <origin rpy="0.0 0.0 0.0" xyz="-0.247 -0.245 0.076" />
     <axis xyz="0 1 0" />
-    <limit effort="100" velocity="100" />
+    <limit effort="100" velocity="19.7" />
   </joint>
 
   <joint name="wheel_rl" type="continuous">
@@ -623,7 +623,7 @@
     <child link="wheel_rl_link" />
     <origin rpy="0.0 0.0 0.0" xyz="-0.247 0.245 0.076" />
     <axis xyz="0 1 0" />
-    <limit effort="100" velocity="100" />
+    <limit effort="100" velocity="19.7" />
   </joint>
 
   <joint name="torso_0" type="revolute">

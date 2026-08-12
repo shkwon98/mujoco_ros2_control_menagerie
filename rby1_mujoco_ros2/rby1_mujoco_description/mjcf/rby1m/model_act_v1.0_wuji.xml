@@ -20,10 +20,10 @@
   <include file="./rby1_v1.0_wuji.xml" />
 
   <actuator>
-    <velocity name="fr_wheel_act" joint="wheel_fr" ctrlrange="-3.14 3.14" />
-    <velocity name="fl_wheel_act" joint="wheel_fl" ctrlrange="-3.14 3.14" />
-    <velocity name="rr_wheel_act" joint="wheel_rr" ctrlrange="-3.14 3.14" />
-    <velocity name="rl_wheel_act" joint="wheel_rl" ctrlrange="-3.14 3.14" />
+    <velocity name="fr_wheel_act" joint="wheel_fr" ctrlrange="-19.7 19.7" />
+    <velocity name="fl_wheel_act" joint="wheel_fl" ctrlrange="-19.7 19.7" />
+    <velocity name="rr_wheel_act" joint="wheel_rr" ctrlrange="-19.7 19.7" />
+    <velocity name="rl_wheel_act" joint="wheel_rl" ctrlrange="-19.7 19.7" />
 
     <position name="link1_act" joint="torso_0" ctrlrange="-0.349066 0.349066" />
     <position name="link2_act" joint="torso_1" ctrlrange="-1.0472 1.52173" />
