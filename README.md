@@ -17,6 +17,7 @@ Those packages should depend on this repository, not the other way around.
 | Robot | Launch package | `robot_model` values | Notes |
 | --- | --- | --- | --- |
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
+| Mobile ALOHA | `mobile_aloha_mujoco_bringup` | - | Dual ViperX 300S arms with parallel grippers on a simplified Tracer-compatible skid-steer base |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
 | RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants are v1.2 body models with separate hand controllers |
 
@@ -103,6 +104,15 @@ Useful G1 launch arguments:
 | `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
 | `initial_positions_file` | package default | Initial joint positions YAML |
 | `log_level` | `info` | ROS log level |
+
+### Mobile ALOHA
+
+```bash
+ros2 launch mobile_aloha_mujoco_bringup robot.launch.py
+```
+
+Use `headless:=true` to run without the MuJoCo viewer. The base accepts
+`geometry_msgs/msg/TwistStamped` on `/cmd_vel` and publishes `/odom`.
 
 ### RBY1
 
@@ -199,7 +209,7 @@ AI Worker `ffw_sg2` and `ffw_sh5` expose:
 The drive command is `std_msgs/msg/Float64MultiArray` in left, right, rear wheel
 order.
 
-RBY1 `a` and `m` expose:
+RBY1 `a` and `m`, and Mobile ALOHA expose:
 
 ```text
 /cmd_vel

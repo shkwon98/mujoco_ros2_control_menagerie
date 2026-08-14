@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>mobile_aloha_mujoco_ros2</name>
+  <version>0.1.0</version>
+  <description>Mobile ALOHA MuJoCo ros2_control metapackage.</description>
+  <maintainer email="shkwon@tommoro.ai">Sunghyun Kwon</maintainer>
+  <license>MPL-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>mobile_aloha_mujoco_bringup</exec_depend>
+  <exec_depend>mobile_aloha_mujoco_description</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

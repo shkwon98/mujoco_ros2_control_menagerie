@@ -12,6 +12,7 @@
 
   <exec_depend>ai_worker_mujoco_ros2</exec_depend>
   <exec_depend>g1_mujoco_ros2</exec_depend>
+  <exec_depend>mobile_aloha_mujoco_ros2</exec_depend>
   <exec_depend>rby1_mujoco_ros2</exec_depend>
 
   <export>
