@@ -1,5 +1,6 @@
 <mujoco model="rby1">
   <compiler angle="radian" autolimits="true" eulerseq="xyz" />
+  <statistic center="0 0 0.8" extent="2.0" />
 
   <default>
     <joint armature="10" damping="50" range="-3.14 3.14" />
@@ -7,17 +8,18 @@
   </default>
 
   <visual>
-    <map force="0.1" zfar="30" />
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <map force="0.1" zfar="50" />
     <rgba haze="0.15 0.25 0.35 1" />
     <quality shadowsize="4096" />
-    <global offwidth="800" offheight="800" azimuth="180" elevation="-20"/>
+    <global offwidth="640" offheight="480" azimuth="140" elevation="-20"/>
   </visual>
 
   <asset>
-    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="512" />
-    <texture name="plane" type="2d" builtin="checker" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" width="512" height="512"
-      mark="cross" markrgb=".8 .8 .8" />
-    <material name="plane" reflectance="0.3" texture="plane" texrepeat="1 1" texuniform="true" />
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture name="plane" type="2d" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" width="300" height="300"
+      mark="edge" markrgb=".8 .8 .8" />
+    <material name="plane" reflectance="0.2" texture="plane" texrepeat="5 5" texuniform="true" />
 
     <include file="./assets/materials.xml" />
     <include file="./assets/base/assets.xml" />
@@ -52,9 +54,9 @@
   </asset>
 
   <worldbody>
-    <geom name="floor" pos="0 0 0" size="0 0 .25" type="plane" material="plane" condim="1"
+    <geom name="floor" pos="0 0 0" size="0 0 .05" type="plane" material="plane" condim="1"
       solimp="0.15 0.99 0.001 0.5 2" friction="0.05 0.001 0.05" />
-    <light directional="true" diffuse=".8 .8 .8" specular="0 0 0" pos="0 0 5" dir="0 0 -1" castshadow="false" />
+    <light directional="true" pos="0 0 4" dir="0 0 -1" />
 
     <body name="base">
       <inertial pos="-0.0615794 -0.00142271 0.135139" quat="0.00383057 0.733861 -0.00742942 0.679248" mass="60.0804" diaginertia="3.77525 2.99424 1.36264" />
