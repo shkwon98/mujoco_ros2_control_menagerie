@@ -2,15 +2,15 @@
 
 ROS 2 packages for running robot MuJoCo models through `ros2_control`.
 
-This repository is intentionally scoped to simulation bringup:
+This repository provides robot simulation assets and ROS 2 control bringup:
 
 - MuJoCo model files, meshes, and URDF/xacro wrappers
 - `ros2_control` hardware descriptions
 - Controller YAML files
 - Launch files that start `ros2_control_node`, `robot_state_publisher`, and controller spawners
 
-It does not contain physical robot drivers, DexGraft retargeting configs, or task policies.
-Those packages should depend on this repository, not the other way around.
+Hardware drivers and application-level software integrate with it through
+standard ROS 2 interfaces.
 
 ## Supported Robots
 
@@ -19,7 +19,7 @@ Those packages should depend on this repository, not the other way around.
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
 | Mobile ALOHA | `mobile_aloha_mujoco_bringup` | - | Dual ViperX 300S arms with parallel grippers on a simplified Tracer-compatible skid-steer base |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
-| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants are v1.2 body models with separate hand controllers |
+| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants replace the stock grippers with separate hand controllers |
 
 Each robot follows the same package split:
 
@@ -38,12 +38,7 @@ From the workspace root:
 source /opt/ros/jazzy/setup.bash
 
 colcon build --merge-install --symlink-install \
-  --base-paths src/robot/mujoco_ros2_control_menagerie \
-  --packages-select \
-    ai_worker_mujoco_description ai_worker_mujoco_bringup ai_worker_mujoco_ros2 \
-    g1_mujoco_description g1_mujoco_bringup g1_mujoco_ros2 \
-    rby1_mujoco_description rby1_mujoco_bringup rby1_mujoco_ros2 \
-    mujoco_ros2_control_menagerie
+  --base-paths src/robot/mujoco_ros2_control_menagerie
 
 source install/setup.bash
 ```
@@ -147,10 +142,13 @@ All bringup files use the same top-level control and sensor namespaces.
 ### Description and controller manager
 
 ```text
-/robot_description
-/control/body/robot_description
 /control/body/controller_manager
 ```
+
+Robot description topics vary with the package layout. Bringup packages expose
+them on `/robot_description`, `/control/body/robot_description`, or
+`/sensors/proprio/body/robot_description` as required by their publishers and
+controller managers.
 
 ### Body trajectory controllers
 
@@ -173,7 +171,7 @@ The corresponding `FollowJointTrajectory` actions live beside those topics:
 
 ### Hand trajectory controllers
 
-Robots with separate hand controllers use:
+Dexterous-hand variants use:
 
 ```text
 /control/hand_left/hand_left_controller/joint_trajectory
@@ -182,38 +180,47 @@ Robots with separate hand controllers use:
 /control/hand_right/hand_right_controller/follow_joint_trajectory
 ```
 
+Mobile ALOHA uses parallel-gripper trajectories instead:
+
+```text
+/control/hand_left/gripper_controller/joint_trajectory
+/control/hand_right/gripper_controller/joint_trajectory
+/control/body/gripper_left_controller/follow_joint_trajectory
+/control/body/gripper_right_controller/follow_joint_trajectory
+```
+
 ### Proprioception
 
 ```text
 /sensors/proprio/body/joint_states
-/sensors/proprio/body/dynamic_joint_states
 /sensors/proprio/hand_left/joint_states
-/sensors/proprio/hand_left/dynamic_joint_states
 /sensors/proprio/hand_right/joint_states
-/sensors/proprio/hand_right/dynamic_joint_states
 ```
 
-RBY1 `a` and `m` publish all joint states through body proprioception. AI Worker,
-G1 hand variants, and RBY1 Wuji variants split hand proprioception into
-`hand_left` and `hand_right` when hand controllers are present.
+Mobile ALOHA and RBY1 `a` and `m` publish all joint states through body
+proprioception. AI Worker, G1 hand variants, and RBY1 Wuji variants split hand
+proprioception into `hand_left` and `hand_right` when hand controllers are
+present.
 
 ### Mobile base
 
-AI Worker `ffw_sg2` and `ffw_sh5` expose:
+AI Worker `ffw_sg2` and `ffw_sh5`, RBY1 `a` and `m`, and Mobile ALOHA accept
+planar velocity commands on:
+
+```text
+/cmd_vel
+```
+
+The AI Worker swerve variants additionally expose their lower-level controller
+interfaces:
 
 ```text
 /control/body/base_steer_controller/joint_trajectory
 /control/body/base_drive_controller/commands
 ```
 
-The drive command is `std_msgs/msg/Float64MultiArray` in left, right, rear wheel
-order.
-
-RBY1 `a` and `m`, and Mobile ALOHA expose:
-
-```text
-/cmd_vel
-```
+The low-level drive command is `std_msgs/msg/Float64MultiArray` in left, right,
+rear wheel order.
 
 ## rqt Joint Trajectory Controller
 
