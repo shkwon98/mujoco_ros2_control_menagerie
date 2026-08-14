@@ -3,6 +3,7 @@
   <xacro:arg name="robot_model" default="ffw_bg2"/>
   <xacro:arg name="initial_positions_file" default="$(find ai_worker_mujoco_description)/config/initial_positions.yaml"/>
   <xacro:arg name="headless" default="false"/>
+  <xacro:arg name="include_ros2_control" default="true"/>
   <xacro:property name="robot_model" value="$(arg robot_model)"/>
 
   <xacro:if value="${robot_model == 'ffw_bg2'}">
@@ -18,11 +19,12 @@
     <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/ffw_sh5_rev1_follower/ffw_sh5_follower.urdf.xacro"/>
   </xacro:if>
 
-  <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/ai_worker.ros2_control.xacro"/>
-
-  <xacro:ai_worker_mujoco_ros2_control
-    name="ai_worker_mujoco"
-    initial_positions_file="$(arg initial_positions_file)"
-    robot_model="${robot_model}"
-    headless="$(arg headless)"/>
+  <xacro:if value="$(arg include_ros2_control)">
+    <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/ai_worker.ros2_control.xacro"/>
+    <xacro:ai_worker_mujoco_ros2_control
+      name="ai_worker_mujoco"
+      initial_positions_file="$(arg initial_positions_file)"
+      robot_model="${robot_model}"
+      headless="$(arg headless)"/>
+  </xacro:if>
 </robot>

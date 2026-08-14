@@ -4,6 +4,7 @@
   <xacro:property name="base_meshes_dir" value="package://ai_worker_mujoco_description/meshes/common/follower/base" />
   <xacro:arg name="prefix" default="" />
   <xacro:arg name="model" default="ffw_bh5_rev1_follower" />
+  <xacro:arg name="include_hands" default="true" />
 
   <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/common/follower/ffw_follower_body.xacro" />
 
@@ -41,12 +42,14 @@
     <origin xyz="0.0055 0 1.4316" rpy="0 0 0" />
   </xacro:ffw_follower_body>
 
-  <xacro:hx5_d20_left parent="$(arg prefix)arm_l_link7" prefix="$(arg prefix)">
-    <origin xyz="0 0 -0.078" rpy="0 3.14159265359 1.5708"/>
-  </xacro:hx5_d20_left>
+  <xacro:if value="$(arg include_hands)">
+    <xacro:hx5_d20_left parent="$(arg prefix)arm_l_link7" prefix="$(arg prefix)">
+      <origin xyz="0 0 -0.078" rpy="0 3.14159265359 1.5708"/>
+    </xacro:hx5_d20_left>
 
-  <xacro:hx5_d20_right parent="$(arg prefix)arm_r_link7" prefix="$(arg prefix)">
-    <origin xyz="0 0 -0.078" rpy="0 3.14159265359 -1.5708"/>
-  </xacro:hx5_d20_right>
+    <xacro:hx5_d20_right parent="$(arg prefix)arm_r_link7" prefix="$(arg prefix)">
+      <origin xyz="0 0 -0.078" rpy="0 3.14159265359 -1.5708"/>
+    </xacro:hx5_d20_right>
+  </xacro:if>
 
 </robot>

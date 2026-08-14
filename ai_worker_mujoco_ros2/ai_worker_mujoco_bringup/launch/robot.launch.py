@@ -16,6 +16,23 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 
+def make_robot_description(xacro_file, **mappings):
+    command = [
+        PathJoinSubstitution([FindExecutable(name="xacro")]),
+        " ",
+        xacro_file,
+    ]
+    for name, value in mappings.items():
+        command.extend([" ", name, ":=", value])
+
+    return {
+        "robot_description": ParameterValue(
+            Command(command),
+            value_type=str,
+        )
+    }
+
+
 def launch_setup(context, *args, **kwargs):
     robot_model = LaunchConfiguration("robot_model")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
@@ -25,18 +42,12 @@ def launch_setup(context, *args, **kwargs):
     robot_model_value = robot_model.perform(context)
     controllers_yaml_value = controllers_yaml.perform(context)
 
-    controller_file_by_model = {
-        "ffw_bg2": "ai_worker_ffw_bg2_controllers.yaml",
-        "ffw_bh5": "ai_worker_ffw_bh5_controllers.yaml",
-        "ffw_sg2": "ai_worker_ffw_sg2_controllers.yaml",
-        "ffw_sh5": "ai_worker_ffw_sh5_controllers.yaml",
-    }
     if controllers_yaml_value == "auto":
         controllers_yaml_value = os.path.join(
             get_package_share_directory("ai_worker_mujoco_description"),
             "config",
             "ros2_control",
-            controller_file_by_model[robot_model_value],
+            f"ai_worker_{robot_model_value}_controllers.yaml",
         )
 
     xacro_file = PathJoinSubstitution(
@@ -47,45 +58,84 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    robot_description_content = Command(
+    full_robot_description = make_robot_description(
+        xacro_file,
+        robot_model=robot_model,
+        initial_positions_file=initial_positions_file,
+        headless=headless,
+        include_hands="true",
+        include_ros2_control="true",
+    )
+    body_robot_description = make_robot_description(
+        xacro_file,
+        robot_model=robot_model,
+        initial_positions_file=initial_positions_file,
+        headless=headless,
+        include_hands="false",
+        include_ros2_control="false",
+    )
+    hand_xacro_file = PathJoinSubstitution(
         [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            xacro_file,
-            " robot_model:=",
-            robot_model,
-            " initial_positions_file:=",
-            initial_positions_file,
-            " headless:=",
-            headless,
+            FindPackageShare("ai_worker_mujoco_description"),
+            "urdf",
+            "ai_worker_hand.urdf.xacro",
         ]
     )
-    robot_description = {
-        "robot_description": ParameterValue(robot_description_content, value_type=str)
-    }
+    left_hand_robot_description = make_robot_description(
+        hand_xacro_file, robot_model=robot_model, side="left"
+    )
+    right_hand_robot_description = make_robot_description(
+        hand_xacro_file, robot_model=robot_model, side="right"
+    )
 
     ros2_control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
         namespace="/control/body",
-        parameters=[robot_description, controllers_yaml_value],
+        parameters=[controllers_yaml_value],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
-            ("robot_description", "/control/body/robot_description"),
+            ("robot_description", "/robot_description"),
         ],
     )
 
-    robot_state_publisher_node = Node(
+    body_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         namespace="/sensors/proprio/body",
-        parameters=[robot_description],
+        parameters=[body_robot_description],
         output="screen",
         arguments=["--ros-args", "--log-level", log_level],
         remappings=[
             ("robot_description", "/control/body/robot_description"),
             ("joint_states", "/sensors/proprio/body/joint_states"),
+        ],
+    )
+
+    left_hand_state_publisher_node = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        namespace="/sensors/proprio/hand_left",
+        parameters=[left_hand_robot_description],
+        output="screen",
+        arguments=["--ros-args", "--log-level", log_level],
+        remappings=[
+            ("robot_description", "/control/hand_left/robot_description"),
+            ("joint_states", "/sensors/proprio/hand_left/joint_states"),
+        ],
+    )
+
+    right_hand_state_publisher_node = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        namespace="/sensors/proprio/hand_right",
+        parameters=[right_hand_robot_description],
+        output="screen",
+        arguments=["--ros-args", "--log-level", log_level],
+        remappings=[
+            ("robot_description", "/control/hand_right/robot_description"),
+            ("joint_states", "/sensors/proprio/hand_right/joint_states"),
         ],
     )
 
@@ -209,8 +259,17 @@ def launch_setup(context, *args, **kwargs):
             ],
             # fmt: on
         ),
+        Node(
+            package="ai_worker_mujoco_bringup",
+            executable="robot_description_publisher.py",
+            parameters=[full_robot_description],
+            output="screen",
+            arguments=["--ros-args", "--log-level", log_level],
+        ),
         ros2_control_node,
-        robot_state_publisher_node,
+        body_state_publisher_node,
+        left_hand_state_publisher_node,
+        right_hand_state_publisher_node,
         make_joint_state_broadcaster_spawner(
             "body_joint_state_broadcaster",
             "/sensors/proprio/body/joint_states",

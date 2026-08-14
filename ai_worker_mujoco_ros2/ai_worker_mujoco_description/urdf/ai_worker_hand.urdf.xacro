@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ai_worker_hand">
+  <xacro:arg name="robot_model" default="ffw_bg2"/>
+  <xacro:arg name="side" default="left"/>
+  <xacro:property name="uses_hx5" value="${'h5' in '$(arg robot_model)'}"/>
+
+  <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/common/hx5_d20/hx5_d20_left.urdf.xacro"/>
+  <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/common/hx5_d20/hx5_d20_right.urdf.xacro"/>
+  <xacro:include filename="$(find ai_worker_mujoco_description)/urdf/common/rh_p12_rn_a/rh_p12_rn_a.urdf.xacro"/>
+
+  <xacro:if value="${'$(arg side)' == 'left'}">
+    <link name="arm_l_link7"/>
+    <xacro:if value="${uses_hx5}">
+      <xacro:hx5_d20_left parent="arm_l_link7" prefix="">
+        <origin xyz="0 0 -0.078" rpy="0 3.14159265359 1.5708"/>
+      </xacro:hx5_d20_left>
+    </xacro:if>
+    <xacro:unless value="${uses_hx5}">
+      <xacro:rh_p12_rn_a parent="arm_l_link7" prefix="gripper_l_">
+        <origin xyz="0 0 -0.078" rpy="0 3.14159265359 3.14159265359"/>
+      </xacro:rh_p12_rn_a>
+    </xacro:unless>
+  </xacro:if>
+
+  <xacro:if value="${'$(arg side)' == 'right'}">
+    <link name="arm_r_link7"/>
+    <xacro:if value="${uses_hx5}">
+      <xacro:hx5_d20_right parent="arm_r_link7" prefix="">
+        <origin xyz="0 0 -0.078" rpy="0 3.14159265359 -1.5708"/>
+      </xacro:hx5_d20_right>
+    </xacro:if>
+    <xacro:unless value="${uses_hx5}">
+      <xacro:rh_p12_rn_a parent="arm_r_link7" prefix="gripper_r_">
+        <origin xyz="0 0 -0.078" rpy="0 3.14159265359 3.14159265359"/>
+      </xacro:rh_p12_rn_a>
+    </xacro:unless>
+  </xacro:if>
+</robot>
