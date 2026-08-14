@@ -1,0 +1,6 @@
+The ViperX geometry and calibrated MuJoCo arm model are derived from the
+MuJoCo Menagerie ALOHA model, licensed under BSD-3-Clause. The bundled copy of
+that license is in LICENSES/BSD-3-Clause.txt.
+
+The mobile base is a simplified Tracer-compatible differential-drive model intended
+for controller integration tests; it is not a calibrated dynamics model.

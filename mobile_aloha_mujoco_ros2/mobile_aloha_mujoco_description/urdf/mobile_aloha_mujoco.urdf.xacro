@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mobile_aloha_mujoco">
+  <xacro:arg name="headless" default="false"/>
+  <xacro:include filename="$(find mobile_aloha_mujoco_description)/urdf/mobile_aloha.urdf.xacro"/>
+  <xacro:include filename="$(find mobile_aloha_mujoco_description)/urdf/mobile_aloha.ros2_control.xacro"/>
+  <xacro:mobile_aloha_ros2_control headless="$(arg headless)"/>
+</robot>

@@ -1,0 +1,82 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 100
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+      mobile_base_controller:
+        type: diff_drive_controller/DiffDriveController
+      arm_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      arm_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      gripper_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      gripper_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+  mobile_base_controller:
+    ros__parameters:
+      left_wheel_names: [left_wheel_joint]
+      right_wheel_names: [right_wheel_joint]
+      wheel_separation: 0.6
+      wheel_radius: 0.075
+      odom_frame_id: odom
+      base_frame_id: base_link
+      tf_frame_prefix_enable: false
+      position_feedback: false
+      open_loop: false
+      enable_odom_tf: true
+      cmd_vel_timeout: 0.5
+      publish_limited_velocity: true
+      velocity_rolling_window_size: 10
+      linear.x.max_velocity: 1.0
+      linear.x.min_velocity: -1.0
+      linear.x.max_acceleration: 0.8
+      linear.x.max_deceleration: -0.8
+      linear.x.max_acceleration_reverse: -0.8
+      linear.x.max_deceleration_reverse: 0.8
+      angular.z.max_velocity: 1.2
+      angular.z.min_velocity: -1.2
+      angular.z.max_acceleration: 1.5
+      angular.z.max_deceleration: -1.5
+      angular.z.max_acceleration_reverse: -1.5
+      angular.z.max_deceleration_reverse: 1.5
+
+  arm_left_controller:
+    ros__parameters:
+      joints: [left_waist, left_shoulder, left_elbow, left_forearm_roll,
+               left_wrist_angle, left_wrist_rotate]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  arm_right_controller:
+    ros__parameters:
+      joints: [right_waist, right_shoulder, right_elbow, right_forearm_roll,
+               right_wrist_angle, right_wrist_rotate]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  gripper_left_controller:
+    ros__parameters:
+      joints: [left_left_finger]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  gripper_right_controller:
+    ros__parameters:
+      joints: [right_left_finger]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      set_last_command_interface_value_as_state_on_activation: false
