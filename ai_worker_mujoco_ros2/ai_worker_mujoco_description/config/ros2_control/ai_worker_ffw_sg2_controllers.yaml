@@ -202,9 +202,12 @@
       enabled_steering_angular_velocity_limit: true
       steering_angular_velocity_limit: 100.0
       steering_alignment_angle_error_threshold: 1.0
-      steering_alignment_start_angle_error_threshold: 0.01
+      steering_alignment_start_angle_error_threshold: 0.2
       steering_alignment_start_speed_error_threshold: 0.1
+      linear_vel_deadband: 0.0
+      angular_vel_deadband: 0.0
       enabled_open_loop: false
+      enabled_speed_limits: false
 
       cmd_vel_topic: /cmd_vel
       cmd_vel_timeout: 1.0
@@ -213,4 +216,6 @@
       base_frame_id: base_link
       odom_frame_id: odom
       enable_odom_tf: true
+      pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+      twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
       velocity_rolling_window_size: 10

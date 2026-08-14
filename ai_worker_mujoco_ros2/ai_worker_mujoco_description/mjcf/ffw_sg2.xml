@@ -43,13 +43,13 @@
       <joint frictionloss="0.1" armature="0.5" damping="200.0"/>
       <position kp="5000" forcerange="-2000 2000"/>
       <default class="left_wheel_steer">
-        <joint axis="0 0 1" range="-1.58 1.58"/>
+        <joint axis="0 0 1" range="-18.84955592153876 18.84955592153876"/>
       </default>
       <default class="right_wheel_steer">
-        <joint axis="0 0 1" range="-1.58 1.58"/>
+        <joint axis="0 0 1" range="-18.84955592153876 18.84955592153876"/>
       </default>
       <default class="rear_wheel_steer">
-        <joint axis="0 0 1" range="-1.58 1.58"/>
+        <joint axis="0 0 1" range="-18.84955592153876 18.84955592153876"/>
       </default>
     </default>
     <!-- Wheel drive -->

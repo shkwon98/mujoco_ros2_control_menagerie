@@ -302,6 +302,8 @@ def launch_setup(context, *args, **kwargs):
                 output="screen",
                 arguments=[
                     "swerve_drive_controller",
+                    "--controller-ros-args",
+                    "--ros-args --remap /control/body/odom:=/odom",
                     "--ros-args",
                     "--log-level",
                     log_level,
