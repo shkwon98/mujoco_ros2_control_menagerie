@@ -1,0 +1,1716 @@
+<?xml version="1.0" ?>
+<!-- =================================================================================== -->
+<!-- Generated from the official AgiBot G2 swiftpicker description. -->
+<!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
+<!-- =================================================================================== -->
+<robot name="g2_crsB_swiftpicker">
+	<!-- Material Definition -->
+	<material name="default">
+		<color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1"/>
+	</material>
+	<material name="black">
+		<color rgba="0.0 0.0 0.0 1.0"/>
+	</material>
+	<material name="blue">
+		<color rgba="0.0 0.0 0.8 1.0"/>
+	</material>
+	<material name="green">
+		<color rgba="0.0 1.0 0.0 1.0"/>
+	</material>
+	<material name="grey">
+		<color rgba="0.2 0.2 0.2 1.0"/>
+	</material>
+	<material name="orange">
+		<color rgba="1.0 0.4235294117647059 0.0392156862745098 1.0"/>
+	</material>
+	<material name="brown">
+		<color rgba="0.8705882352941177 0.8117647058823529 0.7647058823529411 1.0"/>
+	</material>
+	<material name="red">
+		<color rgba="0.8 0.0 0.0 1.0"/>
+	</material>
+	<material name="white">
+		<color rgba="1.0 1.0 1.0 1.0"/>
+	</material>
+	<material name="silver">
+		<color rgba="0.9137254901960784 0.9137254901960784 0.8470588235294118 1.0"/>
+	</material>
+	<!-- DexHand -->
+	<material name="tips">
+		<color rgba="1 0.16863 0.16863 1"/>
+	</material>
+	<material name="metacarpals">
+		<color rgba="0.65098 0.61961 0.58824 1"/>
+	</material>
+	<!-- Base -->
+	<link name="base_link">
+		<!--
+        Inertia is expressed in its principal frame: <origin rpy> rotates
+        the link frame into the principal frame, <inertia> is diagonal.
+        Equivalent to the URDF full-tensor form; matches USD PhysicsMassAPI
+        (diagonalInertia + principalAxes). Values are computed from the
+        link's visual mesh under uniform density (rho = mass / volume);
+        mass is taken from operator/CAD calibration and preserved.
+      -->
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0 0.0 0.15"/>
+			<mass value="80.0"/>
+			<inertia ixx="3.1199677" ixy="0" ixz="0" iyy="3.5089187" iyz="0" izz="5.2989372"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/base_link.obj"/>
+			</geometry>
+		</visual>
+		<collision name="base_link_coarse_0">
+			<origin rpy="0 0 0" xyz="0.011247277 -0.23094544 0.16291195"/>
+			<geometry>
+				<box size="0.62673163 0.17409083 0.3258258"/>
+			</geometry>
+		</collision>
+		<collision name="base_link_coarse_1">
+			<origin rpy="0 0 0" xyz="0.011277318 0.23441666 0.16291195"/>
+			<geometry>
+				<box size="0.62667394 0.18714839 0.3258258"/>
+			</geometry>
+		</collision>
+		<collision name="base_link_coarse_2">
+			<origin rpy="0 0 0" xyz="0.01230073 -0.01307106 0.11483914"/>
+			<geometry>
+				<box size="0.6246023 0.23870158 0.06967827"/>
+			</geometry>
+		</collision>
+		<collision name="base_link_coarse_3">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/base_link_1.STL"/>
+			</geometry>
+		</collision>
+		<collision name="base_link_coarse_4">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/base_link_2.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<link name="body_link1">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0 0.0 0.175561673292876"/>
+			<mass value="10.0"/>
+			<inertia ixx="0.25937819" ixy="0" ixz="0" iyy="0.24426878" iyz="0" izz="0.039095076"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/body_link1.obj"/>
+			</geometry>
+		</visual>
+		<collision name="body_link1_coarse_0">
+			<origin rpy="1.570796 0 0" xyz="0 0 0"/>
+			<geometry>
+				<cylinder length="0.153391" radius="0.089146"/>
+			</geometry>
+		</collision>
+		<collision name="body_link1_coarse_1">
+			<origin rpy="1.570796 0 0" xyz="0 0 0.36"/>
+			<geometry>
+				<cylinder length="0.153391" radius="0.089146"/>
+			</geometry>
+		</collision>
+		<collision name="body_link1_coarse_2">
+			<origin rpy="0 0 0" xyz="-0.024457 0 0.18"/>
+			<geometry>
+				<box size="0.085594 0.176618 0.351288"/>
+			</geometry>
+		</collision>
+		<collision name="body_link1_coarse_3">
+			<origin rpy="0 0 0" xyz="-0.009824 0.075429 0.180136"/>
+			<geometry>
+				<box size="0.112587 0.027062 0.240828"/>
+			</geometry>
+		</collision>
+		<collision name="body_link1_coarse_4">
+			<origin rpy="0 0 0" xyz="-0.009824 -0.075429 0.180136"/>
+			<geometry>
+				<box size="0.112587 0.027062 0.240828"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx01_body_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="0.102 0 0.144"/>
+		<parent link="base_link"/>
+		<child link="body_link1"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="50" lower="-1.0822" upper="0.0001" velocity="1.21"/>
+		<drive damping="1000" stiffness="100000"/>
+	</joint>
+	<link name="body_link2">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0 0.0 0.185408475115362"/>
+			<mass value="12.4"/>
+			<inertia ixx="0.36085406" ixy="0" ixz="0" iyy="0.25211292" iyz="0" izz="0.1476247"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/body_link2.obj"/>
+			</geometry>
+		</visual>
+		<collision_checking>
+			<convex name="body_link2_convex_0"/>
+		</collision_checking>
+		<collision name="body_link2_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/body_link2.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx02_body_joint2" type="revolute">
+		<origin rpy="0 0 0" xyz="0 0 0.36"/>
+		<parent link="body_link1"/>
+		<child link="body_link2"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="50" lower="-0.0001" upper="2.653" velocity="1.21"/>
+		<drive damping="1000" stiffness="100000"/>
+	</joint>
+	<link name="body_link3">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+			<mass value="7.3"/>
+			<inertia ixx="0.029582642" ixy="0" ixz="0" iyy="0.027682651" iyz="0" izz="0.034064241"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/body_link3.obj"/>
+			</geometry>
+		</visual>
+		<collision_checking>
+			<convex name="body_link3_convex_0"/>
+		</collision_checking>
+		<collision name="body_link3_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/body_link3.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx03_body_joint3" type="revolute">
+		<origin rpy="0 0 0" xyz="0 0 0.38"/>
+		<parent link="body_link2"/>
+		<child link="body_link3"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="50" lower="-1.907" upper="1.039" velocity="1.21"/>
+		<drive damping="1000" stiffness="100000"/>
+	</joint>
+	<link name="body_link4">
+		<inertial>
+			<origin rpy="-5.500936e-06 -0.66395993 -2.2512849e-06" xyz="-0.0714497732220123 0.0 0.0300405432603843"/>
+			<mass value="6.25"/>
+			<inertia ixx="0.004042693" ixy="0" ixz="0" iyy="0.10648367" iyz="0" izz="0.12366844"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/body_link4.obj"/>
+			</geometry>
+		</visual>
+		<collision_checking>
+			<convex name="body_link4_convex_1"/>
+			<convex name="body_link4_convex_2"/>
+			<convex name="body_link4_convex_3"/>
+		</collision_checking>
+		<collision name="body_link4_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/body_link4_1.STL"/>
+			</geometry>
+		</collision>
+		<collision name="body_link4_convex_1">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/body_link4_2.STL"/>
+			</geometry>
+		</collision>
+		<collision name="body_link4_convex_2">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/body_link4_3.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx04_body_joint4" type="revolute">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+		<parent link="body_link3"/>
+		<child link="body_link4"/>
+		<axis xyz="1 0 0"/>
+		<limit effort="50" lower="-0.4364" upper="0.4364" velocity="1.21"/>
+		<drive damping="1000" stiffness="100000"/>
+	</joint>
+	<link name="body_link5">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.0244423519676249 0.0 0.136945087391502"/>
+			<mass value="7.9"/>
+			<inertia ixx="0.24990702" ixy="0" ixz="0" iyy="0.23534933" iyz="0" izz="0.071565537"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/body_link5.obj"/>
+			</geometry>
+		</visual>
+		<collision_checking>
+			<convex name="body_link5_convex_0"/>
+		</collision_checking>
+		<collision name="body_link5_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/body_link5.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx05_body_joint5" type="revolute">
+		<origin rpy="0 0 0" xyz="0 0 0.149"/>
+		<parent link="body_link4"/>
+		<child link="body_link5"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="50" lower="-3.0456" upper="3.0456" velocity="1.21"/>
+		<drive damping="1000" stiffness="100000"/>
+	</joint>
+	<!-- Arm mount -->
+	<link name="arm_base_link">
+		<inertial>
+			<origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+	</link>
+	<joint name="idx20_arm_base_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0.3085"/>
+		<parent link="body_link5"/>
+		<child link="arm_base_link"/>
+		<axis xyz="0 0 0"/>
+	</joint>
+	<!-- Head -->
+	<link name="head_base_link">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+	</link>
+	<joint name="idx10_head_base_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="-0.013 0 0.496"/>
+		<parent link="body_link5"/>
+		<child link="head_base_link"/>
+		<axis xyz="0 0 0"/>
+	</joint>
+	<link name="head_link1">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.0 0.0 -0.0288855031850013"/>
+			<mass value="0.245638470524919"/>
+			<inertia ixx="0.00090246038" ixy="0" ixz="0" iyy="0.00084988987" iyz="0" izz="4.8123345e-05"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/head_link1.obj"/>
+			</geometry>
+		</visual>
+		<collision name="head_link1_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/head_link1.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx11_head_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="-0.013 0 0.496"/>
+		<parent link="body_link5"/>
+		<child link="head_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="50" lower="-0.781" upper="0.781" velocity="2.5"/>
+		<drive damping="20" stiffness="1000"/>
+	</joint>
+	<link name="head_link2">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.0363590807062005 0.0 0.0"/>
+			<mass value="0.0944986936701784"/>
+			<inertia ixx="3.5109823e-05" ixy="0" ixz="0" iyy="5.3548035e-05" iyz="0" izz="5.0428732e-05"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/head_link2.obj"/>
+			</geometry>
+		</visual>
+		<collision name="head_link2_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/head_link2.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx12_head_joint2" type="revolute">
+		<origin rpy="0 0 0" xyz="0.03335 0 0.07"/>
+		<parent link="head_link1"/>
+		<child link="head_link2"/>
+		<axis xyz="1 0 0"/>
+		<limit effort="50" lower="-0.151" upper="0.151" velocity="2.5"/>
+		<drive damping="20" stiffness="1000"/>
+	</joint>
+	<link name="head_link3">
+		<inertial>
+			<origin rpy="-0.00018539305 0.38563878 -0.00095255121" xyz="-0.00327292724863273 0.0 0.0163618254217082"/>
+			<mass value="2.5"/>
+			<inertia ixx="0.017589528" ixy="0" ixz="0" iyy="0.01422525" iyz="0" izz="0.010634233"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/head_link3.obj"/>
+			</geometry>
+		</visual>
+		<collision_checking>
+			<convex name="head_link3_convex_0"/>
+		</collision_checking>
+		<collision name="head_link3_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/G2/convex/head_link3.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx13_head_joint3" type="revolute">
+		<origin rpy="0 0 0" xyz="-0.03035 0 0"/>
+		<parent link="head_link2"/>
+		<child link="head_link3"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="50" lower="-0.0181" upper="0.5231" velocity="2.5"/>
+		<drive damping="20" stiffness="1000"/>
+	</joint>
+	<!-- Base Joint -->
+	<joint name="idx100_chassis_base_joint" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="chassis_link"/>
+	</joint>
+	<!-- Chassis -->
+	<link name="chassis_link">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+	</link>
+	<!-- Left-front wheel -->
+	<link name="chassis_lwheel_front_link1">
+		<inertial>
+			<origin rpy="-0.59060787 -0.00032074058 9.7568723e-05" xyz="4.8347e-05 -0.021386 -0.055149"/>
+			<mass value="0.59301"/>
+			<inertia ixx="0.0011622608" ixy="0" ixz="0" iyy="0.0010945563" iyz="0" izz="0.00027125101"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_lwheel_front_link1.obj"/>
+			</geometry>
+		</visual>
+	</link>
+	<joint name="idx111_chassis_lwheel_front_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="0.23 0.218 0.16675"/>
+		<parent link="chassis_link"/>
+		<child link="chassis_lwheel_front_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="15" lower="-2.97" upper="2.97" velocity="4.08"/>
+	</joint>
+	<link name="chassis_lwheel_front_link2">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-2.3442e-06 -0.0013086 1.0892e-05"/>
+			<mass value="3.6283"/>
+			<inertia ixx="0.0053807877" ixy="0" ixz="0" iyy="0.0082877079" iyz="0" izz="0.00571362"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_lwheel_front_link2.obj"/>
+			</geometry>
+		</visual>
+		<collision name="chassis_lwheel_front_link2_collision">
+			<origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+			<geometry>
+				<cylinder length="0.05" radius="0.07"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx112_chassis_lwheel_front_joint2" type="continuous">
+		<origin rpy="0 0 0" xyz="0 -5E-05 -0.13675"/>
+		<parent link="chassis_lwheel_front_link1"/>
+		<child link="chassis_lwheel_front_link2"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="8" lower="0" upper="0" velocity="20.9"/>
+	</joint>
+	<!-- Right-front wheel -->
+	<link name="chassis_rwheel_front_link1">
+		<inertial>
+			<origin rpy="0.59060787 0.00032091139 9.7620683e-05" xyz="-4.8347e-05 0.021386 -0.055149"/>
+			<mass value="0.59301"/>
+			<inertia ixx="0.0011622608" ixy="0" ixz="0" iyy="0.0010945563" iyz="0" izz="0.000271251"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_rwheel_front_link1.obj"/>
+			</geometry>
+		</visual>
+	</link>
+	<joint name="idx131_chassis_rwheel_front_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="0.23 -0.218 0.16675"/>
+		<parent link="chassis_link"/>
+		<child link="chassis_rwheel_front_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="15" lower="-2.97" upper="2.97" velocity="4.08"/>
+	</joint>
+	<link name="chassis_rwheel_front_link2">
+		<inertial>
+			<origin rpy="0 0 0" xyz="2.3442e-06 0.0013086 1.0892e-05"/>
+			<mass value="3.6283"/>
+			<inertia ixx="0.0053807877" ixy="0" ixz="0" iyy="0.0082877079" iyz="0" izz="0.00571362"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_rwheel_front_link2.obj"/>
+			</geometry>
+		</visual>
+		<collision name="chassis_rwheel_front_link2_collision">
+			<origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+			<geometry>
+				<cylinder length="0.05" radius="0.07"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx132_chassis_rwheel_front_joint2" type="continuous">
+		<origin rpy="0 0 0" xyz="0 5E-05 -0.13675"/>
+		<parent link="chassis_rwheel_front_link1"/>
+		<child link="chassis_rwheel_front_link2"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="8" lower="0" upper="0" velocity="20.9"/>
+	</joint>
+	<!-- Right-rear wheel -->
+	<link name="chassis_rwheel_rear_link1">
+		<inertial>
+			<origin rpy="0.59060787 0.00032091139 9.7620683e-05" xyz="-4.8347e-05 0.021386 -0.055149"/>
+			<mass value="0.59301"/>
+			<inertia ixx="0.0011622608" ixy="0" ixz="0" iyy="0.0010945563" iyz="0" izz="0.000271251"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_rwheel_rear_link1.obj"/>
+			</geometry>
+		</visual>
+	</link>
+	<joint name="idx141_chassis_rwheel_rear_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="-0.23 -0.218 0.16675"/>
+		<parent link="chassis_link"/>
+		<child link="chassis_rwheel_rear_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="15" lower="-2.97" upper="2.97" velocity="4.08"/>
+	</joint>
+	<link name="chassis_rwheel_rear_link2">
+		<inertial>
+			<origin rpy="0 0 0" xyz="2.3442e-06 0.0013086 1.0892e-05"/>
+			<mass value="3.6283"/>
+			<inertia ixx="0.0053807877" ixy="0" ixz="0" iyy="0.0082877079" iyz="0" izz="0.00571362"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_rwheel_rear_link2.obj"/>
+			</geometry>
+		</visual>
+		<collision name="chassis_rwheel_rear_link2_collision">
+			<origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+			<geometry>
+				<cylinder length="0.05" radius="0.07"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx142_chassis_rwheel_rear_joint2" type="continuous">
+		<origin rpy="0 0 0" xyz="0 5E-05 -0.13675"/>
+		<parent link="chassis_rwheel_rear_link1"/>
+		<child link="chassis_rwheel_rear_link2"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="8" lower="0" upper="0" velocity="20.9"/>
+	</joint>
+	<!-- Left-rear wheel -->
+	<link name="chassis_lwheel_rear_link1">
+		<inertial>
+			<origin rpy="-0.59060787 -0.00032074058 9.7568723e-05" xyz="4.8347e-05 -0.021386 -0.055149"/>
+			<mass value="0.59301"/>
+			<inertia ixx="0.0011622608" ixy="0" ixz="0" iyy="0.0010945563" iyz="0" izz="0.00027125101"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_lwheel_rear_link1.obj"/>
+			</geometry>
+		</visual>
+	</link>
+	<joint name="idx121_chassis_lwheel_rear_joint1" type="revolute">
+		<origin rpy="0 0 0" xyz="-0.23 0.218 0.16675"/>
+		<parent link="chassis_link"/>
+		<child link="chassis_lwheel_rear_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="15" lower="-2.97" upper="2.97" velocity="4.08"/>
+	</joint>
+	<link name="chassis_lwheel_rear_link2">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-2.3442e-06 -0.0013086 1.0892e-05"/>
+			<mass value="3.6283"/>
+			<inertia ixx="0.0053807877" ixy="0" ixz="0" iyy="0.0082877079" iyz="0" izz="0.00571362"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/chassis_lwheel_rear_link2.obj"/>
+			</geometry>
+		</visual>
+		<collision name="chassis_lwheel_rear_link2_collision">
+			<origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+			<geometry>
+				<cylinder length="0.05" radius="0.07"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx122_chassis_lwheel_rear_joint2" type="continuous">
+		<origin rpy="0 0 0" xyz="0 -5E-05 -0.13675"/>
+		<parent link="chassis_lwheel_rear_link1"/>
+		<child link="chassis_lwheel_rear_link2"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="8" lower="0" upper="0" velocity="20.9"/>
+	</joint>
+	<!-- properties -->
+	<!-- Arm -->
+	<link name="arm_l_link1">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.000184301 0.001568154 0.172803911"/>
+			<mass value="2.17"/>
+			<inertia ixx="0.0045684858" ixy="0" ixz="0" iyy="0.0038299629" iyz="0" izz="0.0036068582"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link1.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link1_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link1_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link1.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx21_arm_l_joint1" type="revolute">
+		<origin rpy="-1.5707963267948966 0 0" xyz="0 0.069 0"/>
+		<parent link="arm_base_link"/>
+		<child link="arm_l_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="108" lower="-3.0718" upper="3.0718" velocity="3.05"/>
+		<dynamics friction="1.0"/>
+		<drive damping="600" stiffness="40000"/>
+	</joint>
+	<link name="arm_l_link2">
+		<inertial>
+			<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0.00179469 -1.6932e-05 -0.106689462"/>
+			<mass value="1.9"/>
+			<inertia ixx="0.0092901245" ixy="0" ixz="0" iyy="0.0040692426" iyz="0" izz="0.011083094"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link2.obj"/>
+			</geometry>
+			<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link2_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link2_convex_0">
+			<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link2.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx22_arm_l_joint2" type="revolute">
+		<origin rpy="3.141592653589793 -3.67320510341607e-06 1.5707963267948966" xyz="0 0 0.1745"/>
+		<parent link="arm_l_link1"/>
+		<child link="arm_l_link2"/>
+		<axis xyz="-1 0 0"/>
+		<limit effort="108" lower="-2.0595" upper="2.0595" velocity="3.05"/>
+		<dynamics friction="1.0"/>
+		<drive damping="600" stiffness="40000"/>
+	</joint>
+	<link name="arm_l_link3">
+		<inertial>
+			<origin rpy="-3.295742e-05 0.121305 0.023560788" xyz="0.008226598 -0.001273425 0.311389109"/>
+			<mass value="1.86"/>
+			<inertia ixx="0.0097378904" ixy="0" ixz="0" iyy="0.0091706347" iyz="0" izz="0.0025401782"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link3.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link3_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link3_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link3.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx23_arm_l_joint3" type="revolute">
+		<origin rpy="3.14158898038469 0 1.5707963267948966" xyz="0 0 0"/>
+		<parent link="arm_l_link2"/>
+		<child link="arm_l_link3"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="35" lower="-3.0718" upper="3.0718" velocity="3.76"/>
+		<dynamics friction="0.5"/>
+		<drive damping="220" stiffness="15000"/>
+	</joint>
+	<link name="arm_l_link4">
+		<inertial>
+			<origin rpy="-1.5707963267948966 0 0" xyz="-0.009241652 0.00217178600000001 -0.084042407"/>
+			<mass value="1.027"/>
+			<inertia ixx="0.0030622237" ixy="0" ixz="0" iyy="0.0018678507" iyz="0" izz="0.0038286479"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link4.obj"/>
+			</geometry>
+			<origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link4_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link4_convex_0">
+			<origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link4.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx24_arm_l_joint4" type="revolute">
+		<origin rpy="-3.14158898038469 0 0" xyz="0.0105 0 0.332"/>
+		<parent link="arm_l_link3"/>
+		<child link="arm_l_link4"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="35" lower="-2.4959" upper="1.0123" velocity="3.76"/>
+		<dynamics friction="0.5"/>
+		<drive damping="220" stiffness="15000"/>
+	</joint>
+	<link name="arm_l_link5">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.000756035 0.000722914 0.191236396"/>
+			<mass value="1.276"/>
+			<inertia ixx="0.0026521167" ixy="0" ixz="0" iyy="0.0020061801" iyz="0" izz="0.0018550889"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link5.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link5_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link5_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link5.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx25_arm_l_joint5" type="revolute">
+		<origin rpy="3.14158898038469 0 0" xyz="-0.0105 0 0"/>
+		<parent link="arm_l_link4"/>
+		<child link="arm_l_link5"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="35" lower="-3.0718" upper="3.0718" velocity="3.35"/>
+		<dynamics friction="0.5"/>
+		<drive damping="220" stiffness="15000"/>
+	</joint>
+	<link name="arm_l_link6">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.003932433 6.1837e-05 -0.000158947"/>
+			<mass value="0.813"/>
+			<inertia ixx="0.00061048339" ixy="0" ixz="0" iyy="0.000847455" iyz="0" izz="0.00079808869"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link6.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link6_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link6_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link6.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx26_arm_l_joint6" type="revolute">
+		<origin rpy="1.5708 0 0" xyz="0 0 0.278"/>
+		<parent link="arm_l_link5"/>
+		<child link="arm_l_link6"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="18" lower="-1.0123" upper="1.0123" velocity="3.35"/>
+		<dynamics friction="0.2"/>
+		<drive damping="100" stiffness="8000"/>
+	</joint>
+	<link name="arm_l_link7">
+		<inertial>
+			<origin rpy="0.0021841338 0.74085621 0.0051921926" xyz="0.052854064 0.000277108 -0.001539537"/>
+			<mass value="0.312"/>
+			<inertia ixx="0.00066707346" ixy="0" ixz="0" iyy="0.00048288787" iyz="0" izz="0.00033761546"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_l_link7.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_l_link7_convex_0"/>
+		</collision_checking>
+		<collision name="arm_l_link7_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_l_link7.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx27_arm_l_joint7" type="revolute">
+		<origin rpy="1.5708 0 1.5708" xyz="0 0 0"/>
+		<parent link="arm_l_link6"/>
+		<child link="arm_l_link7"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="18" lower="-1.5359" upper="1.5359" velocity="3.35"/>
+		<dynamics friction="0.2"/>
+		<drive damping="100" stiffness="8000"/>
+	</joint>
+	<link name="arm_l_end_link">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+	</link>
+	<joint name="arm_l_end_joint" type="fixed">
+		<origin rpy="3.141592653589793 -1.5707963267948966 0" xyz="0.09 0.0 0.0"/>
+		<parent link="arm_l_link7"/>
+		<child link="arm_l_end_link"/>
+	</joint>
+	<!-- properties -->
+	<!-- Arm -->
+	<link name="arm_r_link1">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0.000186337 -0.001542822 0.172784077"/>
+			<mass value="2.17"/>
+			<inertia ixx="0.0045671038" ixy="0" ixz="0" iyy="0.0038292523" iyz="0" izz="0.003606189"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link1.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link1_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link1_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link1.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx61_arm_r_joint1" type="revolute">
+		<origin rpy="1.5707963267948966 0 0" xyz="0 -0.069 0"/>
+		<parent link="arm_base_link"/>
+		<child link="arm_r_link1"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="108" lower="-3.0718" upper="3.0718" velocity="3.05"/>
+		<dynamics friction="1.0"/>
+		<drive damping="600" stiffness="40000"/>
+	</joint>
+	<link name="arm_r_link2">
+		<inertial>
+			<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0.001794536 -1.6928e-05 -0.106691378"/>
+			<mass value="1.9"/>
+			<inertia ixx="0.0092902802" ixy="0" ixz="0" iyy="0.004069242" iyz="0" izz="0.011083249"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link2.obj"/>
+			</geometry>
+			<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link2_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link2_convex_0">
+			<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link2.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx62_arm_r_joint2" type="revolute">
+		<origin rpy="3.141592653589793 0 -1.5707963267948966" xyz="0 0 0.1745"/>
+		<parent link="arm_r_link1"/>
+		<child link="arm_r_link2"/>
+		<axis xyz="1 0 0"/>
+		<limit effort="108" lower="-2.0595" upper="2.0595" velocity="3.05"/>
+		<dynamics friction="1.0"/>
+		<drive damping="600" stiffness="40000"/>
+	</joint>
+	<link name="arm_r_link3">
+		<inertial>
+			<origin rpy="0.00026345619 0.12734597 -0.038029706" xyz="0.009022338 0.000900475 0.312063927"/>
+			<mass value="1.86"/>
+			<inertia ixx="0.0098256538" ixy="0" ixz="0" iyy="0.0092532856" iyz="0" izz="0.0025417526"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link3.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link3_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link3_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link3.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx63_arm_r_joint3" type="revolute">
+		<origin rpy="3.141592653589793 0 -1.5707963267948966" xyz="0 0 0"/>
+		<parent link="arm_r_link2"/>
+		<child link="arm_r_link3"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="35" lower="-3.0718" upper="3.0718" velocity="3.76"/>
+		<dynamics friction="0.5"/>
+		<drive damping="220" stiffness="15000"/>
+	</joint>
+	<link name="arm_r_link4">
+		<inertial>
+			<origin rpy="-1.5707963267948966 0 0" xyz="-0.009272377 -0.00216934999999999 -0.084042199"/>
+			<mass value="1.027"/>
+			<inertia ixx="0.0030622132" ixy="0" ixz="0" iyy="0.0018676121" iyz="0" izz="0.0038284061"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link4.obj"/>
+			</geometry>
+			<origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link4_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link4_convex_0">
+			<origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link4.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx64_arm_r_joint4" type="revolute">
+		<origin rpy="3.141592653589793 0 0" xyz="0.0105 0 0.332"/>
+		<parent link="arm_r_link3"/>
+		<child link="arm_r_link4"/>
+		<axis xyz="0 1 0"/>
+		<limit effort="35" lower="-2.4959" upper="1.0123" velocity="3.76"/>
+		<dynamics friction="0.5"/>
+		<drive damping="220" stiffness="15000"/>
+	</joint>
+	<link name="arm_r_link5">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.000776373 -0.000803696 0.191266219"/>
+			<mass value="1.276"/>
+			<inertia ixx="0.0026524324" ixy="0" ixz="0" iyy="0.0020063812" iyz="0" izz="0.0018552827"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link5.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.62</roughness>
+				<metallic>0.66</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link5_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link5_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link5.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx65_arm_r_joint5" type="revolute">
+		<origin rpy="-3.141592653589793 0 0" xyz="-0.0105 0 0"/>
+		<parent link="arm_r_link4"/>
+		<child link="arm_r_link5"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="35" lower="-3.0718" upper="3.0718" velocity="3.35"/>
+		<dynamics friction="0.5"/>
+		<drive damping="220" stiffness="15000"/>
+	</joint>
+	<link name="arm_r_link6">
+		<inertial>
+			<origin rpy="0 0 0" xyz="-0.003932145 -6.0365e-05 0.000158935"/>
+			<mass value="0.813"/>
+			<inertia ixx="0.00061048324" ixy="0" ixz="0" iyy="0.00084745225" iyz="0" izz="0.0007980861"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link6.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link6_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link6_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link6.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx66_arm_r_joint6" type="revolute">
+		<origin rpy="1.5707963267948966 0 0" xyz="0 0 0.278"/>
+		<parent link="arm_r_link5"/>
+		<child link="arm_r_link6"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="18" lower="-1.0123" upper="1.0123" velocity="3.35"/>
+		<dynamics friction="0.2"/>
+		<drive damping="100" stiffness="8000"/>
+	</joint>
+	<link name="arm_r_link7">
+		<inertial>
+			<origin rpy="-0.00048989154 0.7396867 -0.0047170399" xyz="0.052862978 -0.000632229 -0.00134628"/>
+			<mass value="0.312"/>
+			<inertia ixx="0.00066747328" ixy="0" ixz="0" iyy="0.00048334854" iyz="0" izz="0.00033778095"/>
+		</inertial>
+		<visual name="default_visual">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/arm_r_link7.obj"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision_checking>
+			<convex name="arm_r_link7_convex_0"/>
+		</collision_checking>
+		<collision name="arm_r_link7_convex_0">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/collision/arm/crsB/convex/arm_r_link7.STL"/>
+			</geometry>
+		</collision>
+	</link>
+	<link name="arm_r_end_link">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+	</link>
+	<joint name="idx67_arm_r_joint7" type="revolute">
+		<origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 0 0"/>
+		<parent link="arm_r_link6"/>
+		<child link="arm_r_link7"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="18" lower="-1.5359" upper="1.5359" velocity="3.35"/>
+		<dynamics friction="0.2"/>
+		<drive damping="100" stiffness="8000"/>
+	</joint>
+	<joint name="arm_r_end_joint" type="fixed">
+		<origin rpy="3.141592653589793 -1.5707963267948966 0" xyz="0.09 0.0 0.0"/>
+		<parent link="arm_r_link7"/>
+		<child link="arm_r_end_link"/>
+	</joint>
+	<!-- Camera Link -->
+	<link name="gripper_l_camera_link">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/camera_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_camera_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/camera_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx30_gripper_l_camera_joint" type="fixed">
+		<origin rpy="0 0 1.5707963267948966" xyz="0 0 0.0"/>
+		<parent link="arm_l_end_link"/>
+		<child link="gripper_l_camera_link"/>
+		<axis xyz="0 0 0"/>
+	</joint>
+	<!-- Gripper Base Connector -->
+	<joint name="idx51_gripper_l_base_joint" type="fixed">
+		<origin rpy="3.141592653589793 0 0" xyz="0 0 0.007"/>
+		<parent link="arm_l_end_link"/>
+		<child link="gripper_l_base_link"/>
+		<axis xyz="0 0 0"/>
+	</joint>
+	<!-- (Gripper Center Link removed.)  Was a fixed-joint helper body
+         with mass=0.001 used purely as a TCP / grasp frame for
+         downstream planners.  Removed because it added 1 inertia-bearing
+         body to mjwarp's body list per side while contributing nothing
+         to the physics.  Downstream code (data_collection / curobo /
+         benchmark) is expected to use a different TCP frame
+         (``gripper_${side}_base_link`` is the natural fallback) and
+         apply any z-offset on its own. -->
+	<!-- Gripper Base -->
+	<link name="gripper_l_base_link">
+		<inertial>
+			<origin rpy="3.14012057858979 0.12786537 -1.5841483927949" xyz="4.41448135187968e-05 -3.84872289645122e-06 -0.0553867866771657"/>
+			<mass value="0.953455976099042"/>
+			<inertia ixx="0.0021559171" ixy="0" ixz="0" iyy="0.0020303297" iyz="0" izz="0.00072910428"/>
+		</inertial>
+		<visual>
+			<origin rpy="3.141592653589793 0 -1.5707963267948966" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/swiftpicker_base_link.dae"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_base_link_collision">
+			<origin rpy="3.141592653589793 0 -1.5707963267948966" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/swiftpicker_base_link.dae"/>
+			</geometry>
+		</collision>
+	</link>
+	<!-- Left Inner Finger -->
+	<link name="gripper_l_left_inner_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071221829 0.0187577877878552 2.21631403129407e-14"/>
+			<mass value="0.0309052898336314"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_inner_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_left_inner_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_inner_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx31_gripper_l_inner_joint1" type="revolute">
+		<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 -0.016 -0.121"/>
+		<parent link="gripper_l_base_link"/>
+		<child link="gripper_l_left_inner_link"/>
+		<axis xyz="0 0 -1"/>
+		<!-- master joint of the parallel-jaw mimic chain.  Newton's add_usd
+           reads limit effort into joint_effort_limit which mjwarp
+           bakes as actfrcrange (and actfrclimited true) on the
+           joint.  That hard-caps the total actuator force on the
+           master (P + D combined), regardless of what the runtime
+           PD demands.
+           Old value was effort=5 matching the reference G2 MJCF
+           gainprm.  At runtime kit/stage.py sets master kp=10000
+           via params.yaml drive.gripper.master_stiffness, which
+           means any error of more than 5/10000 = 0.0005 rad (0.03
+           degrees) saturates the cap and the gripper drifts under
+           inertial perturbation from arm motion.  Quantified by
+           test_robot_xml_dynamic.py cross-impact-mode sweep: at
+           the prior effort=5, sweeping arm_l_joint3 by 0.5 rad
+           coupled into gripper_l_outer_joint2 with coupling 0.16
+           and a drift per cycle of about 0.02 rad — the visible
+           "does not hold position when arms move" symptom.
+           effort=50 gives the master 10x more force authority
+           without changing the URDF mass, inertia, or mimic
+           topology.  At kp=10000 the saturation point moves to
+           0.005 rad (0.3 degrees), comfortably above the
+           inertial-coupling error from a 0.5 rad / 0.5 Hz arm
+           sweep.
+           dynamics damping/friction propagate to joint_target_kd
+           and joint_friction respectively; the gripper class's
+           damping=0.05 is authored by
+           assemble_robot._apply_mimic_joint_overlay as mjc:damping
+           (the URDF damping=0 stays since the dynamics block also
+           feeds drive kd which the runtime overrides with
+           params.yaml master_damping=10). -->
+		<limit effort="50" lower="-0.91" upper="0" velocity="2"/>
+		<!-- Fix A (2026-06): damping bumped 0 -> 0.5 N*m*s/rad on every
+           gripper joint (master + 5 mimics).  Without joint damping,
+           the low-Iyy fingertip pad (support_link Iyy=4.2e-6, see
+           Fix B) springs back from contact and the resulting force-
+           modulation between substeps lets grasped round objects
+           (hanger bar) spin in the jaw.  0.5 is small relative to
+           the master's PD damping (kd=200) so it doesn't slow the
+           close, but it absorbs the per-substep oscillation. -->
+		<dynamics damping="0.5" friction="0.01"/>
+	</joint>
+	<!-- Left Outer Finger -->
+	<link name="gripper_l_left_outer_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071221892 0.0187577877882694 2.20960470526592e-14"/>
+			<mass value="0.0309052898336316"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_outer_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_left_outer_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_outer_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx32_gripper_l_outer_joint1" type="revolute">
+		<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 -0.030141 -0.10415"/>
+		<parent link="gripper_l_base_link"/>
+		<child link="gripper_l_left_outer_link"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="10" lower="-0.91" upper="0" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx31_gripper_l_inner_joint1" multiplier="1" offset="0"/>
+	</joint>
+	<!-- Left Support Link -->
+	<link name="gripper_l_left_support_link">
+		<inertial>
+			<origin rpy="3.8703124e-06 -2.5701336e-05 0.29514787" xyz="-0.0177925864232372 0.0354308985297288 -3.45319167880073e-05"/>
+			<mass value="0.0828693338705683"/>
+			<!-- Fix B (2026-06): Iyy bumped 4.20e-6 -> 2.00e-5 (5x).
+             Y is the closing axis; the URDF-authored Iyy was 6.7x
+             lower than Ixx/Izz because the support link is a thin
+             pad oriented across the closing direction.  Under
+             contact torque from a grasped round object (hanger bar)
+             this low Iyy let the pad accelerate angularly 7x faster
+             than about the orthogonal axes, releasing the object to
+             spin.  The bump is a tuning fix, not strictly physical:
+             we're pretending the rubber pad + linkage have more
+             rotational inertia about the closing axis than the
+             solid-body STL would imply. -->
+			<inertia ixx="2.803687e-05" ixy="0" ixz="0" iyy="2.0e-05" iyz="0" izz="2.9771109e-05"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_support_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_left_support_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_support_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx33_gripper_l_left_support_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.040359 0.037365 0"/>
+		<parent link="gripper_l_left_outer_link"/>
+		<child link="gripper_l_left_support_link"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx31_gripper_l_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Right Inner Finger -->
+	<link name="gripper_l_right_inner_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071211299 0.0187577877883374 2.11370080968728e-14"/>
+			<mass value="0.0309052898336316"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_inner_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_right_inner_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_inner_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx34_gripper_l_inner_joint2" type="revolute">
+		<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0 0.016 -0.121"/>
+		<parent link="gripper_l_base_link"/>
+		<child link="gripper_l_right_inner_link"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx31_gripper_l_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Right Outer Finger -->
+	<link name="gripper_l_right_outer_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071211989 0.0187577877891044 2.11409547592425e-14"/>
+			<mass value="0.0309052898336314"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_outer_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_right_outer_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_outer_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx35_gripper_l_outer_joint2" type="revolute">
+		<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0 0.030141 -0.10415"/>
+		<parent link="gripper_l_base_link"/>
+		<child link="gripper_l_right_outer_link"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx31_gripper_l_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Right Support Link -->
+	<link name="gripper_l_right_support_link">
+		<inertial>
+			<origin rpy="-6.7588312e-07 -4.2858103e-05 0.29514126" xyz="-0.0177925878352495 0.0354308970643828 -2.81887513877937e-08"/>
+			<mass value="0.082869359674167"/>
+			<!-- Fix B mirror: Iyy bumped 4.20e-6 -> 2.00e-5.  Mirrors
+             the left_support_link bump above (see comment there). -->
+			<inertia ixx="2.8036899e-05" ixy="0" ixz="0" iyy="2.0e-05" iyz="0" izz="2.9771141e-05"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_support_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_l_right_support_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_support_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx36_gripper_l_right_support_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.040359 0.037365 0"/>
+		<parent link="gripper_l_right_outer_link"/>
+		<child link="gripper_l_right_support_link"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx31_gripper_l_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Camera Link -->
+	<link name="gripper_r_camera_link">
+		<inertial>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<mass value="0.001"/>
+			<inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/camera_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_camera_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/camera_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx70_gripper_r_camera_joint" type="fixed">
+		<origin rpy="0 0 1.5707963267948966" xyz="0 0 0.0"/>
+		<parent link="arm_r_end_link"/>
+		<child link="gripper_r_camera_link"/>
+		<axis xyz="0 0 0"/>
+	</joint>
+	<!-- Gripper Base Connector -->
+	<joint name="idx91_gripper_r_base_joint" type="fixed">
+		<origin rpy="3.141592653589793 0 0" xyz="0 0 0.007"/>
+		<parent link="arm_r_end_link"/>
+		<child link="gripper_r_base_link"/>
+		<axis xyz="0 0 0"/>
+	</joint>
+	<!-- (Gripper Center Link removed.)  Was a fixed-joint helper body
+         with mass=0.001 used purely as a TCP / grasp frame for
+         downstream planners.  Removed because it added 1 inertia-bearing
+         body to mjwarp's body list per side while contributing nothing
+         to the physics.  Downstream code (data_collection / curobo /
+         benchmark) is expected to use a different TCP frame
+         (``gripper_${side}_base_link`` is the natural fallback) and
+         apply any z-offset on its own. -->
+	<!-- Gripper Base -->
+	<link name="gripper_r_base_link">
+		<inertial>
+			<origin rpy="3.14012057858979 0.12786537 -1.5841483927949" xyz="4.41448135187968e-05 -3.84872289645122e-06 -0.0553867866771657"/>
+			<mass value="0.953455976099042"/>
+			<inertia ixx="0.0021559171" ixy="0" ixz="0" iyy="0.0020303297" iyz="0" izz="0.00072910428"/>
+		</inertial>
+		<visual>
+			<origin rpy="3.141592653589793 0 -1.5707963267948966" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/swiftpicker_base_link.dae"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_base_link_collision">
+			<origin rpy="3.141592653589793 0 -1.5707963267948966" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/swiftpicker_base_link.dae"/>
+			</geometry>
+		</collision>
+	</link>
+	<!-- Left Inner Finger -->
+	<link name="gripper_r_left_inner_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071221829 0.0187577877878552 2.21631403129407e-14"/>
+			<mass value="0.0309052898336314"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_inner_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_left_inner_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_inner_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx71_gripper_r_inner_joint1" type="revolute">
+		<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 -0.016 -0.121"/>
+		<parent link="gripper_r_base_link"/>
+		<child link="gripper_r_left_inner_link"/>
+		<axis xyz="0 0 -1"/>
+		<!-- master joint of the parallel-jaw mimic chain.  Newton's add_usd
+           reads limit effort into joint_effort_limit which mjwarp
+           bakes as actfrcrange (and actfrclimited true) on the
+           joint.  That hard-caps the total actuator force on the
+           master (P + D combined), regardless of what the runtime
+           PD demands.
+           Old value was effort=5 matching the reference G2 MJCF
+           gainprm.  At runtime kit/stage.py sets master kp=10000
+           via params.yaml drive.gripper.master_stiffness, which
+           means any error of more than 5/10000 = 0.0005 rad (0.03
+           degrees) saturates the cap and the gripper drifts under
+           inertial perturbation from arm motion.  Quantified by
+           test_robot_xml_dynamic.py cross-impact-mode sweep: at
+           the prior effort=5, sweeping arm_l_joint3 by 0.5 rad
+           coupled into gripper_l_outer_joint2 with coupling 0.16
+           and a drift per cycle of about 0.02 rad — the visible
+           "does not hold position when arms move" symptom.
+           effort=50 gives the master 10x more force authority
+           without changing the URDF mass, inertia, or mimic
+           topology.  At kp=10000 the saturation point moves to
+           0.005 rad (0.3 degrees), comfortably above the
+           inertial-coupling error from a 0.5 rad / 0.5 Hz arm
+           sweep.
+           dynamics damping/friction propagate to joint_target_kd
+           and joint_friction respectively; the gripper class's
+           damping=0.05 is authored by
+           assemble_robot._apply_mimic_joint_overlay as mjc:damping
+           (the URDF damping=0 stays since the dynamics block also
+           feeds drive kd which the runtime overrides with
+           params.yaml master_damping=10). -->
+		<limit effort="50" lower="-0.91" upper="0" velocity="2"/>
+		<!-- Fix A (2026-06): damping bumped 0 -> 0.5 N*m*s/rad on every
+           gripper joint (master + 5 mimics).  Without joint damping,
+           the low-Iyy fingertip pad (support_link Iyy=4.2e-6, see
+           Fix B) springs back from contact and the resulting force-
+           modulation between substeps lets grasped round objects
+           (hanger bar) spin in the jaw.  0.5 is small relative to
+           the master's PD damping (kd=200) so it doesn't slow the
+           close, but it absorbs the per-substep oscillation. -->
+		<dynamics damping="0.5" friction="0.01"/>
+	</joint>
+	<!-- Left Outer Finger -->
+	<link name="gripper_r_left_outer_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071221892 0.0187577877882694 2.20960470526592e-14"/>
+			<mass value="0.0309052898336316"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_outer_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_left_outer_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_outer_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx72_gripper_r_outer_joint1" type="revolute">
+		<origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 -0.030141 -0.10415"/>
+		<parent link="gripper_r_base_link"/>
+		<child link="gripper_r_left_outer_link"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="10" lower="-0.91" upper="0" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx71_gripper_r_inner_joint1" multiplier="1" offset="0"/>
+	</joint>
+	<!-- Left Support Link -->
+	<link name="gripper_r_left_support_link">
+		<inertial>
+			<origin rpy="3.8703124e-06 -2.5701336e-05 0.29514787" xyz="-0.0177925864232372 0.0354308985297288 -3.45319167880073e-05"/>
+			<mass value="0.0828693338705683"/>
+			<!-- Fix B (2026-06): Iyy bumped 4.20e-6 -> 2.00e-5 (5x).
+             Y is the closing axis; the URDF-authored Iyy was 6.7x
+             lower than Ixx/Izz because the support link is a thin
+             pad oriented across the closing direction.  Under
+             contact torque from a grasped round object (hanger bar)
+             this low Iyy let the pad accelerate angularly 7x faster
+             than about the orthogonal axes, releasing the object to
+             spin.  The bump is a tuning fix, not strictly physical:
+             we're pretending the rubber pad + linkage have more
+             rotational inertia about the closing axis than the
+             solid-body STL would imply. -->
+			<inertia ixx="2.803687e-05" ixy="0" ixz="0" iyy="2.0e-05" iyz="0" izz="2.9771109e-05"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_support_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_left_support_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/left_support_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx73_gripper_r_left_support_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.040359 0.037365 0"/>
+		<parent link="gripper_r_left_outer_link"/>
+		<child link="gripper_r_left_support_link"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx71_gripper_r_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Right Inner Finger -->
+	<link name="gripper_r_right_inner_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071211299 0.0187577877883374 2.11370080968728e-14"/>
+			<mass value="0.0309052898336316"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_inner_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_right_inner_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_inner_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx74_gripper_r_inner_joint2" type="revolute">
+		<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0 0.016 -0.121"/>
+		<parent link="gripper_r_base_link"/>
+		<child link="gripper_r_right_inner_link"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx71_gripper_r_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Right Outer Finger -->
+	<link name="gripper_r_right_outer_link">
+		<inertial>
+			<origin rpy="-5.2560057e-05 -9.0648445e-05 0.74689495" xyz="0.0202604071211989 0.0187577877891044 2.11409547592425e-14"/>
+			<mass value="0.0309052898336314"/>
+			<inertia ixx="1.7493977e-06" ixy="0" ixz="0" iyy="1.0327289e-05" iyz="0" izz="9.2048593e-06"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_outer_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_right_outer_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_outer_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx75_gripper_r_outer_joint2" type="revolute">
+		<origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="0 0.030141 -0.10415"/>
+		<parent link="gripper_r_base_link"/>
+		<child link="gripper_r_right_outer_link"/>
+		<axis xyz="0 0 1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx71_gripper_r_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<!-- Right Support Link -->
+	<link name="gripper_r_right_support_link">
+		<inertial>
+			<origin rpy="-6.7588312e-07 -4.2858103e-05 0.29514126" xyz="-0.0177925878352495 0.0354308970643828 -2.81887513877937e-08"/>
+			<mass value="0.082869359674167"/>
+			<!-- Fix B mirror: Iyy bumped 4.20e-6 -> 2.00e-5.  Mirrors
+             the left_support_link bump above (see comment there). -->
+			<inertia ixx="2.8036899e-05" ixy="0" ixz="0" iyy="2.0e-05" iyz="0" izz="2.9771141e-05"/>
+		</inertial>
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_support_link.obj"/>
+			</geometry>
+			<material_override>
+				<roughness>0.45</roughness>
+				<metallic>0.0</metallic>
+			</material_override>
+		</visual>
+		<collision name="gripper_r_right_support_link_collision">
+			<geometry>
+				<mesh filename="package://agibot_g2_mujoco_description/mjcf/assets/full/right_support_link.obj"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="idx76_gripper_r_right_support_joint" type="revolute">
+		<origin rpy="0 0 0" xyz="0.040359 0.037365 0"/>
+		<parent link="gripper_r_right_outer_link"/>
+		<child link="gripper_r_right_support_link"/>
+		<axis xyz="0 0 -1"/>
+		<limit effort="10" lower="0" upper="0.91" velocity="2"/>
+		<dynamics damping="0.5" friction="0.01"/>
+		<mimic joint="idx71_gripper_r_inner_joint1" multiplier="-1" offset="0"/>
+	</joint>
+	<mujoco>
+		<compiler assetdir="assets" balanceinertia="true" discardvisual="false" strippath="false" fusestatic="false"/>
+	</mujoco>
+</robot>

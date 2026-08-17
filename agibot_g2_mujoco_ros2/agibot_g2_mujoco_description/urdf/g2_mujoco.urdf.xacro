@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="agibot_g2_mujoco">
+  <xacro:arg name="headless" default="false"/>
+
+  <xacro:include filename="$(find agibot_g2_mujoco_description)/urdf/g2.urdf"/>
+  <xacro:include filename="$(find agibot_g2_mujoco_description)/urdf/g2.ros2_control.xacro"/>
+  <xacro:g2_mujoco_ros2_control headless="$(arg headless)"/>
+</robot>

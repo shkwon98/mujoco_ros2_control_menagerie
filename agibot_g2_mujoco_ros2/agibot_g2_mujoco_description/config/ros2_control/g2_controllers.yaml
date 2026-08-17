@@ -1,0 +1,156 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 100
+
+      body_joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+      arm_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      arm_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      torso_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      head_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      swerve_drive_controller:
+        type: ffw_swerve_drive_controller/SwerveDriveController
+
+  body_joint_state_broadcaster:
+    ros__parameters:
+      joints:
+        - idx01_body_joint1
+        - idx02_body_joint2
+        - idx03_body_joint3
+        - idx04_body_joint4
+        - idx05_body_joint5
+        - idx11_head_joint1
+        - idx12_head_joint2
+        - idx13_head_joint3
+        - idx21_arm_l_joint1
+        - idx22_arm_l_joint2
+        - idx23_arm_l_joint3
+        - idx24_arm_l_joint4
+        - idx25_arm_l_joint5
+        - idx26_arm_l_joint6
+        - idx27_arm_l_joint7
+        - idx61_arm_r_joint1
+        - idx62_arm_r_joint2
+        - idx63_arm_r_joint3
+        - idx64_arm_r_joint4
+        - idx65_arm_r_joint5
+        - idx66_arm_r_joint6
+        - idx67_arm_r_joint7
+        - idx31_gripper_l_inner_joint1
+        - idx71_gripper_r_inner_joint1
+        - idx111_chassis_lwheel_front_joint1
+        - idx112_chassis_lwheel_front_joint2
+        - idx131_chassis_rwheel_front_joint1
+        - idx132_chassis_rwheel_front_joint2
+        - idx141_chassis_rwheel_rear_joint1
+        - idx142_chassis_rwheel_rear_joint2
+        - idx121_chassis_lwheel_rear_joint1
+        - idx122_chassis_lwheel_rear_joint2
+      interfaces: [position, velocity, effort]
+
+  arm_left_controller:
+    ros__parameters:
+      joints:
+        - idx21_arm_l_joint1
+        - idx22_arm_l_joint2
+        - idx23_arm_l_joint3
+        - idx24_arm_l_joint4
+        - idx25_arm_l_joint5
+        - idx26_arm_l_joint6
+        - idx27_arm_l_joint7
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  arm_right_controller:
+    ros__parameters:
+      joints:
+        - idx61_arm_r_joint1
+        - idx62_arm_r_joint2
+        - idx63_arm_r_joint3
+        - idx64_arm_r_joint4
+        - idx65_arm_r_joint5
+        - idx66_arm_r_joint6
+        - idx67_arm_r_joint7
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  torso_controller:
+    ros__parameters:
+      joints:
+        - idx01_body_joint1
+        - idx02_body_joint2
+        - idx03_body_joint3
+        - idx04_body_joint4
+        - idx05_body_joint5
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  head_controller:
+    ros__parameters:
+      joints: [idx11_head_joint1, idx12_head_joint2, idx13_head_joint3]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  swerve_drive_controller:
+    ros__parameters:
+      steering_joint_names:
+        - idx111_chassis_lwheel_front_joint1
+        - idx131_chassis_rwheel_front_joint1
+        - idx141_chassis_rwheel_rear_joint1
+        - idx121_chassis_lwheel_rear_joint1
+      wheel_joint_names:
+        - idx112_chassis_lwheel_front_joint2
+        - idx132_chassis_rwheel_front_joint2
+        - idx142_chassis_rwheel_rear_joint2
+        - idx122_chassis_lwheel_rear_joint2
+
+      wheel_radius: 0.07
+      module_x_offsets: [0.23, 0.23, -0.23, -0.23]
+      module_y_offsets: [0.218, -0.218, -0.218, 0.218]
+      module_angle_offsets: [0.0, 0.0, 0.0, 0.0]
+      module_steering_limit_lower: [-2.97, -2.97, -2.97, -2.97]
+      module_steering_limit_upper: [2.97, 2.97, 2.97, 2.97]
+      module_wheel_speed_limit_lower: [-30.0, -30.0, -30.0, -30.0]
+      module_wheel_speed_limit_upper: [30.0, 30.0, 30.0, 30.0]
+
+      enabled_steering_angular_velocity_limit: true
+      steering_angular_velocity_limit: 10.0
+      steering_alignment_angle_error_threshold: 1.0
+      steering_alignment_start_angle_error_threshold: 0.2
+      steering_alignment_start_speed_error_threshold: 0.1
+      linear_vel_deadband: 0.0
+      angular_vel_deadband: 0.0
+      enabled_open_loop: false
+      enabled_speed_limits: false
+
+      cmd_vel_topic: /cmd_vel
+      cmd_vel_timeout: 0.5
+      odom_solver_method: svd
+      odom_source: feedback
+      base_frame_id: base_link
+      odom_frame_id: odom
+      enable_odom_tf: true
+      pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+      twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+      velocity_rolling_window_size: 10
