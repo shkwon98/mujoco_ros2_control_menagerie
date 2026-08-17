@@ -16,6 +16,7 @@ standard ROS 2 interfaces.
 
 | Robot | Launch package | `robot_model` values | Notes |
 | --- | --- | --- | --- |
+| AgiBot G2 | `agibot_g2_mujoco_bringup` | — | Dual-arm robot with torso, head, and four-module swerve-base control |
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
 | Mobile ALOHA | `mobile_aloha_mujoco_bringup` | - | Dual ViperX 300S arms with parallel grippers on a simplified Tracer-compatible skid-steer base |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
@@ -47,6 +48,15 @@ source install/setup.bash
 
 Run one bringup at a time unless you intentionally isolate them with different
 ROS domains or namespaces.
+
+### AgiBot G2
+
+```bash
+ros2 launch agibot_g2_mujoco_bringup robot.launch.py
+```
+
+Use `headless:=true` to run without the MuJoCo viewer. The four-module swerve
+base accepts `geometry_msgs/msg/Twist` on `/cmd_vel` and publishes `/odom`.
 
 ### AI Worker
 
@@ -204,12 +214,14 @@ present.
 
 ### Mobile base
 
-AI Worker `ffw_sg2` and `ffw_sh5`, RBY1 `a` and `m`, and Mobile ALOHA accept
-planar velocity commands on:
+AgiBot G2, AI Worker `ffw_sg2` and `ffw_sh5`, RBY1 `a` and `m`, and Mobile
+ALOHA accept planar velocity commands on:
 
 ```text
 /cmd_vel
 ```
+
+They publish planar odometry on `/odom`.
 
 The AI Worker swerve variants additionally expose their lower-level controller
 interfaces:
