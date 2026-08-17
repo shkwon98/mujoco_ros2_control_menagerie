@@ -7,6 +7,7 @@
   <maintainer email="shkwon@tommoro.ai">Sunghyun Kwon</maintainer>
   <license>MPL-2.0</license>
   <license>BSD-3-Clause</license>
+  <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

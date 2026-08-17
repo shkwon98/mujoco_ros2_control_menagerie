@@ -1,0 +1,113 @@
+<mujoco model="mobile_aloha_piper">
+  <compiler angle="radian" autolimits="true"/>
+
+  <option cone="elliptic" impratio="10" integrator="implicitfast"/>
+
+  <statistic center="0 0 0.7" extent="1.6"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="140" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <model name="piper_follower" file="piper/piper.xml"/>
+    <model name="piper_leader" file="piper/piper_leader.xml"/>
+    <mesh name="mobile_aloha_body_0" file="official/body_0.STL"/>
+    <mesh name="mobile_aloha_body_1" file="official/body_1.STL"/>
+    <mesh name="mobile_aloha_body_2" file="official/body_2.STL"/>
+    <mesh name="mobile_aloha_body_3" file="official/body_3.STL"/>
+    <mesh name="mobile_aloha_body_4" file="official/body_4.STL"/>
+    <mesh name="mobile_aloha_body_5" file="official/body_5.STL"/>
+    <mesh name="mobile_aloha_body_6" file="official/body_6.STL"/>
+    <mesh name="tracer_base" file="official/tracer_base.STL"/>
+    <material name="black" rgba="0.08 0.10 0.12 1"/>
+    <material name="body_white" rgba="0.79 0.82 0.93 1"/>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0"
+             width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge"
+             rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8"
+             width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true"
+              texrepeat="5 5" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <geom name="floor" type="plane" size="0 0 0.05" material="groundplane"/>
+    <light pos="0 0 4" dir="0 0 -1" directional="true"/>
+
+    <body name="base_link" pos="0 0 0.15">
+      <freejoint name="floating_base_joint"/>
+      <inertial pos="0 0 0" mass="30" diaginertia="1.0 1.2 1.5"/>
+      <geom name="chassis_visual" type="mesh" mesh="tracer_base" material="body_white"
+            contype="0" conaffinity="0" density="0"/>
+      <geom name="chassis" type="box" size="0.34 0.285 0.08" rgba="0 0 0 0" condim="6"/>
+
+      <body name="left_wheel_link" pos="0 0.30 -0.075">
+        <joint name="left_wheel_joint" axis="0 1 0" armature="0.01" damping="0.1"/>
+        <geom type="cylinder" size="0.075 0.035" euler="1.57079632679 0 0"
+              material="black" friction="1.2 0.01 0.001"/>
+      </body>
+      <body name="right_wheel_link" pos="0 -0.30 -0.075">
+        <joint name="right_wheel_joint" axis="0 1 0" armature="0.01" damping="0.1"/>
+        <geom type="cylinder" size="0.075 0.035" euler="1.57079632679 0 0"
+              material="black" friction="1.2 0.01 0.001"/>
+      </body>
+
+      <!-- Passive supports approximate the four Tracer caster assemblies. -->
+      <geom name="front_left_caster" type="sphere" pos="0.25 0.24 -0.115" size="0.035"
+            material="black" friction="0.01 0.001 0.0001" priority="1"/>
+      <geom name="front_right_caster" type="sphere" pos="0.25 -0.24 -0.115" size="0.035"
+            material="black" friction="0.01 0.001 0.0001" priority="1"/>
+      <geom name="rear_left_caster" type="sphere" pos="-0.25 0.24 -0.115" size="0.035"
+            material="black" friction="0.01 0.001 0.0001" priority="1"/>
+      <geom name="rear_right_caster" type="sphere" pos="-0.25 -0.24 -0.115" size="0.035"
+            material="black" friction="0.01 0.001 0.0001" priority="1"/>
+
+      <body name="frame">
+        <geom name="mobile_aloha_body_0" type="mesh" mesh="mobile_aloha_body_0" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+        <geom name="mobile_aloha_body_1" type="mesh" mesh="mobile_aloha_body_1" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+        <geom name="mobile_aloha_body_2" type="mesh" mesh="mobile_aloha_body_2" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+        <geom name="mobile_aloha_body_3" type="mesh" mesh="mobile_aloha_body_3" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+        <geom name="mobile_aloha_body_4" type="mesh" mesh="mobile_aloha_body_4" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+        <geom name="mobile_aloha_body_5" type="mesh" mesh="mobile_aloha_body_5" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+        <geom name="mobile_aloha_body_6" type="mesh" mesh="mobile_aloha_body_6" pos="0 0 0.018"
+              euler="0 0 3.14159265359" material="body_white" contype="0" conaffinity="0" density="0"/>
+
+        <body name="fl_mount" pos="0.23875 0.3 0.625">
+          <attach model="piper_follower" body="base_link" prefix="fl_"/>
+        </body>
+        <body name="fr_mount" pos="0.23875 -0.3 0.625">
+          <attach model="piper_follower" body="base_link" prefix="fr_"/>
+        </body>
+        <body name="bl_mount" pos="-0.379 0.3075 0.751">
+          <attach model="piper_leader" body="base_link" prefix="bl_"/>
+        </body>
+        <body name="br_mount" pos="-0.379 -0.3075 0.751">
+          <attach model="piper_leader" body="base_link" prefix="br_"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <velocity name="left_wheel" joint="left_wheel_joint" kv="30"/>
+    <velocity name="right_wheel" joint="right_wheel_joint" kv="30"/>
+  </actuator>
+
+  <keyframe>
+    <key name="home"
+         qpos="0 0 0.15 1 0 0 0  0 0
+                0 1.57 -1.3485 0 0 0 0 0
+                0 1.57 -1.3485 0 0 0 0 0
+                0 1.57 -1.3485 0 0 0 0 0
+                0 1.57 -1.3485 0 0 0 0 0"/>
+  </keyframe>
+</mujoco>

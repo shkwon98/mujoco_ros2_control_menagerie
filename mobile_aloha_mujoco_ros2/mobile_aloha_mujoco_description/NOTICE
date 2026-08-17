@@ -2,5 +2,14 @@ The ViperX geometry and calibrated MuJoCo arm model are derived from the
 MuJoCo Menagerie ALOHA model, licensed under BSD-3-Clause. The bundled copy of
 that license is in LICENSES/BSD-3-Clause.txt.
 
+The PiPER MuJoCo model and meshes are derived from the MuJoCo Menagerie
+AgileX PiPER model, licensed under MIT. The bundled copy of that license is in
+LICENSES/AgileX-PiPER-MIT.txt.
+
+The Mobile ALOHA body, Tracer base, and leader/follower end-effector meshes
+are derived from https://github.com/agilexrobotics/mobile_aloha_sim at revision
+f799ae0192c0c2bbd502ec4d9bbec8c2633acd1a. Its aloha_new_description package
+declares the assets under BSD.
+
 The mobile base is a simplified Tracer-compatible differential-drive model intended
 for controller integration tests; it is not a calibrated dynamics model.

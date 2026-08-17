@@ -1,0 +1,124 @@
+/**:
+  controller_manager:
+    ros__parameters:
+      update_rate: 100
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+      mobile_base_controller:
+        type: diff_drive_controller/DiffDriveController
+      arm_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      arm_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      gripper_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      gripper_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      leader_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      leader_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      leader_gripper_left_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+      leader_gripper_right_controller:
+        type: joint_trajectory_controller/JointTrajectoryController
+
+  mobile_base_controller:
+    ros__parameters:
+      left_wheel_names: [left_wheel_joint]
+      right_wheel_names: [right_wheel_joint]
+      wheel_separation: 0.6
+      wheel_radius: 0.075
+      odom_frame_id: odom
+      base_frame_id: base_link
+      tf_frame_prefix_enable: false
+      position_feedback: false
+      open_loop: false
+      enable_odom_tf: true
+      cmd_vel_timeout: 0.5
+      publish_limited_velocity: true
+      velocity_rolling_window_size: 10
+      linear.x.max_velocity: 1.0
+      linear.x.min_velocity: -1.0
+      linear.x.max_acceleration: 0.8
+      linear.x.max_deceleration: -0.8
+      linear.x.max_acceleration_reverse: -0.8
+      linear.x.max_deceleration_reverse: 0.8
+      angular.z.max_velocity: 1.2
+      angular.z.min_velocity: -1.2
+      angular.z.max_acceleration: 1.5
+      angular.z.max_deceleration: -1.5
+      angular.z.max_acceleration_reverse: -1.5
+      angular.z.max_deceleration_reverse: 1.5
+
+  arm_left_controller:
+    ros__parameters:
+      joints: [fl_joint1, fl_joint2, fl_joint3, fl_joint4, fl_joint5, fl_joint6]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  arm_right_controller:
+    ros__parameters:
+      joints: [fr_joint1, fr_joint2, fr_joint3, fr_joint4, fr_joint5, fr_joint6]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  gripper_left_controller:
+    ros__parameters:
+      joints: [fl_joint7]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  gripper_right_controller:
+    ros__parameters:
+      joints: [fr_joint7]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  leader_left_controller:
+    ros__parameters:
+      joints: [bl_joint1, bl_joint2, bl_joint3, bl_joint4, bl_joint5, bl_joint6]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  leader_right_controller:
+    ros__parameters:
+      joints: [br_joint1, br_joint2, br_joint3, br_joint4, br_joint5, br_joint6]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      allow_partial_joints_goal: true
+      interpolate_from_desired_state: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  leader_gripper_left_controller:
+    ros__parameters:
+      joints: [bl_joint7]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      set_last_command_interface_value_as_state_on_activation: false
+
+  leader_gripper_right_controller:
+    ros__parameters:
+      joints: [br_joint7]
+      command_interfaces: [position]
+      state_interfaces: [position, velocity]
+      allow_nonzero_velocity_at_trajectory_end: true
+      set_last_command_interface_value_as_state_on_activation: false
