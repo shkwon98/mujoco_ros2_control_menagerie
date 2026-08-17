@@ -18,7 +18,7 @@ standard ROS 2 interfaces.
 | --- | --- | --- | --- |
 | AgiBot G2 | `agibot_g2_mujoco_bringup` | — | Dual-arm robot with torso, head, and four-module swerve-base control |
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
-| Mobile ALOHA | `mobile_aloha_mujoco_bringup` | - | Dual ViperX 300S arms with parallel grippers on a simplified Tracer-compatible skid-steer base |
+| Mobile ALOHA | `mobile_aloha_mujoco_bringup` | `vx300s`, `piper` | Dual ViperX follower arms or the four-PiPER official layout on a simplified Tracer-compatible base |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
 | RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants replace the stock grippers with separate hand controllers |
 
@@ -113,11 +113,16 @@ Useful G1 launch arguments:
 ### Mobile ALOHA
 
 ```bash
-ros2 launch mobile_aloha_mujoco_bringup robot.launch.py
+ros2 launch mobile_aloha_mujoco_bringup robot.launch.py robot_model:=vx300s
+ros2 launch mobile_aloha_mujoco_bringup robot.launch.py robot_model:=piper
 ```
 
 Use `headless:=true` to run without the MuJoCo viewer. The base accepts
 `geometry_msgs/msg/TwistStamped` on `/cmd_vel` and publishes `/odom`.
+
+The `piper` model follows the official four-arm arrangement. Its front-left
+and front-right follower arms use the common arm and gripper interfaces; the
+rear leader arms have separate `leader_*_controller` trajectory interfaces.
 
 ### RBY1
 
