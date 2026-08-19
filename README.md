@@ -28,6 +28,7 @@ Each robot follows the same package split:
 <robot>_mujoco_ros2/
   <robot>_mujoco_description/  # URDF, MJCF, meshes, ros2_control config
   <robot>_mujoco_bringup/      # launch files
+  <robot>_mujoco_nav/          # mobile-base Nav2 config and launch
   <robot>_mujoco_ros2/         # metapackage
 ```
 
@@ -227,6 +228,21 @@ ALOHA accept planar velocity commands on:
 ```
 
 They publish planar odometry on `/odom`.
+
+Start the matching Nav2 control pipeline separately when an application sends
+`nav2_msgs/action/FollowPath` goals:
+
+```bash
+ros2 launch agibot_g2_mujoco_nav navigation.launch.py
+ros2 launch ai_worker_mujoco_nav navigation.launch.py
+ros2 launch mobile_aloha_mujoco_nav navigation.launch.py
+ros2 launch rby1_mujoco_nav navigation.launch.py robot_model:=a
+```
+
+The AI Worker navigation package is for the `ffw_sg2` and `ffw_sh5` mobile
+models. RBY1 accepts `robot_model:=a` or `robot_model:=m`. Each navigation
+package exposes `/follow_path` and sends its smoothed command to `/cmd_vel` by
+default.
 
 The AI Worker swerve variants additionally expose their lower-level controller
 interfaces:

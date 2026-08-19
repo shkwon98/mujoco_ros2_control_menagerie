@@ -70,7 +70,7 @@
     <!-- Wheel drive -->
     <default class="wheel_drive">
       <joint type="hinge" axis="0 1 0" damping="2" frictionloss="0.2"/>
-      <velocity kv="1" ctrlrange="-50 50" ctrllimited="true"/>
+      <velocity kv="10" ctrlrange="-50 50" ctrllimited="true"/>
     </default>
     <!-- Slider: lift_joint -->
     <default class="slider">

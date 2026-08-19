@@ -8,8 +8,6 @@
         type: joint_state_broadcaster/JointStateBroadcaster
       hand_right_joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
-      mobile_base_controller:
-        type: mecanum_drive_controller/MecanumDriveController
       arm_right_controller:
         type: joint_trajectory_controller/JointTrajectoryController
       arm_left_controller:
@@ -18,6 +16,8 @@
         type: joint_trajectory_controller/JointTrajectoryController
       head_controller:
         type: joint_trajectory_controller/JointTrajectoryController
+      base_controller:
+        type: mecanum_drive_controller/MecanumDriveController
       hand_left_controller:
         type: joint_trajectory_controller/JointTrajectoryController
       hand_right_controller:
@@ -109,38 +109,6 @@
         - position
         - velocity
         - effort
-  mobile_base_controller:
-    ros__parameters:
-      reference_timeout: 0.5
-      front_left_wheel_command_joint_name: wheel_fl
-      front_right_wheel_command_joint_name: wheel_fr
-      rear_right_wheel_command_joint_name: wheel_rr
-      rear_left_wheel_command_joint_name: wheel_rl
-      kinematics:
-        base_frame_offset:
-          x: 0.0
-          y: 0.0
-          theta: 0.0
-        wheels_radius: 0.076
-        sum_of_robot_center_projection_on_X_Y_axis: 0.49
-      odom_frame_id: odom
-      base_frame_id: base
-      tf_frame_prefix_enable: false
-      enable_odom_tf: true
-      pose_covariance_diagonal:
-        - 0.001
-        - 0.001
-        - 0.001
-        - 0.001
-        - 0.001
-        - 0.01
-      twist_covariance_diagonal:
-        - 0.001
-        - 0.001
-        - 0.001
-        - 0.001
-        - 0.001
-        - 0.01
   arm_right_controller:
     ros__parameters:
       joints:
@@ -211,6 +179,38 @@
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
       set_last_command_interface_value_as_state_on_activation: false
+  base_controller:
+    ros__parameters:
+      reference_timeout: 0.5
+      front_left_wheel_command_joint_name: wheel_fl
+      front_right_wheel_command_joint_name: wheel_fr
+      rear_right_wheel_command_joint_name: wheel_rr
+      rear_left_wheel_command_joint_name: wheel_rl
+      kinematics:
+        base_frame_offset:
+          x: 0.0
+          y: 0.0
+          theta: 0.0
+        wheels_radius: 0.076
+        sum_of_robot_center_projection_on_X_Y_axis: 0.49
+      odom_frame_id: odom
+      base_frame_id: base
+      tf_frame_prefix_enable: false
+      enable_odom_tf: true
+      pose_covariance_diagonal:
+        - 0.001
+        - 0.001
+        - 0.001
+        - 0.001
+        - 0.001
+        - 0.01
+      twist_covariance_diagonal:
+        - 0.001
+        - 0.001
+        - 0.001
+        - 0.001
+        - 0.001
+        - 0.01
   hand_left_controller:
     ros__parameters:
       joints:

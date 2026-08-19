@@ -125,45 +125,30 @@ def make_joint_state_broadcaster_spawner(
 
 def make_controller_spawner(
     controller_name,
-    command_topic,
-    action_topic=None,
+    remappings,
     controller_namespace=None,
-    joint_states_topic="/sensors/proprio/body/joint_states",
     log_level="info",
 ):
-    arguments = [
-        controller_name,
-        "--controller-ros-args",
-        f"--ros-args --remap ~/joint_states:={joint_states_topic}",
-    ]
+    controller_ros_args = ["--ros-args"]
     if controller_namespace:
-        arguments.extend(
-            [
-                "--controller-ros-args",
-                f"--ros-args -r __ns:={controller_namespace}",
-            ]
-        )
-    arguments.extend(
-        [
-            "--controller-ros-args",
-            f"--ros-args --remap ~/joint_trajectory:={command_topic}",
-        ]
+        controller_ros_args.extend(["-r", f"__ns:={controller_namespace}"])
+    controller_ros_args.extend(
+        f"--remap {source}:={target}" for source, target in remappings
     )
-    if action_topic:
-        arguments.extend(
-            [
-                "--controller-ros-args",
-                f"--ros-args --remap ~/follow_joint_trajectory:={action_topic}",
-            ]
-        )
-    arguments.extend(["--ros-args", "--log-level", log_level])
 
     return Node(
         package="controller_manager",
         executable="spawner",
         namespace="/control/body",
         output="screen",
-        arguments=arguments,
+        arguments=[
+            controller_name,
+            "--controller-ros-args",
+            " ".join(controller_ros_args),
+            "--ros-args",
+            "--log-level",
+            log_level,
+        ],
     )
 
 
@@ -370,46 +355,62 @@ def launch_setup(context, *args, **kwargs):
         [
             make_controller_spawner(
                 "arm_right_controller",
-                "/control/body/arm_right_controller/joint_trajectory",
+                [
+                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                    (
+                        "~/joint_trajectory",
+                        "/control/body/arm_right_controller/joint_trajectory",
+                    ),
+                ],
                 log_level=log_level,
             ),
             make_controller_spawner(
                 "arm_left_controller",
-                "/control/body/arm_left_controller/joint_trajectory",
+                [
+                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                    (
+                        "~/joint_trajectory",
+                        "/control/body/arm_left_controller/joint_trajectory",
+                    ),
+                ],
                 log_level=log_level,
             ),
             make_controller_spawner(
                 "torso_controller",
-                "/control/body/torso_controller/joint_trajectory",
+                [
+                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                    (
+                        "~/joint_trajectory",
+                        "/control/body/torso_controller/joint_trajectory",
+                    ),
+                ],
                 log_level=log_level,
             ),
             make_controller_spawner(
                 "head_controller",
-                "/control/body/head_controller/joint_trajectory",
+                [
+                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                    (
+                        "~/joint_trajectory",
+                        "/control/body/head_controller/joint_trajectory",
+                    ),
+                ],
                 log_level=log_level,
             ),
         ]
     )
 
-    controller_ros_args = (
-        "--ros-args --remap ~/cmd_vel:=/cmd_vel --remap ~/reference:=/cmd_vel "
-        "--remap ~/odom:=/odom --remap ~/odometry:=/odom "
-        "--remap ~/tf_odometry:=/tf"
-    )
     nodes.append(
-        Node(
-            package="controller_manager",
-            executable="spawner",
-            namespace="/control/body",
-            output="screen",
-            arguments=[
-                "mobile_base_controller",
-                "--controller-ros-args",
-                controller_ros_args,
-                "--ros-args",
-                "--log-level",
-                log_level,
+        make_controller_spawner(
+            "base_controller",
+            [
+                ("~/cmd_vel", "/cmd_vel"),
+                ("~/reference", "/cmd_vel"),
+                ("~/odom", "/odom"),
+                ("~/odometry", "/odom"),
+                ("~/tf_odometry", "/tf"),
             ],
+            log_level=log_level,
         )
     )
     if model_config["has_wuji_hands"]:
@@ -417,19 +418,41 @@ def launch_setup(context, *args, **kwargs):
             [
                 make_controller_spawner(
                     "hand_left_controller",
-                    "/control/hand_left/hand_left_controller/joint_trajectory",
-                    "/control/hand_left/hand_left_controller/follow_joint_trajectory",
-                    "/control/hand_left",
-                    "/sensors/proprio/hand_left/joint_states",
-                    log_level,
+                    [
+                        (
+                            "~/joint_states",
+                            "/sensors/proprio/hand_left/joint_states",
+                        ),
+                        (
+                            "~/joint_trajectory",
+                            "/control/hand_left/hand_left_controller/joint_trajectory",
+                        ),
+                        (
+                            "~/follow_joint_trajectory",
+                            "/control/hand_left/hand_left_controller/follow_joint_trajectory",
+                        ),
+                    ],
+                    controller_namespace="/control/hand_left",
+                    log_level=log_level,
                 ),
                 make_controller_spawner(
                     "hand_right_controller",
-                    "/control/hand_right/hand_right_controller/joint_trajectory",
-                    "/control/hand_right/hand_right_controller/follow_joint_trajectory",
-                    "/control/hand_right",
-                    "/sensors/proprio/hand_right/joint_states",
-                    log_level,
+                    [
+                        (
+                            "~/joint_states",
+                            "/sensors/proprio/hand_right/joint_states",
+                        ),
+                        (
+                            "~/joint_trajectory",
+                            "/control/hand_right/hand_right_controller/joint_trajectory",
+                        ),
+                        (
+                            "~/follow_joint_trajectory",
+                            "/control/hand_right/hand_right_controller/follow_joint_trajectory",
+                        ),
+                    ],
+                    controller_namespace="/control/hand_right",
+                    log_level=log_level,
                 ),
             ]
         )
