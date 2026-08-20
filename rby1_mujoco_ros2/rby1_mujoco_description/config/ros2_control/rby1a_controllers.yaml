@@ -107,7 +107,7 @@
       left_wheel_radius_multiplier: 1.0
       right_wheel_radius_multiplier: 1.0
       odom_frame_id: odom
-      base_frame_id: base
+      base_frame_id: base_link
       tf_frame_prefix_enable: false
       pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
       twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]

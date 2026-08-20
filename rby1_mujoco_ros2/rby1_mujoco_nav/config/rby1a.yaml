@@ -88,7 +88,7 @@ local_costmap:
       update_frequency: 10.0
       publish_frequency: 2.0
       global_frame: odom
-      robot_base_frame: base
+      robot_base_frame: base_link
       rolling_window: true
       width: 4
       height: 4

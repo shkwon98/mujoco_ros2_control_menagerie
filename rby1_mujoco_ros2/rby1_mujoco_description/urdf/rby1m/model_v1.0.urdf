@@ -3,7 +3,7 @@
   <mobile type="mecanum" xyz="0 0 0" rpy="0 0 0" joints="wheel_fr wheel_fl wheel_rr wheel_rl"
     params="0.245 0.245 0.076" /> <!-- Lx, Ly, wheel_radius -->
 
-  <link name="base">
+  <link name="base_link">
     <inertial>
       <mass value="82.93082168" />
       <origin rpy="0 0 0" xyz="-0.05361531 -0.00279946 0.13500266" />
@@ -595,7 +595,7 @@
 
   <!-- Joints -->
   <joint name="wheel_fr" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_fr_link" />
     <origin rpy="0.0 0.0 0.0" xyz="0.243 -0.245 0.076" />
     <axis xyz="0 1 0" />
@@ -603,7 +603,7 @@
   </joint>
 
   <joint name="wheel_fl" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_fl_link" />
     <origin rpy="0.0 0.0 0.0" xyz="0.243 0.245 0.076" />
     <axis xyz="0 1 0" />
@@ -611,7 +611,7 @@
   </joint>
 
   <joint name="wheel_rr" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_rr_link" />
     <origin rpy="0.0 0.0 0.0" xyz="-0.247 -0.245 0.076" />
     <axis xyz="0 1 0" />
@@ -619,7 +619,7 @@
   </joint>
 
   <joint name="wheel_rl" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_rl_link" />
     <origin rpy="0.0 0.0 0.0" xyz="-0.247 0.245 0.076" />
     <axis xyz="0 1 0" />
@@ -627,7 +627,7 @@
   </joint>
 
   <joint name="torso_0" type="revolute">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="link_torso_0" />
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2965" />
     <axis xyz="1 0 0" />

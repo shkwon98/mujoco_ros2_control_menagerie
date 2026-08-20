@@ -93,7 +93,7 @@
     <mesh file="base_collision_66.obj"/>
   </asset>
   <worldbody>
-    <body name="base">
+    <body name="base_link">
       <geom mesh="base_0" material="255,255,255" class="visual"/>
       <geom mesh="base_1" material="90,90,90" class="visual"/>
       <geom mesh="base_2" material="130,130,130" class="visual"/>

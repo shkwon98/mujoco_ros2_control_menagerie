@@ -237,15 +237,6 @@ def launch_setup(context, *args, **kwargs):
             # fmt: on
         ),
         Node(
-            package="tf2_ros",
-            executable="static_transform_publisher",
-            name="base_link_alias",
-            arguments=[
-                "--frame-id", "base",
-                "--child-frame-id", "base_link",
-            ],
-        ),
-        Node(
             package="controller_manager",
             executable="ros2_control_node",
             namespace="/control/body",

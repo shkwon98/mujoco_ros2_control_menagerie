@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot name="RBY1_A">
-  <link name="base">
+  <link name="base_link">
     <inertial>
       <mass value="60.08042639" />
       <origin rpy="0 0 0" xyz="-0.06157942 -0.00142271 0.13513861" />
@@ -467,21 +467,21 @@
     </visual>
   </link>
   <joint name="right_wheel" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_r" />
     <origin rpy="0.0 0.0 0.0" xyz="0.228 -0.265 0.1" />
     <axis xyz="0 -1 0" />
     <limit velocity="15.707963268" acceleration="3.141592" effort="100" />
   </joint>
   <joint name="left_wheel" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_l" />
     <origin rpy="0.0 0.0 0.0" xyz="0.228 0.265 0.1" />
     <axis xyz="0 -1 0" />
     <limit velocity="15.707963268" acceleration="3.141592" effort="100" />
   </joint>
   <joint name="torso_0" type="revolute">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="link_torso_0" />
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2805" />
     <axis xyz="1 0 0" />

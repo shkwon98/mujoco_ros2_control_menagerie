@@ -3,7 +3,7 @@
   <mobile type="differential" xyz="0.228 0 0" rpy="0 0 0" joints="right_wheel left_wheel"
     params="0.53 0.1" /> <!-- wheel_base, wheel_radius -->
 
-  <link name="base">
+  <link name="base_link">
     <inertial>
       <mass value="60.08042639" />
       <origin rpy="0 0 0" xyz="-0.06157942 -0.00142271 0.13513861" />
@@ -538,7 +538,7 @@
 
   <!-- Joints -->
   <joint name="right_wheel" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_r" />
     <origin rpy="0.0 0.0 0.0" xyz="0.228 -0.265 0.1" />
     <axis xyz="0 -1 0" />
@@ -546,7 +546,7 @@
   </joint>
 
   <joint name="left_wheel" type="continuous">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="wheel_l" />
     <origin rpy="0.0 0.0 0.0" xyz="0.228 0.265 0.1" />
     <axis xyz="0 -1 0" />
@@ -554,7 +554,7 @@
   </joint>
 
   <joint name="torso_0" type="revolute">
-    <parent link="base" />
+    <parent link="base_link" />
     <child link="link_torso_0" />
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.2805" />
     <axis xyz="1 0 0" />

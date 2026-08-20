@@ -194,7 +194,7 @@
         wheels_radius: 0.076
         sum_of_robot_center_projection_on_X_Y_axis: 0.49
       odom_frame_id: odom
-      base_frame_id: base
+      base_frame_id: base_link
       tf_frame_prefix_enable: false
       enable_odom_tf: true
       pose_covariance_diagonal:
