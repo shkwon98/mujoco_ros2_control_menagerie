@@ -112,14 +112,13 @@ def make_joint_state_broadcaster_spawner(
                 f"--ros-args --remap dynamic_joint_states:={dynamic_joint_states_topic}",
             ]
         )
-    arguments.extend(["--ros-args", "--log-level", log_level])
-
     return Node(
         package="controller_manager",
         executable="spawner",
         namespace="/control/body",
         output="screen",
         arguments=arguments,
+        ros_arguments=["--log-level", log_level],
     )
 
 
@@ -145,10 +144,8 @@ def make_controller_spawner(
             controller_name,
             "--controller-ros-args",
             " ".join(controller_ros_args),
-            "--ros-args",
-            "--log-level",
-            log_level,
         ],
+        ros_arguments=["--log-level", log_level],
     )
 
 
@@ -242,7 +239,7 @@ def launch_setup(context, *args, **kwargs):
             namespace="/control/body",
             parameters=[controllers_yaml_value],
             output="screen",
-            arguments=["--ros-args", "--log-level", log_level],
+            ros_arguments=["--log-level", log_level],
             remappings=[
                 ("robot_description", "/robot_description"),
             ],
@@ -252,7 +249,7 @@ def launch_setup(context, *args, **kwargs):
             executable="robot_description_publisher.py",
             parameters=[full_robot_description],
             output="screen",
-            arguments=["--ros-args", "--log-level", log_level],
+            ros_arguments=["--log-level", log_level],
         ),
         Node(
             package="robot_state_publisher",
@@ -260,7 +257,7 @@ def launch_setup(context, *args, **kwargs):
             namespace="/sensors/proprio/body",
             parameters=[body_robot_description],
             output="screen",
-            arguments=["--ros-args", "--log-level", log_level],
+            ros_arguments=["--log-level", log_level],
             remappings=[
                 ("robot_description", "/control/body/robot_description"),
                 ("joint_states", "/sensors/proprio/body/joint_states"),
@@ -294,7 +291,7 @@ def launch_setup(context, *args, **kwargs):
                     parameters=[make_hand_robot_description(
                         left_hand_xacro_file)],
                     output="screen",
-                    arguments=["--ros-args", "--log-level", log_level],
+                    ros_arguments=["--log-level", log_level],
                     remappings=[
                         ("robot_description", "/control/hand_left/robot_description"),
                         ("joint_states", "/sensors/proprio/hand_left/joint_states"),
@@ -307,7 +304,7 @@ def launch_setup(context, *args, **kwargs):
                     parameters=[make_hand_robot_description(
                         right_hand_xacro_file)],
                     output="screen",
-                    arguments=["--ros-args", "--log-level", log_level],
+                    ros_arguments=["--log-level", log_level],
                     remappings=[
                         ("robot_description", "/control/hand_right/robot_description"),
                         ("joint_states", "/sensors/proprio/hand_right/joint_states"),

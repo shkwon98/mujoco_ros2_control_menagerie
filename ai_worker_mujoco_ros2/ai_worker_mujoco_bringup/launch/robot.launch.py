@@ -94,7 +94,7 @@ def launch_setup(context, *args, **kwargs):
         namespace="/control/body",
         parameters=[controllers_yaml_value],
         output="screen",
-        arguments=["--ros-args", "--log-level", log_level],
+        ros_arguments=["--log-level", log_level],
         remappings=[
             ("robot_description", "/robot_description"),
         ],
@@ -106,7 +106,7 @@ def launch_setup(context, *args, **kwargs):
         namespace="/sensors/proprio/body",
         parameters=[body_robot_description],
         output="screen",
-        arguments=["--ros-args", "--log-level", log_level],
+        ros_arguments=["--log-level", log_level],
         remappings=[
             ("robot_description", "/control/body/robot_description"),
             ("joint_states", "/sensors/proprio/body/joint_states"),
@@ -119,7 +119,7 @@ def launch_setup(context, *args, **kwargs):
         namespace="/sensors/proprio/hand_left",
         parameters=[left_hand_robot_description],
         output="screen",
-        arguments=["--ros-args", "--log-level", log_level],
+        ros_arguments=["--log-level", log_level],
         remappings=[
             ("robot_description", "/control/hand_left/robot_description"),
             ("joint_states", "/sensors/proprio/hand_left/joint_states"),
@@ -132,7 +132,7 @@ def launch_setup(context, *args, **kwargs):
         namespace="/sensors/proprio/hand_right",
         parameters=[right_hand_robot_description],
         output="screen",
-        arguments=["--ros-args", "--log-level", log_level],
+        ros_arguments=["--log-level", log_level],
         remappings=[
             ("robot_description", "/control/hand_right/robot_description"),
             ("joint_states", "/sensors/proprio/hand_right/joint_states"),
@@ -155,10 +155,8 @@ def launch_setup(context, *args, **kwargs):
                 f"--ros-args --remap joint_states:={joint_states_topic}",
                 "--controller-ros-args",
                 f"--ros-args --remap dynamic_joint_states:={dynamic_joint_states_topic}",
-                "--ros-args",
-                "--log-level",
-                log_level,
             ],
+            ros_arguments=["--log-level", log_level],
         )
 
     def make_controller_spawner(
@@ -194,13 +192,13 @@ def launch_setup(context, *args, **kwargs):
                     f"--ros-args --remap ~/follow_joint_trajectory:={action_topic}",
                 ]
             )
-        controller_args.extend(["--ros-args", "--log-level", log_level])
         return Node(
             package="controller_manager",
             executable="spawner",
             namespace="/control/body",
             output="screen",
             arguments=controller_args,
+            ros_arguments=["--log-level", log_level],
         )
 
     arm_right_controller_spawner = make_controller_spawner(
@@ -264,7 +262,7 @@ def launch_setup(context, *args, **kwargs):
             executable="robot_description_publisher.py",
             parameters=[full_robot_description],
             output="screen",
-            arguments=["--ros-args", "--log-level", log_level],
+            ros_arguments=["--log-level", log_level],
         ),
         ros2_control_node,
         body_state_publisher_node,
@@ -304,10 +302,8 @@ def launch_setup(context, *args, **kwargs):
                     "swerve_drive_controller",
                     "--controller-ros-args",
                     "--ros-args --remap /control/body/odom:=/odom",
-                    "--ros-args",
-                    "--log-level",
-                    log_level,
                 ],
+                ros_arguments=["--log-level", log_level],
             )
         )
 

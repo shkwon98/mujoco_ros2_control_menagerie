@@ -27,7 +27,8 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument(
                 "params_file",
                 default_value=PathJoinSubstitution(
-                    [FindPackageShare("agibot_g2_mujoco_nav"), "config", "nav2.yaml"]
+                    [FindPackageShare("agibot_g2_mujoco_nav"),
+                     "config", "nav2.yaml"]
                 ),
             ),
             DeclareLaunchArgument("cmd_vel_topic", default_value="/cmd_vel"),
@@ -39,7 +40,7 @@ def generate_launch_description() -> LaunchDescription:
                 output="screen",
                 parameters=[configured_parameters],
                 remappings=[("cmd_vel", "cmd_vel_nav")],
-                arguments=["--ros-args", "--log-level", "warn"],
+                ros_arguments=["--log-level", "warn"],
             ),
             Node(
                 package="nav2_velocity_smoother",

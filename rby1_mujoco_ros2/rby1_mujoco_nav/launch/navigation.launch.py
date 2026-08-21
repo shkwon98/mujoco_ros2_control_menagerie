@@ -41,7 +41,7 @@ def launch_setup(context):
             output="screen",
             parameters=[configured_parameters],
             remappings=[("cmd_vel", "cmd_vel_nav")],
-            arguments=["--ros-args", "--log-level", "warn"],
+            ros_arguments=["--log-level", "warn"],
         ),
         Node(
             package="nav2_velocity_smoother",
