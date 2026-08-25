@@ -149,6 +149,7 @@ Useful RBY1 launch arguments:
 | `robot_model` | `a` | `a`, `m`, `a_wuji`, or `m_wuji` |
 | `robot_version` | `v1.2` | `a/a_wuji`: `v1.0`, `v1.1`, `v1.2`; `m/m_wuji`: `v1.0`, `v1.1`, `v1.2`, `v1.3` |
 | `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
+| `use_navigation` | `true` | Start the matching Nav2 control pipeline |
 | `log_level` | `info` | ROS log level |
 
 ## Common ROS Interface
@@ -220,7 +221,7 @@ present.
 
 ### Mobile base
 
-AgiBot G2, AI Worker `ffw_sg2` and `ffw_sh5`, RBY1 `a` and `m`, and Mobile
+AgiBot G2, AI Worker `ffw_sg2` and `ffw_sh5`, all RBY1 variants, and Mobile
 ALOHA accept planar velocity commands on:
 
 ```text
@@ -229,20 +230,18 @@ ALOHA accept planar velocity commands on:
 
 They publish planar odometry on `/odom`.
 
-Start the matching Nav2 control pipeline separately when an application sends
-`nav2_msgs/action/FollowPath` goals:
+Mobile-capable bringups start their matching Nav2 control pipeline by default
+and expose `/follow_path`. Disable it when only direct `/cmd_vel` or upper-body
+control is needed:
 
 ```bash
-ros2 launch agibot_g2_mujoco_nav navigation.launch.py
-ros2 launch ai_worker_mujoco_nav navigation.launch.py
-ros2 launch mobile_aloha_mujoco_nav navigation.launch.py
-ros2 launch rby1_mujoco_nav navigation.launch.py robot_model:=a
+ros2 launch rby1_mujoco_bringup robot.launch.py \
+  robot_model:=a_wuji use_navigation:=false
 ```
 
-The AI Worker navigation package is for the `ffw_sg2` and `ffw_sh5` mobile
-models. RBY1 accepts `robot_model:=a` or `robot_model:=m`. Each navigation
-package exposes `/follow_path` and sends its smoothed command to `/cmd_vel` by
-default.
+AI Worker starts Nav2 only for the `ffw_sg2` and `ffw_sh5` mobile models. G1
+has no mobile-base Nav2 pipeline. Each navigation package sends its smoothed
+command to `/cmd_vel` by default.
 
 The AI Worker swerve variants additionally expose their lower-level controller
 interfaces:
