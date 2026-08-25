@@ -10,6 +10,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <exec_depend>agibot_g2_mujoco_description</exec_depend>
+  <exec_depend>agibot_g2_mujoco_nav</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>ffw_swerve_drive_controller</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>

@@ -4,7 +4,13 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+)
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
     FindExecutable,
@@ -445,6 +451,24 @@ def launch_setup(context, *args, **kwargs):
             ]
         )
 
+    nodes.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                PathJoinSubstitution(
+                    [
+                        FindPackageShare("rby1_mujoco_nav"),
+                        "launch",
+                        "navigation.launch.py",
+                    ]
+                )
+            ),
+            launch_arguments={
+                "robot_model": model_config["base_model"],
+            }.items(),
+            condition=IfCondition(LaunchConfiguration("use_navigation")),
+        )
+    )
+
     return nodes
 
 
@@ -476,6 +500,12 @@ def generate_launch_description():
                 default_value="false",
                 choices=["true", "false"],
                 description="Run MuJoCo without its graphical window",
+            ),
+            DeclareLaunchArgument(
+                "use_navigation",
+                default_value="true",
+                choices=["true", "false"],
+                description="Start the Nav2 control pipeline",
             ),
             DeclareLaunchArgument(
                 "log_level",

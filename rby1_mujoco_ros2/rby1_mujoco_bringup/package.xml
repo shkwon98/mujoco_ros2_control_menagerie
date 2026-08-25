@@ -18,6 +18,7 @@
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>rby1_mujoco_description</exec_depend>
+  <exec_depend>rby1_mujoco_nav</exec_depend>
   <exec_depend>mujoco_ros2_control</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>

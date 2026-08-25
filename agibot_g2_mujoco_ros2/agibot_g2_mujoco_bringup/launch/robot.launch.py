@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
@@ -16,7 +23,8 @@ def generate_launch_description():
                 PathJoinSubstitution([FindExecutable(name="xacro")]),
                 " ",
                 PathJoinSubstitution(
-                    [FindPackageShare("agibot_g2_mujoco_description"), "urdf", "g2_mujoco.urdf.xacro"]
+                    [FindPackageShare("agibot_g2_mujoco_description"),
+                     "urdf", "g2_mujoco.urdf.xacro"]
                 ),
                 " headless:=",
                 headless,
@@ -25,7 +33,8 @@ def generate_launch_description():
         value_type=str,
     )
     controllers = PathJoinSubstitution(
-        [FindPackageShare("agibot_g2_mujoco_description"), "config", "ros2_control", "g2_controllers.yaml"]
+        [FindPackageShare("agibot_g2_mujoco_description"),
+         "config", "ros2_control", "g2_controllers.yaml"]
     )
 
     spawners = [
@@ -45,7 +54,14 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("headless", default_value="false", description="Run MuJoCo without its GUI."),
+            DeclareLaunchArgument(
+                "headless", default_value="false", description="Run MuJoCo without its GUI."),
+            DeclareLaunchArgument(
+                "use_navigation",
+                default_value="true",
+                choices=["true", "false"],
+                description="Start the Nav2 control pipeline",
+            ),
             Node(
                 package="tf2_ros",
                 executable="static_transform_publisher",
@@ -61,7 +77,8 @@ def generate_launch_description():
                 package="robot_state_publisher",
                 executable="robot_state_publisher",
                 parameters=[{"robot_description": description}],
-                remappings=[("joint_states", "/sensors/proprio/body/joint_states")],
+                remappings=[
+                    ("joint_states", "/sensors/proprio/body/joint_states")],
                 output="screen",
             ),
             Node(
@@ -93,5 +110,17 @@ def generate_launch_description():
                 ],
             ),
             *spawners,
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    PathJoinSubstitution(
+                        [
+                            FindPackageShare("agibot_g2_mujoco_nav"),
+                            "launch",
+                            "navigation.launch.py",
+                        ]
+                    )
+                ),
+                condition=IfCondition(LaunchConfiguration("use_navigation")),
+            ),
         ]
     )

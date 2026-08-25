@@ -4,11 +4,22 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+)
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import (
+    Command,
+    FindExecutable,
+    LaunchConfiguration,
+    PathJoinSubstitution,
+)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
-
+from launch_ros.substitutions import FindPackageShare
 
 ROBOT_MODELS = {
     "vx300s": {
@@ -46,7 +57,8 @@ def launch_setup(context):
     robot_model = LaunchConfiguration("robot_model").perform(context)
     headless = LaunchConfiguration("headless")
     model = ROBOT_MODELS[robot_model]
-    description_share = get_package_share_directory("mobile_aloha_mujoco_description")
+    description_share = get_package_share_directory(
+        "mobile_aloha_mujoco_description")
 
     description = {
         "robot_description": ParameterValue(
@@ -111,7 +123,8 @@ def launch_setup(context):
             "--remap ~/cmd_vel:=/cmd_vel --remap ~/odom:=/odom",
         ),
     ]
-    nodes.extend(controller_spawner(name) for name in model["leader_controllers"])
+    nodes.extend(controller_spawner(name)
+                 for name in model["leader_controllers"])
     return nodes
 
 
@@ -130,6 +143,24 @@ def generate_launch_description() -> LaunchDescription:
                 choices=["true", "false"],
                 description="Run MuJoCo without its GUI.",
             ),
+            DeclareLaunchArgument(
+                "use_navigation",
+                default_value="true",
+                choices=["true", "false"],
+                description="Start the Nav2 control pipeline",
+            ),
             OpaqueFunction(function=launch_setup),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    PathJoinSubstitution(
+                        [
+                            FindPackageShare("mobile_aloha_mujoco_nav"),
+                            "launch",
+                            "navigation.launch.py",
+                        ]
+                    )
+                ),
+                condition=IfCondition(LaunchConfiguration("use_navigation")),
+            ),
         ]
     )

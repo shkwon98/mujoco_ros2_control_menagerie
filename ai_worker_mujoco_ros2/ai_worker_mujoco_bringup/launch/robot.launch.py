@@ -4,7 +4,13 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+)
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
     FindExecutable,
@@ -306,6 +312,20 @@ def launch_setup(context, *args, **kwargs):
                 ros_arguments=["--log-level", log_level],
             )
         )
+        nodes.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    PathJoinSubstitution(
+                        [
+                            FindPackageShare("ai_worker_mujoco_nav"),
+                            "launch",
+                            "navigation.launch.py",
+                        ]
+                    )
+                ),
+                condition=IfCondition(LaunchConfiguration("use_navigation")),
+            )
+        )
 
     return nodes
 
@@ -345,6 +365,12 @@ def generate_launch_description():
                 default_value="false",
                 choices=["true", "false"],
                 description="Run MuJoCo without its graphical window",
+            ),
+            DeclareLaunchArgument(
+                "use_navigation",
+                default_value="true",
+                choices=["true", "false"],
+                description="Start Nav2 for mobile-base models",
             ),
             DeclareLaunchArgument(
                 "log_level",
