@@ -8,8 +8,9 @@ if(BUILD_TESTING)
 
   add_test(
     NAME collision_model
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_collision_model.py
-  )
+    COMMAND
+      ${Python3_EXECUTABLE}
+      ${CMAKE_CURRENT_SOURCE_DIR}/test/test_collision_model.py)
 endif()
 
 install(DIRECTORY config mjcf urdf DESTINATION share/${PROJECT_NAME})

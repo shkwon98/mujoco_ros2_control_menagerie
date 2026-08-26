@@ -9,13 +9,13 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY config meshes mjcf urdf
-  DESTINATION share/${PROJECT_NAME}
-)
+  DIRECTORY config
+            meshes
+            mjcf
+            urdf
+  DESTINATION share/${PROJECT_NAME})
 
 install(
-  FILES LICENSE.robotis_mujoco_menagerie
-  DESTINATION share/${PROJECT_NAME}
-)
+  FILES LICENSE.robotis_mujoco_menagerie DESTINATION share/${PROJECT_NAME})
 
 ament_package()

@@ -4,13 +4,14 @@ project(g1_mujoco_description)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY config meshes mjcf urdf
-  DESTINATION share/${PROJECT_NAME}
-)
+  DIRECTORY config
+            meshes
+            mjcf
+            urdf
+  DESTINATION share/${PROJECT_NAME})
 
 install(
   FILES LICENSE.unitree_ros LICENSE.mujoco_menagerie_unitree_g1
-  DESTINATION share/${PROJECT_NAME}
-)
+  DESTINATION share/${PROJECT_NAME})
 
 ament_package()
