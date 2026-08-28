@@ -15,6 +15,12 @@
         <mesh filename="package://rby1_mujoco_description/meshes/rby1m/base.dae" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="-0.002 0 0.13" rpy="0 0 0" />
+      <geometry>
+        <box size="0.70 0.60 0.22" />
+      </geometry>
+    </collision>
   </link>
 
   <link name="wheel_fr_link">
@@ -338,9 +344,9 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 -0.08565" rpy="0 0 0" />
+      <origin xyz="0 0 -0.1375" rpy="0 0 0" />
       <geometry>
-        <cylinder radius="0.075" length="0.2213" />
+        <cylinder radius="0.075" length="0.325" />
       </geometry>
     </collision>
   </link>
@@ -488,9 +494,9 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 -0.08565" rpy="0 0 0" />
+      <origin xyz="0 0 -0.1375" rpy="0 0 0" />
       <geometry>
-        <cylinder radius="0.075" length="0.2213" />
+        <cylinder radius="0.075" length="0.325" />
       </geometry>
     </collision>
   </link>
@@ -528,6 +534,12 @@
         <mesh filename="package://rby1_mujoco_description/meshes/rby1m/NECK_0.dae" />
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 0.08" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.10" />
+      </geometry>
+    </collision>
   </link>
 
   <link name="link_head_1">
