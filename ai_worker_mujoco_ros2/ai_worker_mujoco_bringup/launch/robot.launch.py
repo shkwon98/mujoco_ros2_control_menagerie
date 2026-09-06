@@ -8,8 +8,10 @@ from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     OpaqueFunction,
+    RegisterEventHandler,
 )
 from launch.conditions import IfCondition
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
@@ -97,7 +99,7 @@ def launch_setup(context, *args, **kwargs):
     ros2_control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        namespace="/control/body",
+        namespace="/",
         parameters=[controllers_yaml_value],
         output="screen",
         ros_arguments=["--log-level", log_level],
@@ -153,12 +155,12 @@ def launch_setup(context, *args, **kwargs):
         return Node(
             package="controller_manager",
             executable="spawner",
-            namespace="/control/body",
+            namespace="/",
             output="screen",
             arguments=[
                 controller_name,
                 "--controller-ros-args",
-                f"--ros-args --remap joint_states:={joint_states_topic}",
+                f"--ros-args -r __ns:=/control/body --remap joint_states:={joint_states_topic}",
                 "--controller-ros-args",
                 f"--ros-args --remap dynamic_joint_states:={dynamic_joint_states_topic}",
             ],
@@ -169,7 +171,7 @@ def launch_setup(context, *args, **kwargs):
         controller_name,
         command_topic=None,
         action_topic=None,
-        controller_namespace=None,
+        controller_namespace="/control/body",
         joint_states_topic="/sensors/proprio/body/joint_states",
     ):
         controller_args = [
@@ -201,7 +203,7 @@ def launch_setup(context, *args, **kwargs):
         return Node(
             package="controller_manager",
             executable="spawner",
-            namespace="/control/body",
+            namespace="/",
             output="screen",
             arguments=controller_args,
             ros_arguments=["--log-level", log_level],
@@ -302,12 +304,12 @@ def launch_setup(context, *args, **kwargs):
             Node(
                 package="controller_manager",
                 executable="spawner",
-                namespace="/control/body",
+                namespace="/",
                 output="screen",
                 arguments=[
                     "swerve_drive_controller",
                     "--controller-ros-args",
-                    "--ros-args --remap /control/body/odom:=/odom",
+                    "--ros-args -r __ns:=/control/body --remap /control/body/odom:=/odom",
                 ],
                 ros_arguments=["--log-level", log_level],
             )
@@ -327,7 +329,58 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-    return nodes
+    rqt_node = Node(
+        package="rqt_gui",
+        executable="rqt_gui",
+        namespace="/",
+        arguments=[
+            "--perspective-file",
+            PathJoinSubstitution(
+                [
+                    FindPackageShare("ai_worker_mujoco_bringup"),
+                    "config",
+                    "ai_worker_mujoco.perspective",
+                ]
+            ),
+            "--force-discover",
+        ],
+        parameters=[{"use_sim_time": True}],
+        remappings=[
+            ("robot_description", "/robot_description"),
+            *[
+                (
+                    f"/hand_{side}_controller/{topic}",
+                    f"/control/hand_{side}/hand_{side}_controller/{topic}",
+                )
+                for side in ("left", "right")
+                for topic in ("controller_state", "joint_trajectory")
+            ],
+            *[
+                (
+                    f"/{name}/{topic}",
+                    f"/control/body/{name}/{topic}",
+                )
+                for name in (
+                    "arm_left_controller",
+                    "arm_right_controller",
+                    "torso_controller",
+                    "head_controller",
+                )
+                for topic in ("controller_state", "joint_trajectory")
+            ],
+        ],
+        output="screen",
+    )
+    # Restore the RQT selection only after its controller is active.
+    rqt_after_spawner = RegisterEventHandler(
+        OnProcessExit(
+            target_action=arm_left_controller_spawner,
+            on_exit=lambda event, _: [rqt_node] if event.returncode == 0 else [],
+        ),
+        condition=IfCondition(LaunchConfiguration("use_rqt")),
+    )
+
+    return [rqt_after_spawner, *nodes]
 
 
 def generate_launch_description():
@@ -377,6 +430,12 @@ def generate_launch_description():
                 default_value="info",
                 choices=["debug", "info", "warn", "error", "fatal"],
                 description="ROS log level",
+            ),
+            DeclareLaunchArgument(
+                "use_rqt",
+                default_value="false",
+                choices=["true", "false"],
+                description="Launch RQT joint trajectory controller for the robot.",
             ),
             OpaqueFunction(function=launch_setup),
         ]

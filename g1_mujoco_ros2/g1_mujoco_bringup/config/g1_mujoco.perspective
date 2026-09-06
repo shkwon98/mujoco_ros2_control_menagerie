@@ -1,0 +1,33 @@
+{
+  "keys": {},
+  "groups": {
+    "pluginmanager": {
+      "keys": {
+        "running-plugins": {
+          "repr": "{'rqt_joint_trajectory_controller/JointTrajectoryController': [0]}",
+          "type": "repr"
+        }
+      },
+      "groups": {
+        "plugin__rqt_joint_trajectory_controller__JointTrajectoryController__0": {
+          "keys": {},
+          "groups": {
+            "plugin": {
+              "keys": {
+                "cm_ns": {
+                  "repr": "'/controller_manager'",
+                  "type": "repr"
+                },
+                "jtc_name": {
+                  "repr": "'arm_left_controller'",
+                  "type": "repr"
+                }
+              },
+              "groups": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

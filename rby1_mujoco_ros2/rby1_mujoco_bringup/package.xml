@@ -16,6 +16,8 @@
   <exec_depend>diff_drive_controller</exec_depend>
   <exec_depend>mecanum_drive_controller</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rqt_gui</exec_depend>
+  <exec_depend>rqt_joint_trajectory_controller</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>rby1_mujoco_description</exec_depend>
   <exec_depend>rby1_mujoco_nav</exec_depend>

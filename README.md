@@ -159,8 +159,12 @@ All bringup files use the same top-level control and sensor namespaces.
 ### Description and controller manager
 
 ```text
-/control/body/controller_manager
+/controller_manager
 ```
+
+One controller manager handles the whole simulated robot. Controllers keep their
+body and hand namespaces under `/control/body`, `/control/hand_left`, and
+`/control/hand_right`.
 
 Robot description topics vary with the package layout. Bringup packages expose
 them on `/robot_description`, `/control/body/robot_description`, or
@@ -256,37 +260,26 @@ rear wheel order.
 
 ## rqt Joint Trajectory Controller
 
-For body controllers:
+All five bringup packages accept `use_rqt:=true` to open one RQT window alongside
+the simulation. It defaults to `false`.
 
 ```bash
-ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller \
-  --clear-config --force-discover \
-  --ros-args \
-  -r robot_description:=/robot_description
+ros2 launch g1_mujoco_bringup robot.launch.py \
+  robot_model:=g1_with_inspire_hands use_rqt:=true
+
+ros2 launch rby1_mujoco_bringup robot.launch.py \
+  robot_model:=a_wuji use_rqt:=true
 ```
 
-In the GUI, select:
+RQT opens after `arm_left_controller` activates and automatically selects it
+under `/controller_manager`. Use the controller dropdown to switch
+to another active joint trajectory controller. The window starts in monitor
+mode, without sending commands.
 
-```text
-Controller manager: /control/body/controller_manager
-```
-
-For hand controllers, some models remap the controller runtime namespace to
-`/control/hand_left` and `/control/hand_right`. For G1 hand variants, run:
-
-```bash
-ros2 run rqt_joint_trajectory_controller rqt_joint_trajectory_controller \
-  --clear-config --force-discover \
-  --ros-args \
-  -r robot_description:=/robot_description \
-  -r /control/body/hand_left_controller/controller_state:=/control/hand_left/hand_left_controller/controller_state \
-  -r /control/body/hand_left_controller/joint_trajectory:=/control/hand_left/hand_left_controller/joint_trajectory \
-  -r /control/body/hand_right_controller/controller_state:=/control/hand_right/hand_right_controller/controller_state \
-  -r /control/body/hand_right_controller/joint_trajectory:=/control/hand_right/hand_right_controller/joint_trajectory
-```
-
-In the GUI, select `/control/body/controller_manager`, then choose
-`hand_left_controller` or `hand_right_controller`.
+Each launch uses the existing full robot description and remaps the hand or
+gripper topics as needed. No separate terminal command or additional URDF is
+required. The native RQT perspective lives in the bringup package's `config/`
+directory; it does not clear your other RQT settings.
 
 ## Notes
 

@@ -8,8 +8,10 @@ from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     OpaqueFunction,
+    RegisterEventHandler,
 )
 from launch.conditions import IfCondition
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
@@ -41,13 +43,17 @@ ROBOT_MODELS = {
 
 
 def controller_spawner(name: str, remappings: str = "") -> Node:
-    arguments = [name]
+    arguments = [
+        name,
+        "--controller-ros-args",
+        "--ros-args -r __ns:=/control/body",
+    ]
     if remappings:
         arguments += ["--controller-ros-args", f"--ros-args {remappings}"]
     return Node(
         package="controller_manager",
         executable="spawner",
-        namespace="/control/body",
+        namespace="/",
         arguments=arguments,
         output="screen",
     )
@@ -78,6 +84,8 @@ def launch_setup(context):
         description_share, "config", "ros2_control", model["controllers"]
     )
 
+    arm_left_controller_spawner = controller_spawner("arm_left_controller")
+
     nodes = [
         Node(
             package="tf2_ros",
@@ -99,7 +107,7 @@ def launch_setup(context):
         Node(
             package="controller_manager",
             executable="ros2_control_node",
-            namespace="/control/body",
+            namespace="/",
             parameters=[controllers],
             remappings=[("robot_description", "/robot_description")],
             output="screen",
@@ -108,7 +116,7 @@ def launch_setup(context):
             "joint_state_broadcaster",
             "--remap joint_states:=/sensors/proprio/body/joint_states",
         ),
-        controller_spawner("arm_left_controller"),
+        arm_left_controller_spawner,
         controller_spawner("arm_right_controller"),
         controller_spawner(
             "gripper_left_controller",
@@ -125,7 +133,63 @@ def launch_setup(context):
     ]
     nodes.extend(controller_spawner(name)
                  for name in model["leader_controllers"])
-    return nodes
+    rqt_node = Node(
+        package="rqt_gui",
+        executable="rqt_gui",
+        namespace="/",
+        arguments=[
+            "--perspective-file",
+            PathJoinSubstitution(
+                [
+                    FindPackageShare("mobile_aloha_mujoco_bringup"),
+                    "config",
+                    "mobile_aloha_mujoco.perspective",
+                ]
+            ),
+            "--force-discover",
+        ],
+        parameters=[{"use_sim_time": True}],
+        remappings=[
+            ("robot_description", "/robot_description"),
+            *[
+                (
+                    f"/gripper_{side}_controller/joint_trajectory",
+                    f"/control/hand_{side}/gripper_controller/joint_trajectory",
+                )
+                for side in ("left", "right")
+            ],
+            *[
+                (
+                    f"/{name}/{topic}",
+                    f"/control/body/{name}/{topic}",
+                )
+                for name in (
+                    "arm_left_controller",
+                    "arm_right_controller",
+                    *model["leader_controllers"],
+                )
+                for topic in ("controller_state", "joint_trajectory")
+            ],
+            *[
+                (
+                    f"/gripper_{side}_controller/controller_state",
+                    f"/control/body/gripper_{side}_controller/controller_state",
+                )
+                for side in ("left", "right")
+            ],
+        ],
+        output="screen",
+    )
+    # Restore the RQT selection only after its controller is active.
+    rqt_after_spawner = RegisterEventHandler(
+        OnProcessExit(
+            target_action=arm_left_controller_spawner,
+            on_exit=lambda event, _: [rqt_node] if event.returncode == 0 else [],
+        ),
+        condition=IfCondition(LaunchConfiguration("use_rqt")),
+    )
+
+    return [rqt_after_spawner, *nodes]
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -148,6 +212,12 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="true",
                 choices=["true", "false"],
                 description="Start the Nav2 control pipeline",
+            ),
+            DeclareLaunchArgument(
+                "use_rqt",
+                default_value="false",
+                choices=["true", "false"],
+                description="Launch RQT joint trajectory controller for the robot.",
             ),
             OpaqueFunction(function=launch_setup),
             IncludeLaunchDescription(
