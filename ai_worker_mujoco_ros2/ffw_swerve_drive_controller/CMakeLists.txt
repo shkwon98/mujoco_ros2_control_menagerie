@@ -8,20 +8,25 @@ endif()
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
     controller_interface
-    hardware_interface
     generate_parameter_library
+    geometry_msgs
+    hardware_interface
+    lifecycle_msgs
     nav_msgs
     pluginlib
+    rcl_interfaces
     rclcpp
     rclcpp_lifecycle
+    rcpputils
     realtime_tools
+    sensor_msgs
+    std_msgs
     std_srvs
     tf2
     tf2_geometry_msgs
     tf2_msgs
-    sensor_msgs
-    visualization_msgs
-    rcpputils)
+    tf2_ros
+    visualization_msgs)
 
 find_package(ament_cmake REQUIRED)
 find_package(backward_ros REQUIRED)
@@ -67,7 +72,11 @@ target_link_libraries(
   PUBLIC controller_interface::controller_interface
          hardware_interface::hardware_interface
          ${generate_parameter_library_TARGETS}
-         ${nav_msgs_TARGETS}
+         ${geometry_msgs_TARGETS}
+  ${lifecycle_msgs_TARGETS}
+  ${nav_msgs_TARGETS}
+  ${rcl_interfaces_TARGETS}
+  ${std_msgs_TARGETS}
          pluginlib::pluginlib
          rclcpp::rclcpp
          rclcpp_lifecycle::rclcpp_lifecycle
@@ -75,6 +84,7 @@ target_link_libraries(
          ${std_srvs_TARGETS}
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs
+  tf2_ros::tf2_ros
          ${tf2_msgs_TARGETS}
          ${sensor_msgs_TARGETS}
          ${visualization_msgs_TARGETS}
