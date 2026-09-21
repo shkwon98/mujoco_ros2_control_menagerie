@@ -2,7 +2,10 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import (
+    LaunchConfiguration,
+    PathSubstitution,
+)
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterFile
 from launch_ros.substitutions import FindPackageShare
@@ -26,10 +29,10 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument("namespace", default_value=""),
             DeclareLaunchArgument(
                 "params_file",
-                default_value=PathJoinSubstitution(
-                    [FindPackageShare("agibot_g2_mujoco_nav"),
-                     "config", "nav2.yaml"]
-                ),
+                default_value=PathSubstitution(
+                    FindPackageShare("agibot_g2_mujoco_nav"))
+                / "config"
+                / "nav2.yaml",
             ),
             DeclareLaunchArgument("cmd_vel_topic", default_value="/cmd_vel"),
             Node(

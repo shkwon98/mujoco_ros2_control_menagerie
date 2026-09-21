@@ -1,26 +1,24 @@
 #!/usr/bin/env python3
 
-import os
 from pathlib import Path
 from runpy import run_path
 from tempfile import TemporaryDirectory
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
     OpaqueFunction,
     RegisterEventHandler,
 )
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit, OnShutdown
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
     FindExecutable,
     LaunchConfiguration,
-    PathJoinSubstitution,
+    PathSubstitution,
 )
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -72,7 +70,7 @@ def make_robot_description(
         "robot_description": ParameterValue(
             Command(
                 [
-                    PathJoinSubstitution([FindExecutable(name="xacro")]),
+                    FindExecutable(name="xacro"),
                     " ",
                     xacro_file,
                     " robot_model:=",
@@ -101,7 +99,7 @@ def make_hand_robot_description(xacro_file, side, hand_model):
         "robot_description": ParameterValue(
             Command(
                 [
-                    PathJoinSubstitution([FindExecutable(name="xacro")]),
+                    FindExecutable(name="xacro"),
                     " ",
                     xacro_file,
                     " side:=",
@@ -171,18 +169,19 @@ def make_controller_spawner(
 
 
 def launch_setup(context, *args, **kwargs):
+    """Resolve model variants and generate Hand2 files before declaring actions."""
     robot_model = LaunchConfiguration("robot_model")
     robot_version = LaunchConfiguration("robot_version")
     controllers_yaml = LaunchConfiguration("controllers_yaml")
     headless = LaunchConfiguration("headless")
     log_level = LaunchConfiguration("log_level")
-
     robot_model_value = robot_model.perform(context)
     robot_version_value = robot_version.perform(context)
     controllers_yaml_value = controllers_yaml.perform(context)
     model_config = ROBOT_MODELS[robot_model_value]
     hand_model = LaunchConfiguration("hand_model").perform(context)
     is_hand2 = hand_model in ("wuji_hand2_beta1", "wuji_hand2_beta2")
+
     if hand_model != "wuji_hand" and not model_config["has_wuji_hands"]:
         raise RuntimeError("hand_model requires robot_model:=a_wuji or m_wuji")
 
@@ -193,30 +192,30 @@ def launch_setup(context, *args, **kwargs):
             f"Supported versions: {', '.join(model_config['versions'])}"
         )
 
-    description_share = get_package_share_directory("rby1_mujoco_description")
-    if controllers_yaml_value == "auto":
-        controllers_yaml_value = os.path.join(
-            description_share,
-            "config",
-            "ros2_control",
-            model_config["controllers"],
-        )
+    description_share = PathSubstitution(
+        FindPackageShare("rby1_mujoco_description"))
 
-    xacro_file = PathJoinSubstitution(
-        [FindPackageShare("rby1_mujoco_description"),
-         "urdf", "rby1.urdf.xacro"]
+    if controllers_yaml_value == "auto":
+        controllers_yaml_value = (
+            description_share / "config" /
+            "ros2_control" / model_config["controllers"]
+        ).perform(context)
+    xacro_file = (
+        PathSubstitution(FindPackageShare("rby1_mujoco_description"))
+        / "urdf"
+        / "rby1.urdf.xacro"
     )
-    initial_positions_file = os.path.join(
-        description_share,
-        "config",
-        "initial_positions",
-        model_config["initial_positions"],
+    initial_positions_file = (
+        description_share
+        / "config"
+        / "initial_positions"
+        / model_config["initial_positions"]
     )
-    body_initial_positions_file = os.path.join(
-        description_share,
-        "config",
-        "initial_positions",
-        f"rby1{model_config['base_model']}.yaml",
+    body_initial_positions_file = (
+        description_share
+        / "config"
+        / "initial_positions"
+        / f"rby1{model_config['base_model']}.yaml"
     )
     body_hand_base_offset_z = (
         "0.066384"
@@ -226,14 +225,19 @@ def launch_setup(context, *args, **kwargs):
 
     temporary = None
     mujoco_model_file = ""
+
     if is_hand2:
         temporary = TemporaryDirectory(prefix="rby1_hand2_")
-        compose = run_path(Path(description_share) / "urdf" /
-                           "compose_hand2.py")["compose_hand2"]
+        compose = run_path(
+            (description_share / "urdf" / "compose_hand2.py").perform(context)
+        )["compose_hand2"]
         mujoco_model_file, initial_positions_file, controllers_yaml_value = compose(
-            Path(
-                description_share), model_config["base_model"], robot_version_value,
-            Path(controllers_yaml_value), Path(temporary.name), hand_model=hand_model,
+            Path(description_share.perform(context)),
+            model_config["base_model"],
+            robot_version_value,
+            Path(controllers_yaml_value),
+            Path(temporary.name),
+            hand_model=hand_model,
         )
 
     full_robot_description = make_robot_description(
@@ -245,6 +249,7 @@ def launch_setup(context, *args, **kwargs):
         hand_model=hand_model,
         mujoco_model_file=mujoco_model_file,
     )
+
     body_robot_description = make_robot_description(
         xacro_file,
         model_config["base_model"],
@@ -254,6 +259,7 @@ def launch_setup(context, *args, **kwargs):
         hand_base_offset_z=body_hand_base_offset_z,
     )
 
+    # Keep the process instance used by the RQT startup event.
     arm_left_controller_spawner = make_controller_spawner(
         "arm_left_controller",
         [
@@ -266,7 +272,79 @@ def launch_setup(context, *args, **kwargs):
         log_level=log_level,
     )
 
-    nodes = [
+    left_hand_xacro_file = (
+        PathSubstitution(FindPackageShare("rby1_mujoco_description"))
+        / "urdf"
+        / ("wuji_hand2" if is_hand2 else "wuji_hand")
+        / ("hand.urdf.xacro" if is_hand2 else "left_with_docking.urdf.xacro")
+    )
+    right_hand_xacro_file = (
+        PathSubstitution(FindPackageShare("rby1_mujoco_description"))
+        / "urdf"
+        / ("wuji_hand2" if is_hand2 else "wuji_hand")
+        / ("hand.urdf.xacro" if is_hand2 else "right_with_docking.urdf.xacro")
+    )
+
+    return [
+        # Open RQT only after its selected controller is active.
+        RegisterEventHandler(
+            OnProcessExit(
+                target_action=arm_left_controller_spawner,
+                on_exit=lambda event, _: (
+                    [
+                        Node(
+                            package="rqt_gui",
+                            executable="rqt_gui",
+                            namespace="/",
+                            arguments=[
+                                "--perspective-file",
+                                PathSubstitution(
+                                    FindPackageShare("rby1_mujoco_bringup")
+                                )
+                                / "config"
+                                / "rby1_mujoco.perspective",
+                                "--force-discover",
+                            ],
+                            parameters=[{"use_sim_time": True}],
+                            remappings=[
+                                ("robot_description", "/robot_description"),
+                                *[
+                                    (
+                                        f"/hand_{side}_controller/{topic}",
+                                        f"/control/hand_{side}/hand_{side}_controller/{topic}",
+                                    )
+                                    for side in ("left", "right")
+                                    for topic in (
+                                        "controller_state",
+                                        "joint_trajectory",
+                                    )
+                                ],
+                                *[
+                                    (
+                                        f"/{name}/{topic}",
+                                        f"/control/body/{name}/{topic}",
+                                    )
+                                    for name in (
+                                        "arm_left_controller",
+                                        "arm_right_controller",
+                                        "torso_controller",
+                                        "head_controller",
+                                    )
+                                    for topic in (
+                                        "controller_state",
+                                        "joint_trajectory",
+                                    )
+                                ],
+                            ],
+                            output="screen",
+                        )
+                    ]
+                    if event.returncode == 0
+                    else []
+                ),
+            ),
+            condition=IfCondition(LaunchConfiguration("use_rqt")),
+        ),
         Node(
             package="tf2_ros",
             executable="static_transform_publisher",
@@ -314,38 +392,32 @@ def launch_setup(context, *args, **kwargs):
                 ("joint_states", "/sensors/proprio/body/joint_states"),
             ],
         ),
-    ]
-
-    if temporary is not None:
-        nodes.append(RegisterEventHandler(OnShutdown(on_shutdown=[
-            OpaqueFunction(function=lambda _: temporary.cleanup()),
-        ])))
-
-    if model_config["has_wuji_hands"]:
-        left_hand_xacro_file = PathJoinSubstitution(
+        *(
             [
-                FindPackageShare("rby1_mujoco_description"),
-                "urdf",
-                "wuji_hand2" if is_hand2 else "wuji_hand",
-                "hand.urdf.xacro" if is_hand2 else "left_with_docking.urdf.xacro",
+                RegisterEventHandler(
+                    OnShutdown(
+                        on_shutdown=[
+                            OpaqueFunction(
+                                function=lambda _: temporary.cleanup()),
+                        ]
+                    )
+                ),
             ]
-        )
-        right_hand_xacro_file = PathJoinSubstitution(
-            [
-                FindPackageShare("rby1_mujoco_description"),
-                "urdf",
-                "wuji_hand2" if is_hand2 else "wuji_hand",
-                "hand.urdf.xacro" if is_hand2 else "right_with_docking.urdf.xacro",
-            ]
-        )
-        nodes.extend(
-            [
+            if temporary is not None
+            else []
+        ),
+        GroupAction(
+            condition=IfCondition(str(model_config["has_wuji_hands"])),
+            actions=[
                 Node(
                     package="robot_state_publisher",
                     executable="robot_state_publisher",
                     namespace="/sensors/proprio/hand_left",
-                    parameters=[make_hand_robot_description(
-                        left_hand_xacro_file, "left", hand_model)],
+                    parameters=[
+                        make_hand_robot_description(
+                            left_hand_xacro_file, "left", hand_model
+                        )
+                    ],
                     output="screen",
                     ros_arguments=["--log-level", log_level],
                     remappings=[
@@ -357,8 +429,11 @@ def launch_setup(context, *args, **kwargs):
                     package="robot_state_publisher",
                     executable="robot_state_publisher",
                     namespace="/sensors/proprio/hand_right",
-                    parameters=[make_hand_robot_description(
-                        right_hand_xacro_file, "right", hand_model)],
+                    parameters=[
+                        make_hand_robot_description(
+                            right_hand_xacro_file, "right", hand_model
+                        )
+                    ],
                     output="screen",
                     ros_arguments=["--log-level", log_level],
                     remappings=[
@@ -384,57 +459,52 @@ def launch_setup(context, *args, **kwargs):
                     "/sensors/proprio/hand_right/dynamic_joint_states",
                     log_level,
                 ),
-            ]
-        )
-    else:
-        nodes.append(
-            make_joint_state_broadcaster_spawner(
-                "joint_state_broadcaster",
-                "/sensors/proprio/body/joint_states",
-                log_level=log_level,
-            )
-        )
-
-    nodes.extend(
-        [
-            make_controller_spawner(
-                "arm_right_controller",
-                [
-                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
-                    (
-                        "~/joint_trajectory",
-                        "/control/body/arm_right_controller/joint_trajectory",
-                    ),
-                ],
-                log_level=log_level,
-            ),
-            arm_left_controller_spawner,
-            make_controller_spawner(
-                "torso_controller",
-                [
-                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
-                    (
-                        "~/joint_trajectory",
-                        "/control/body/torso_controller/joint_trajectory",
-                    ),
-                ],
-                log_level=log_level,
-            ),
-            make_controller_spawner(
-                "head_controller",
-                [
-                    ("~/joint_states", "/sensors/proprio/body/joint_states"),
-                    (
-                        "~/joint_trajectory",
-                        "/control/body/head_controller/joint_trajectory",
-                    ),
-                ],
-                log_level=log_level,
-            ),
-        ]
-    )
-
-    nodes.append(
+            ],
+        ),
+        GroupAction(
+            condition=UnlessCondition(str(model_config["has_wuji_hands"])),
+            actions=[
+                make_joint_state_broadcaster_spawner(
+                    "joint_state_broadcaster",
+                    "/sensors/proprio/body/joint_states",
+                    log_level=log_level,
+                ),
+            ],
+        ),
+        make_controller_spawner(
+            "arm_right_controller",
+            [
+                ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                (
+                    "~/joint_trajectory",
+                    "/control/body/arm_right_controller/joint_trajectory",
+                ),
+            ],
+            log_level=log_level,
+        ),
+        arm_left_controller_spawner,
+        make_controller_spawner(
+            "torso_controller",
+            [
+                ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                (
+                    "~/joint_trajectory",
+                    "/control/body/torso_controller/joint_trajectory",
+                ),
+            ],
+            log_level=log_level,
+        ),
+        make_controller_spawner(
+            "head_controller",
+            [
+                ("~/joint_states", "/sensors/proprio/body/joint_states"),
+                (
+                    "~/joint_trajectory",
+                    "/control/body/head_controller/joint_trajectory",
+                ),
+            ],
+            log_level=log_level,
+        ),
         make_controller_spawner(
             "base_controller",
             [
@@ -445,11 +515,10 @@ def launch_setup(context, *args, **kwargs):
                 ("~/tf_odometry", "/tf"),
             ],
             log_level=log_level,
-        )
-    )
-    if model_config["has_wuji_hands"]:
-        nodes.extend(
-            [
+        ),
+        GroupAction(
+            condition=IfCondition(str(model_config["has_wuji_hands"])),
+            actions=[
                 make_controller_spawner(
                     "hand_left_controller",
                     [
@@ -488,80 +557,18 @@ def launch_setup(context, *args, **kwargs):
                     controller_namespace="/control/hand_right",
                     log_level=log_level,
                 ),
-            ]
-        )
-
-    nodes.append(
+            ],
+        ),
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("rby1_mujoco_nav"),
-                        "launch",
-                        "navigation.launch.py",
-                    ]
-                )
-            ),
+            PathSubstitution(FindPackageShare("rby1_mujoco_nav"))
+            / "launch"
+            / "navigation.launch.py",
             launch_arguments={
                 "robot_model": model_config["base_model"],
             }.items(),
             condition=IfCondition(LaunchConfiguration("use_navigation")),
-        )
-    )
-
-    rqt_node = Node(
-        package="rqt_gui",
-        executable="rqt_gui",
-        namespace="/",
-        arguments=[
-            "--perspective-file",
-            PathJoinSubstitution(
-                [
-                    FindPackageShare("rby1_mujoco_bringup"),
-                    "config",
-                    "rby1_mujoco.perspective",
-                ]
-            ),
-            "--force-discover",
-        ],
-        parameters=[{"use_sim_time": True}],
-        remappings=[
-            ("robot_description", "/robot_description"),
-            *[
-                (
-                    f"/hand_{side}_controller/{topic}",
-                    f"/control/hand_{side}/hand_{side}_controller/{topic}",
-                )
-                for side in ("left", "right")
-                for topic in ("controller_state", "joint_trajectory")
-            ],
-            *[
-                (
-                    f"/{name}/{topic}",
-                    f"/control/body/{name}/{topic}",
-                )
-                for name in (
-                    "arm_left_controller",
-                    "arm_right_controller",
-                    "torso_controller",
-                    "head_controller",
-                )
-                for topic in ("controller_state", "joint_trajectory")
-            ],
-        ],
-        output="screen",
-    )
-    # Restore the RQT selection only after its controller is active.
-    rqt_after_spawner = RegisterEventHandler(
-        OnProcessExit(
-            target_action=arm_left_controller_spawner,
-            on_exit=lambda event, _: [
-                rqt_node] if event.returncode == 0 else [],
         ),
-        condition=IfCondition(LaunchConfiguration("use_rqt")),
-    )
-
-    return [rqt_after_spawner, *nodes]
+    ]
 
 
 def generate_launch_description():
