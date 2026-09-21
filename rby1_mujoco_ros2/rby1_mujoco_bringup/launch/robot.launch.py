@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 import os
+from pathlib import Path
+from runpy import run_path
+from tempfile import TemporaryDirectory
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -11,7 +14,7 @@ from launch.actions import (
     RegisterEventHandler,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
@@ -62,6 +65,8 @@ def make_robot_description(
     initial_positions_file,
     headless,
     hand_base_offset_z="0",
+    hand_model="wuji_hand",
+    mujoco_model_file="",
 ):
     return {
         "robot_description": ParameterValue(
@@ -78,6 +83,10 @@ def make_robot_description(
                     initial_positions_file,
                     " headless:=",
                     headless,
+                    " hand_model:=",
+                    hand_model,
+                    " mujoco_model_file:=",
+                    mujoco_model_file,
                     " hand_base_offset_z:=",
                     hand_base_offset_z,
                 ]
@@ -87,7 +96,7 @@ def make_robot_description(
     }
 
 
-def make_hand_robot_description(xacro_file):
+def make_hand_robot_description(xacro_file, side, hand_model):
     return {
         "robot_description": ParameterValue(
             Command(
@@ -95,6 +104,10 @@ def make_hand_robot_description(xacro_file):
                     PathJoinSubstitution([FindExecutable(name="xacro")]),
                     " ",
                     xacro_file,
+                    " side:=",
+                    side,
+                    " hand_model:=",
+                    hand_model,
                 ]
             ),
             value_type=str,
@@ -168,6 +181,10 @@ def launch_setup(context, *args, **kwargs):
     robot_version_value = robot_version.perform(context)
     controllers_yaml_value = controllers_yaml.perform(context)
     model_config = ROBOT_MODELS[robot_model_value]
+    hand_model = LaunchConfiguration("hand_model").perform(context)
+    is_hand2 = hand_model in ("wuji_hand2_beta1", "wuji_hand2_beta2")
+    if hand_model != "wuji_hand" and not model_config["has_wuji_hands"]:
+        raise RuntimeError("hand_model requires robot_model:=a_wuji or m_wuji")
 
     if robot_version_value not in model_config["versions"]:
         raise RuntimeError(
@@ -207,12 +224,26 @@ def launch_setup(context, *args, **kwargs):
         else "0"
     )
 
+    temporary = None
+    mujoco_model_file = ""
+    if is_hand2:
+        temporary = TemporaryDirectory(prefix="rby1_hand2_")
+        compose = run_path(Path(description_share) / "urdf" /
+                           "compose_hand2.py")["compose_hand2"]
+        mujoco_model_file, initial_positions_file, controllers_yaml_value = compose(
+            Path(
+                description_share), model_config["base_model"], robot_version_value,
+            Path(controllers_yaml_value), Path(temporary.name), hand_model=hand_model,
+        )
+
     full_robot_description = make_robot_description(
         xacro_file,
         robot_model_value,
         robot_version_value,
         initial_positions_file,
         headless,
+        hand_model=hand_model,
+        mujoco_model_file=mujoco_model_file,
     )
     body_robot_description = make_robot_description(
         xacro_file,
@@ -285,21 +316,26 @@ def launch_setup(context, *args, **kwargs):
         ),
     ]
 
+    if temporary is not None:
+        nodes.append(RegisterEventHandler(OnShutdown(on_shutdown=[
+            OpaqueFunction(function=lambda _: temporary.cleanup()),
+        ])))
+
     if model_config["has_wuji_hands"]:
         left_hand_xacro_file = PathJoinSubstitution(
             [
                 FindPackageShare("rby1_mujoco_description"),
                 "urdf",
-                "wuji_hand",
-                "left_with_docking.urdf.xacro",
+                "wuji_hand2" if is_hand2 else "wuji_hand",
+                "hand.urdf.xacro" if is_hand2 else "left_with_docking.urdf.xacro",
             ]
         )
         right_hand_xacro_file = PathJoinSubstitution(
             [
                 FindPackageShare("rby1_mujoco_description"),
                 "urdf",
-                "wuji_hand",
-                "right_with_docking.urdf.xacro",
+                "wuji_hand2" if is_hand2 else "wuji_hand",
+                "hand.urdf.xacro" if is_hand2 else "right_with_docking.urdf.xacro",
             ]
         )
         nodes.extend(
@@ -309,7 +345,7 @@ def launch_setup(context, *args, **kwargs):
                     executable="robot_state_publisher",
                     namespace="/sensors/proprio/hand_left",
                     parameters=[make_hand_robot_description(
-                        left_hand_xacro_file)],
+                        left_hand_xacro_file, "left", hand_model)],
                     output="screen",
                     ros_arguments=["--log-level", log_level],
                     remappings=[
@@ -322,7 +358,7 @@ def launch_setup(context, *args, **kwargs):
                     executable="robot_state_publisher",
                     namespace="/sensors/proprio/hand_right",
                     parameters=[make_hand_robot_description(
-                        right_hand_xacro_file)],
+                        right_hand_xacro_file, "right", hand_model)],
                     output="screen",
                     ros_arguments=["--log-level", log_level],
                     remappings=[
@@ -519,7 +555,8 @@ def launch_setup(context, *args, **kwargs):
     rqt_after_spawner = RegisterEventHandler(
         OnProcessExit(
             target_action=arm_left_controller_spawner,
-            on_exit=lambda event, _: [rqt_node] if event.returncode == 0 else [],
+            on_exit=lambda event, _: [
+                rqt_node] if event.returncode == 0 else [],
         ),
         condition=IfCondition(LaunchConfiguration("use_rqt")),
     )
@@ -535,6 +572,12 @@ def generate_launch_description():
                 default_value="a",
                 choices=list(ROBOT_MODELS.keys()),
                 description="RBY1 MuJoCo model",
+            ),
+            DeclareLaunchArgument(
+                "hand_model",
+                default_value="wuji_hand",
+                choices=["wuji_hand", "wuji_hand2_beta1", "wuji_hand2_beta2"],
+                description="Hand model for a_wuji/m_wuji; both sides use the selected model.",
             ),
             DeclareLaunchArgument(
                 "robot_version",

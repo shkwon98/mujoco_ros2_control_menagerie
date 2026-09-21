@@ -43,7 +43,7 @@
   </xacro:macro>
 
   <xacro:macro name="rby1_mujoco_ros2_control"
-    params="name robot_model robot_version initial_positions_file headless">
+    params="name robot_model robot_version initial_positions_file headless hand_model:=wuji_hand mujoco_model_file:=''">
     <xacro:property name="initial_positions"
       value="${xacro.load_yaml(initial_positions_file)['initial_positions']}" />
     <xacro:property name="include_temperature" value="false" />
@@ -53,15 +53,20 @@
     <ros2_control name="${name}" type="system">
       <hardware>
         <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
-        <xacro:if value="${robot_model == 'a_wuji'}">
-          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1a/model_act_${robot_version}_wuji.xml</param>
+        <xacro:if value="${mujoco_model_file != ''}">
+          <param name="mujoco_model">${mujoco_model_file}</param>
         </xacro:if>
-        <xacro:if value="${robot_model == 'm_wuji'}">
-          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1m/model_act_${robot_version}_wuji.xml</param>
-        </xacro:if>
-        <xacro:if value="${(base_robot_model == 'a' or base_robot_model == 'm') and robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
-          <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>
-        </xacro:if>
+        <xacro:unless value="${mujoco_model_file != ''}">
+          <xacro:if value="${robot_model == 'a_wuji'}">
+            <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1a/model_act_${robot_version}_wuji.xml</param>
+          </xacro:if>
+          <xacro:if value="${robot_model == 'm_wuji'}">
+            <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1m/model_act_${robot_version}_wuji.xml</param>
+          </xacro:if>
+          <xacro:if value="${(base_robot_model == 'a' or base_robot_model == 'm') and robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
+            <param name="mujoco_model">$(find rby1_mujoco_description)/mjcf/rby1${robot_model}/model_act_${robot_version}.xml</param>
+          </xacro:if>
+        </xacro:unless>
         <param name="sim_speed_factor">1.0</param>
         <param name="headless">${'true' if headless else 'false'}</param>
       </hardware>
@@ -143,7 +148,7 @@
       <xacro:position_joint joint_name="head_1" initial_positions="${initial_positions}"
         include_temperature="${include_temperature}" />
 
-      <xacro:if value="${robot_model == 'a_wuji' or robot_model == 'm_wuji'}">
+      <xacro:if value="${(robot_model == 'a_wuji' or robot_model == 'm_wuji') and hand_model == 'wuji_hand'}">
         <xacro:position_joint joint_name="right_finger1_joint1" initial_positions="${initial_positions}" />
         <xacro:position_joint joint_name="right_finger1_joint2" initial_positions="${initial_positions}" />
         <xacro:position_joint joint_name="right_finger1_joint3" initial_positions="${initial_positions}" />
@@ -185,6 +190,16 @@
         <xacro:position_joint joint_name="left_finger5_joint2" initial_positions="${initial_positions}" />
         <xacro:position_joint joint_name="left_finger5_joint3" initial_positions="${initial_positions}" />
         <xacro:position_joint joint_name="left_finger5_joint4" initial_positions="${initial_positions}" />
+      </xacro:if>
+      <xacro:if value="${(robot_model == 'a_wuji' or robot_model == 'm_wuji') and hand_model in ['wuji_hand2_beta1', 'wuji_hand2_beta2']}">
+        <!-- Launch supplies the official Hand2 names and zero initial joint positions. -->
+        <xacro:macro name="hand2_joints" params="names">
+          <xacro:if value="${len(names) > 0}">
+            <xacro:position_joint joint_name="${names[0]}" initial_positions="${initial_positions}" />
+            <xacro:hand2_joints names="${names[1:]}" />
+          </xacro:if>
+        </xacro:macro>
+        <xacro:hand2_joints names="${[n for n in initial_positions if n.startswith('l_') or n.startswith('r_')]}" />
       </xacro:if>
     </ros2_control>
   </xacro:macro>

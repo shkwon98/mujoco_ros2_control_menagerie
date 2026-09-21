@@ -4,6 +4,8 @@
   <xacro:arg name="robot_version" default="v1.2" />
   <xacro:arg name="initial_positions_file"
     default="$(find rby1_mujoco_description)/config/initial_positions/rby1$(arg robot_model).yaml" />
+  <xacro:arg name="hand_model" default="wuji_hand" />
+  <xacro:arg name="mujoco_model_file" default="" />
   <xacro:arg name="headless" default="false" />
   <xacro:arg name="hand_base_offset_z" default="0" />
 
@@ -21,7 +23,8 @@
   </xacro:if>
 
   <xacro:if value="${robot_model == 'a_wuji' or robot_model == 'm_wuji'}">
-    <xacro:rby1_wuji_hand_mounts robot_model="${robot_model}" robot_version="${robot_version}" />
+    <xacro:rby1_wuji_hand_mounts robot_model="${robot_model}" robot_version="${robot_version}"
+      hand_model="$(arg hand_model)" />
   </xacro:if>
   <xacro:if value="${robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
     <xacro:rby1_hand_base_frames hand_base_offset_z="$(arg hand_base_offset_z)" />
@@ -35,5 +38,7 @@
     robot_version="$(arg robot_version)"
     initial_positions_file="$(arg initial_positions_file)"
     headless="$(arg headless)"
+    hand_model="$(arg hand_model)"
+    mujoco_model_file="$(arg mujoco_model_file)"
   />
 </robot>

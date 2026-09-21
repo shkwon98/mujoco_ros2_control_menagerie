@@ -140,7 +140,18 @@ ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m_wuji robot_versio
 ```
 
 `robot_model:=a_wuji` and `robot_model:=m_wuji` use the RBY1A/RBY1M bodies and
-replace the stock grippers with separate Wuji hand controllers.
+replace the stock grippers with separate Wuji hand controllers. Hand1 is the default;
+select Hand2 Beta1 or Beta2 for both hands with:
+
+```bash
+ros2 launch rby1_mujoco_bringup robot.launch.py \
+  robot_model:=a_wuji hand_model:=wuji_hand2_beta1
+ros2 launch rby1_mujoco_bringup robot.launch.py \
+  robot_model:=a_wuji hand_model:=wuji_hand2_beta2
+```
+
+The same hand selection works with `m_wuji`. Hand2 geometry, mounts, and
+internal collision exclusions are bundled in `rby1_mujoco_description`.
 
 Useful RBY1 launch arguments:
 
@@ -148,7 +159,8 @@ Useful RBY1 launch arguments:
 | --- | --- | --- |
 | `robot_model` | `a` | `a`, `m`, `a_wuji`, or `m_wuji` |
 | `robot_version` | `v1.2` | `a/a_wuji`: `v1.0`, `v1.1`, `v1.2`; `m/m_wuji`: `v1.0`, `v1.1`, `v1.2`, `v1.3` |
-| `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
+| `hand_model` | `wuji_hand` | `wuji_hand`, `wuji_hand2_beta1`, or `wuji_hand2_beta2`, for both hands on `a_wuji`/`m_wuji` |
+| `controllers_yaml` | `auto` | Controller YAML selected by `robot_model`; hand joint names follow `hand_model` |
 | `use_navigation` | `true` | Start the matching Nav2 control pipeline |
 | `log_level` | `info` | ROS log level |
 

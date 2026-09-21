@@ -16,11 +16,29 @@
     </joint>
   </xacro:macro>
 
-  <xacro:macro name="rby1_wuji_hand_mounts" params="robot_model robot_version">
-    <xacro:include
-      filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right_with_docking.urdf.xacro" />
-    <xacro:include
-      filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left_with_docking.urdf.xacro" />
+  <xacro:macro name="rby1_wuji_hand_mounts" params="robot_model robot_version hand_model:=wuji_hand">
+    <xacro:if value="${hand_model == 'wuji_hand'}">
+      <xacro:include
+        filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right_with_docking.urdf.xacro" />
+      <xacro:include
+        filename="$(find rby1_mujoco_description)/urdf/wuji_hand/left_with_docking.urdf.xacro" />
+    </xacro:if>
+    <xacro:if value="${hand_model in ['wuji_hand2_beta1', 'wuji_hand2_beta2']}">
+      <xacro:include filename="$(find rby1_mujoco_description)/urdf/${hand_model}/right_with_mount-ros.urdf" />
+      <xacro:include filename="$(find rby1_mujoco_description)/urdf/${hand_model}/left_with_mount-ros.urdf" />
+      <link name="right_hand_base" />
+      <link name="left_hand_base" />
+      <joint name="right_wuji_mount_joint" type="fixed">
+        <parent link="right_hand_base" />
+        <child link="r_mount" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+      </joint>
+      <joint name="left_wuji_mount_joint" type="fixed">
+        <parent link="left_hand_base" />
+        <child link="l_mount" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+      </joint>
+    </xacro:if>
 
     <joint name="right_hand_base_joint" type="fixed">
       <parent link="ee_right" />
