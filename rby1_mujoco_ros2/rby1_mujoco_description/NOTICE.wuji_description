@@ -1,0 +1,10 @@
+Wuji Hand 2 Beta1/Beta2 model assets
+
+Source: https://github.com/wuji-technology/wuji-description
+Commit: c2cd7f8d1ef8b6dc8cb907c17daa5a88b4442d95
+Package version: 2026.9.11
+Upstream paths: hand2/hand2_beta1/body and hand2/hand2_beta2/body
+License: MIT (see LICENSE.wuji_description)
+
+Includes left/right with-mount URDF and MJCF models and their referenced meshes.
+Only URDF package URIs and MJCF mesh directories are changed for local storage.
