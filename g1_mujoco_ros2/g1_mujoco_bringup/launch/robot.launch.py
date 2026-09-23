@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from launch import LaunchDescription, Substitution
+from launch import LaunchContext, LaunchDescription, Substitution
 from launch.actions import (
     DeclareLaunchArgument,
     GroupAction,
@@ -22,8 +22,10 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 
-def described_default(value: Substitution, text: str) -> Substitution:
-    value.describe = lambda: text
+def described_path(value: Substitution, **placeholders: str) -> Substitution:
+    context = LaunchContext()
+    context.launch_configurations.update(placeholders)
+    value.describe = lambda: value.perform(context)
     return value
 
 
@@ -225,10 +227,9 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "initial_positions_file",
-                default_value=described_default(
+                default_value=described_path(
                     PathSubstitution(FindPackageShare("g1_mujoco_description"))
                     / "config" / "initial_positions.yaml",
-                    "share(g1_mujoco_description)/config/initial_positions.yaml",
                 ),
                 description="Initial joint positions YAML",
             ),
