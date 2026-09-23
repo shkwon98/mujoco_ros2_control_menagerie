@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from launch import LaunchDescription
+from launch import LaunchDescription, Substitution
 from launch.actions import (
     DeclareLaunchArgument,
     GroupAction,
@@ -21,6 +21,11 @@ from launch.substitutions import (
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
+
+
+def described_default(value: Substitution, text: str) -> Substitution:
+    value.describe = lambda: text
+    return value
 
 
 def make_robot_description(xacro_file, **mappings):
@@ -187,11 +192,12 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "initial_positions_file",
-                default_value=PathSubstitution(
-                    FindPackageShare("ai_worker_mujoco_description")
-                )
-                / "config"
-                / "initial_positions.yaml",
+                default_value=described_default(
+                    PathSubstitution(FindPackageShare(
+                        "ai_worker_mujoco_description"))
+                    / "config" / "initial_positions.yaml",
+                    "share(ai_worker_mujoco_description)/config/initial_positions.yaml",
+                ),
                 description="Initial joint positions YAML",
             ),
             DeclareLaunchArgument(

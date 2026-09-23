@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from launch import LaunchDescription
+from launch import LaunchDescription, Substitution
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import (
     LaunchConfiguration,
@@ -10,6 +10,11 @@ from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterFile
 from launch_ros.substitutions import FindPackageShare
 from nav2_common.launch import RewrittenYaml
+
+
+def described_default(value: Substitution, text: str) -> Substitution:
+    value.describe = lambda: text
+    return value
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -29,10 +34,11 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument("namespace", default_value=""),
             DeclareLaunchArgument(
                 "params_file",
-                default_value=PathSubstitution(
-                    FindPackageShare("agibot_g2_mujoco_nav"))
-                / "config"
-                / "nav2.yaml",
+                default_value=described_default(
+                    PathSubstitution(FindPackageShare("agibot_g2_mujoco_nav"))
+                    / "config" / "nav2.yaml",
+                    "share(agibot_g2_mujoco_nav)/config/nav2.yaml",
+                ),
             ),
             DeclareLaunchArgument("cmd_vel_topic", default_value="/cmd_vel"),
             Node(
