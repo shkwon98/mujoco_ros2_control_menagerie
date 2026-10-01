@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Checks that the G2 ROS and MuJoCo models expose physical collision geometry."""
+"""Checks G2 collision geometry and preservation of the source visual materials."""
 
 from pathlib import Path
 import unittest
@@ -42,6 +42,51 @@ REQUIRED_COLLISION_LINKS = BODY_LINKS | END_EFFECTOR_LINKS | WHEEL_LINKS
 
 
 class CollisionModelTest(unittest.TestCase):
+    def test_mjcf_preserves_source_visual_colors(self) -> None:
+        model = ET.parse(MJCF_PATH).getroot()
+        assets = MJCF_PATH.parent / "assets" / "full"
+        meshes = {
+            mesh.get("name"): Path(mesh.get("file"))
+            for mesh in model.findall("asset/mesh")
+        }
+        colors = {
+            material.get("name"): tuple(map(float, material.get("rgba").split()))
+            for material in model.findall("asset/material") if material.get("rgba")
+        }
+
+        for body in model.findall(".//body"):
+            visuals = [geom for geom in body.findall("geom") if geom.get("group") == "1"]
+            if not visuals:
+                continue
+            mesh_file = meshes[visuals[0].get("mesh")]
+            link = mesh_file.stem if mesh_file.parent.name == "full" else mesh_file.parent.name
+            with self.subTest(body=body.get("name")):
+                if link == "swiftpicker_base_link":
+                    source = ET.parse(assets / "swiftpicker_base_link.dae")
+                    expected = [
+                        tuple(map(float, color.text.split()))
+                        for color in source.findall(".//{*}diffuse/{*}color")
+                    ]
+                else:
+                    source = ET.parse(assets / link / f"{link}.xml")
+                    source_colors = {
+                        material.get("name"): tuple(map(float, material.get("rgba").split()))
+                        for material in source.findall("asset/material")
+                    }
+                    expected = [
+                        source_colors[geom.get("material")]
+                        for geom in source.findall("worldbody/body/geom[@class='visual']")
+                    ]
+                self.assertEqual(
+                    sorted(colors.get(geom.get("material"), ()) for geom in visuals),
+                    sorted(expected),
+                )
+                for geom in visuals:
+                    self.assertEqual(
+                        (geom.get("contype"), geom.get("conaffinity"), geom.get("density")),
+                        ("0", "0", "0"),
+                    )
+
     def test_urdf_defines_standard_collision_geometry(self) -> None:
         robot = ET.parse(URDF_PATH).getroot()
         collision_links = {

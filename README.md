@@ -367,6 +367,10 @@ and seal boundaries to apply the same finish. This subdivision preserves the
 source surface. Original DAE/STL assets, collision geometry and dynamics are
 unchanged.
 
+G2 visuals use the existing material-separated OBJ assets and original diffuse
+colors: light shells, black joints and orange accents, consistent with the
+[official G2 product](https://www.agibot.com/products/G2).
+
 To regenerate the RB models from a checkout of that upstream commit, run from
 this repository's root (requires the Assimp CLI, Python `mujoco`, `trimesh`, and
 ROS `xacro`):
