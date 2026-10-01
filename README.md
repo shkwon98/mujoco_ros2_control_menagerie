@@ -376,6 +376,12 @@ meshes. Swerve tires use the black finish shown in the
 [official FFW-SG2 images](https://www.robotis.us/ai-worker-ffw-sg2-us/).
 These visual changes do not modify scene settings, geometry, inertia or control.
 
+PiPER leader and follower arms use silver arm covers with black base, wrist
+and gripper housings, following the [manufacturer's PiPER images](https://global.agilex.ai/products/piper).
+The [COBOT MAGIC frame](https://global.agilex.ai/products/cobot-magic) retains its
+white side panels and chassis, with black mounts, front/rear covers and camera
+assembly. The original leader's white handle remains white.
+
 To regenerate the RB models from a checkout of that upstream commit, run from
 this repository's root (requires the Assimp CLI, Python `mujoco`, `trimesh`, and
 ROS `xacro`):
