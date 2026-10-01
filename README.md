@@ -20,6 +20,7 @@ standard ROS 2 interfaces.
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
 | Mobile ALOHA | `mobile_aloha_mujoco_bringup` | `vx300s`, `piper` | Dual ViperX follower arms or the four-PiPER official layout on a simplified Tracer-compatible base |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
+| Rainbow Robotics RB-Series | `rbpodo_mujoco_bringup` | See RB-Series table below | 14 fixed-base, six-axis collaborative robot models |
 | RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants replace the stock grippers with separate hand controllers |
 
 Each robot follows the same package split:
@@ -125,6 +126,43 @@ The `piper` model follows the official four-arm arrangement. Its front-left
 and front-right follower arms use the common arm and gripper interfaces; the
 rear leader arms have separate `leader_*_controller` trajectory interfaces.
 
+### Rainbow Robotics RB-Series
+
+Choose the model explicitly:
+
+```bash
+ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb5_850e
+ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb10_1300e_u headless:=true
+ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb3_730es_u use_rqt:=true
+```
+
+| Product family | `robot_model` values |
+| --- | --- |
+| RB1 | `rb1_500es_u` |
+| RB3 | `rb3_730es_u`, `rb3_1200e`, `rb3_1200e_u` |
+| RB5 | `rb5_850e`, `rb5_850e_u` |
+| RB6 | `rb6_1700e_u` |
+| RB10 | `rb10_1300e`, `rb10_1300e_u` |
+| RB16 | `rb16_900e`, `rb16_900e_u` |
+| RB20 | `rb20_1800e_u`, `rb20_1900es_u` |
+| RB30 | `rb30_1400es_u` |
+
+All models expose `base`, `shoulder`, `elbow`, `wrist1`, `wrist2`, and `wrist3`
+through `/control/body/arm_controller/joint_trajectory` and the corresponding
+`/control/body/arm_controller/follow_joint_trajectory` action. Joint states appear
+on `/sensors/proprio/body/joint_states`; the base frame is `link0`, and the tool
+frame is `tcp`. Positions are in radians and ROS TF distances are in metres.
+
+The models retain the official joint axes, origins, limits, link inertias, TCP
+offsets, and collision geometry. MuJoCo renders material-separated OBJ meshes
+converted from the official DAE visuals, with a common RB5-850E color palette.
+The STL meshes remain responsible for contact; the ROS URDF retains the DAE visuals.
+Contact between the adjacent `link0` and `link1` mounting faces is excluded;
+all other non-adjacent self-collisions and external contacts remain enabled.
+The bases are fixed. Position servos use simulation gains (`kp=2000`, `kv=200`)
+and ideal gravity compensation; force limits come from the official URDF.
+These settings are not a calibrated model of the physical robot's controller.
+
 ### RBY1
 
 ```bash
@@ -191,6 +229,7 @@ kept stable:
 ```text
 /control/body/arm_left_controller/joint_trajectory
 /control/body/arm_right_controller/joint_trajectory
+/control/body/arm_controller/joint_trajectory
 /control/body/torso_controller/joint_trajectory
 /control/body/head_controller/joint_trajectory
 /control/body/leg_controller/joint_trajectory
@@ -272,7 +311,7 @@ rear wheel order.
 
 ## rqt Joint Trajectory Controller
 
-All five bringup packages accept `use_rqt:=true` to open one RQT window alongside
+All bringup packages accept `use_rqt:=true` to open one RQT window alongside
 the simulation. It defaults to `false`.
 
 ```bash
@@ -283,7 +322,7 @@ ros2 launch rby1_mujoco_bringup robot.launch.py \
   robot_model:=a_wuji use_rqt:=true
 ```
 
-RQT opens after `arm_left_controller` activates and automatically selects it
+RQT opens after `arm_left_controller` (`arm_controller` for RB-Series) activates and automatically selects it
 under `/controller_manager`. Use the controller dropdown to switch
 to another active joint trajectory controller. The window starts in monitor
 mode, without sending commands.
@@ -302,6 +341,41 @@ directory; it does not clear your other RQT settings.
   on the same joint set. Hand joints must exist in both the URDF and the MJCF.
 
 ## Third-party assets
+
+RB-Series assets come from
+[RainbowRobotics/rbpodo_ros2](https://github.com/RainbowRobotics/rbpodo_ros2/tree/5e8294a985e7ce5e20e70564c2681130afc5f502/rbpodo_description),
+commit `5e8294a985e7ce5e20e70564c2681130afc5f502`, under Apache-2.0.
+The license is retained in
+`rbpodo_mujoco_ros2/rbpodo_mujoco_description/LICENSE.rbpodo_description`.
+URDFs are expanded from the upstream Xacro/YAML with the control-box driver
+removed and package resource paths adapted. MJCFs are generated with MuJoCo's
+native URDF importer, with DAE visuals converted through Assimp to material-separated
+OBJ meshes. Visual geoms are non-colliding and have zero density; collision meshes
+are hidden in viewer group 3. The RB1 `link6` collision mesh is also converted to OBJ
+without decimation because it exceeds MuJoCo's 200,000-face STL limit.
+
+All 14 RB models use RB5-850E's silver housings, gray arm covers and black seals.
+The importer's `product_rgba` maps varying CAD colors to this shared palette,
+including both arm covers on RB20/RB30. RB1-500ES-U has no source material
+definitions: its visual surfaces are partitioned at measured link-frame cover
+and seal boundaries to apply the same finish. This subdivision preserves the
+source surface. Original DAE/STL assets, collision geometry and dynamics are
+unchanged.
+
+To regenerate the RB models from a checkout of that upstream commit, run from
+this repository's root (requires the Assimp CLI, Python `mujoco`, `trimesh`, and
+ROS `xacro`):
+
+```bash
+python3 rbpodo_mujoco_ros2/rbpodo_mujoco_description/scripts/import_rbpodo.py \
+  /path/to/rbpodo_ros2/rbpodo_description
+```
+
+After building and sourcing the install space, check all 14 models with:
+
+```bash
+python3 rbpodo_mujoco_ros2/rbpodo_mujoco_description/test/test_models.py
+```
 
 Wuji Hand2 Beta1/Beta2 assets come from
 [wuji-description](https://github.com/wuji-technology/wuji-description/tree/c2cd7f8d1ef8b6dc8cb907c17daa5a88b4442d95),

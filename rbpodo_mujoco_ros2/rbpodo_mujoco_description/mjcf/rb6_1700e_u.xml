@@ -1,0 +1,170 @@
+<mujoco model="rb6_1700e_u">
+  <compiler angle="radian" />
+  <asset>
+    <mesh name="link0" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link0.stl" />
+    <mesh name="link1" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link1.stl" />
+    <mesh name="link2" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link2.stl" />
+    <mesh name="link3" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link3.stl" />
+    <mesh name="link4" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link4.stl" />
+    <mesh name="link5" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link5.stl" />
+    <mesh name="link6" content_type="model/stl" file="../meshes/rb6_1700e_u/collision/link6.stl" />
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+    <mesh name="link0_visual_0" file="../meshes/rb6_1700e_u/visual/link0_visual_0.obj" />
+    <material name="link0_visual_0" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link0_visual_1" file="../meshes/rb6_1700e_u/visual/link0_visual_1.obj" />
+    <material name="link0_visual_1" rgba="0.1 0.1 0.1 1" specular="0" />
+    <mesh name="link0_visual_2" file="../meshes/rb6_1700e_u/visual/link0_visual_2.obj" />
+    <material name="link0_visual_2" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link0_visual_3" file="../meshes/rb6_1700e_u/visual/link0_visual_3.obj" />
+    <material name="link0_visual_3" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link0_visual_4" file="../meshes/rb6_1700e_u/visual/link0_visual_4.obj" />
+    <material name="link0_visual_4" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link1_visual_0" file="../meshes/rb6_1700e_u/visual/link1_visual_0.obj" />
+    <material name="link1_visual_0" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link1_visual_1" file="../meshes/rb6_1700e_u/visual/link1_visual_1.obj" />
+    <material name="link1_visual_1" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link1_visual_2" file="../meshes/rb6_1700e_u/visual/link1_visual_2.obj" />
+    <material name="link1_visual_2" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link2_visual_0" file="../meshes/rb6_1700e_u/visual/link2_visual_0.obj" />
+    <material name="link2_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link2_visual_1" file="../meshes/rb6_1700e_u/visual/link2_visual_1.obj" />
+    <material name="link2_visual_1" rgba="0.1 0.1 0.1 1" specular="0" />
+    <mesh name="link2_visual_2" file="../meshes/rb6_1700e_u/visual/link2_visual_2.obj" />
+    <material name="link2_visual_2" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link2_visual_3" file="../meshes/rb6_1700e_u/visual/link2_visual_3.obj" />
+    <material name="link2_visual_3" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link2_visual_4" file="../meshes/rb6_1700e_u/visual/link2_visual_4.obj" />
+    <material name="link2_visual_4" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link2_visual_5" file="../meshes/rb6_1700e_u/visual/link2_visual_5.obj" />
+    <material name="link2_visual_5" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link2_visual_6" file="../meshes/rb6_1700e_u/visual/link2_visual_6.obj" />
+    <material name="link2_visual_6" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link3_visual_0" file="../meshes/rb6_1700e_u/visual/link3_visual_0.obj" />
+    <material name="link3_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link3_visual_1" file="../meshes/rb6_1700e_u/visual/link3_visual_1.obj" />
+    <material name="link3_visual_1" rgba="0.1 0.1 0.1 1" specular="0" />
+    <mesh name="link3_visual_2" file="../meshes/rb6_1700e_u/visual/link3_visual_2.obj" />
+    <material name="link3_visual_2" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link3_visual_3" file="../meshes/rb6_1700e_u/visual/link3_visual_3.obj" />
+    <material name="link3_visual_3" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link3_visual_4" file="../meshes/rb6_1700e_u/visual/link3_visual_4.obj" />
+    <material name="link3_visual_4" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link4_visual_0" file="../meshes/rb6_1700e_u/visual/link4_visual_0.obj" />
+    <material name="link4_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link4_visual_1" file="../meshes/rb6_1700e_u/visual/link4_visual_1.obj" />
+    <material name="link4_visual_1" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link4_visual_2" file="../meshes/rb6_1700e_u/visual/link4_visual_2.obj" />
+    <material name="link4_visual_2" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link4_visual_3" file="../meshes/rb6_1700e_u/visual/link4_visual_3.obj" />
+    <material name="link4_visual_3" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link5_visual_0" file="../meshes/rb6_1700e_u/visual/link5_visual_0.obj" />
+    <material name="link5_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link5_visual_1" file="../meshes/rb6_1700e_u/visual/link5_visual_1.obj" />
+    <material name="link5_visual_1" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link5_visual_2" file="../meshes/rb6_1700e_u/visual/link5_visual_2.obj" />
+    <material name="link5_visual_2" rgba="0.1 0.1 0.1 1" specular="0" />
+    <mesh name="link5_visual_3" file="../meshes/rb6_1700e_u/visual/link5_visual_3.obj" />
+    <material name="link5_visual_3" rgba="0.3 0.3 0.3 1" specular="0" />
+    <mesh name="link6_visual_0" file="../meshes/rb6_1700e_u/visual/link6_visual_0.obj" />
+    <material name="link6_visual_0" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link6_visual_1" file="../meshes/rb6_1700e_u/visual/link6_visual_1.obj" />
+    <material name="link6_visual_1" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link6_visual_2" file="../meshes/rb6_1700e_u/visual/link6_visual_2.obj" />
+    <material name="link6_visual_2" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link6_visual_3" file="../meshes/rb6_1700e_u/visual/link6_visual_3.obj" />
+    <material name="link6_visual_3" rgba="0.8 0.8 0.8 1" specular="0" />
+    <mesh name="link6_visual_4" file="../meshes/rb6_1700e_u/visual/link6_visual_4.obj" />
+    <material name="link6_visual_4" rgba="0.8 0.8 0.8 1" specular="0" />
+  </asset>
+  <worldbody>
+    <body name="link0" gravcomp="1">
+      <geom type="mesh" mesh="link0" group="3" />
+      <body name="link1" pos="0 0 0.197" gravcomp="1">
+        <inertial pos="2.2e-05 -0.008087 -0.042227" quat="0.66699 0.23055 -0.230661 0.669901" mass="8.356" diaginertia="0.0301898 0.0274924 0.0238266" />
+        <joint name="base" pos="0 0 0" axis="0 0 1" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+        <geom type="mesh" mesh="link1" group="3" />
+        <body name="link2" pos="0 -0.1875 0" gravcomp="1">
+          <inertial pos="-1.2e-05 0.030051 0.30427" quat="0.706872 0.00597015 -0.0059462 0.707291" mass="16.542" diaginertia="2.08818 2.06468 0.0540953" />
+          <joint name="shoulder" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+          <geom type="mesh" mesh="link2" group="3" />
+          <body name="link3" pos="0 0 0.8127" gravcomp="1">
+            <inertial pos="-5.2e-05 0.139099 0.433734" quat="0.999955 0.00636373 -8.7208e-05 0.00710221" mass="6.431" diaginertia="0.618762 0.617985 0.0127568" />
+            <joint name="elbow" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+            <geom type="mesh" mesh="link3" group="3" />
+            <body name="link4" pos="0 0.1514 0.77015" gravcomp="1">
+              <inertial pos="0.000124 -0.113978 0.026418" quat="0.730009 0.0800338 -0.089327 0.672832" mass="2.066" diaginertia="0.00276188 0.00272483 0.00214349" />
+              <joint name="wrist1" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+              <geom type="mesh" mesh="link4" group="3" />
+              <body name="link5" pos="0 -0.11715 0" gravcomp="1">
+                <inertial pos="-0.000124 -0.026397 0.113946" quat="0.576215 0.464064 -0.41002 0.53339" mass="2.065" diaginertia="0.00275839 0.00272099 0.00214184" />
+                <joint name="wrist2" pos="0 0 0" axis="0 0 1" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+                <geom type="mesh" mesh="link5" group="3" />
+                <body name="link6" pos="0 0 0.11715" gravcomp="1">
+                  <inertial pos="-0.000208 -0.092542 -0.000292" quat="0.706895 -0.0427061 -0.0423862 0.704754" mass="0.406" diaginertia="0.000532785 0.000345369 0.000339825" />
+                  <joint name="wrist3" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+                  <geom type="mesh" mesh="link6" group="3" />
+                  <body name="tcp" pos="0 -0.1153 0" gravcomp="1" />
+                  <geom type="mesh" mesh="link6_visual_0" material="link6_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+                  <geom type="mesh" mesh="link6_visual_1" material="link6_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+                  <geom type="mesh" mesh="link6_visual_2" material="link6_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+                  <geom type="mesh" mesh="link6_visual_3" material="link6_visual_3" group="2" contype="0" conaffinity="0" density="0" />
+                  <geom type="mesh" mesh="link6_visual_4" material="link6_visual_4" group="2" contype="0" conaffinity="0" density="0" />
+                </body>
+                <geom type="mesh" mesh="link5_visual_0" material="link5_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+                <geom type="mesh" mesh="link5_visual_1" material="link5_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+                <geom type="mesh" mesh="link5_visual_2" material="link5_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+                <geom type="mesh" mesh="link5_visual_3" material="link5_visual_3" group="2" contype="0" conaffinity="0" density="0" />
+              </body>
+              <geom type="mesh" mesh="link4_visual_0" material="link4_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+              <geom type="mesh" mesh="link4_visual_1" material="link4_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+              <geom type="mesh" mesh="link4_visual_2" material="link4_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+              <geom type="mesh" mesh="link4_visual_3" material="link4_visual_3" group="2" contype="0" conaffinity="0" density="0" />
+            </body>
+            <geom type="mesh" mesh="link3_visual_0" material="link3_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+            <geom type="mesh" mesh="link3_visual_1" material="link3_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+            <geom type="mesh" mesh="link3_visual_2" material="link3_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+            <geom type="mesh" mesh="link3_visual_3" material="link3_visual_3" group="2" contype="0" conaffinity="0" density="0" />
+            <geom type="mesh" mesh="link3_visual_4" material="link3_visual_4" group="2" contype="0" conaffinity="0" density="0" />
+          </body>
+          <geom type="mesh" mesh="link2_visual_0" material="link2_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+          <geom type="mesh" mesh="link2_visual_1" material="link2_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+          <geom type="mesh" mesh="link2_visual_2" material="link2_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+          <geom type="mesh" mesh="link2_visual_3" material="link2_visual_3" group="2" contype="0" conaffinity="0" density="0" />
+          <geom type="mesh" mesh="link2_visual_4" material="link2_visual_4" group="2" contype="0" conaffinity="0" density="0" />
+          <geom type="mesh" mesh="link2_visual_5" material="link2_visual_5" group="2" contype="0" conaffinity="0" density="0" />
+          <geom type="mesh" mesh="link2_visual_6" material="link2_visual_6" group="2" contype="0" conaffinity="0" density="0" />
+        </body>
+        <geom type="mesh" mesh="link1_visual_0" material="link1_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+        <geom type="mesh" mesh="link1_visual_1" material="link1_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+        <geom type="mesh" mesh="link1_visual_2" material="link1_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+      </body>
+      <geom type="mesh" mesh="link0_visual_0" material="link0_visual_0" group="2" contype="0" conaffinity="0" density="0" />
+      <geom type="mesh" mesh="link0_visual_1" material="link0_visual_1" group="2" contype="0" conaffinity="0" density="0" />
+      <geom type="mesh" mesh="link0_visual_2" material="link0_visual_2" group="2" contype="0" conaffinity="0" density="0" />
+      <geom type="mesh" mesh="link0_visual_3" material="link0_visual_3" group="2" contype="0" conaffinity="0" density="0" />
+      <geom type="mesh" mesh="link0_visual_4" material="link0_visual_4" group="2" contype="0" conaffinity="0" density="0" />
+    </body>
+    <light pos="0 0 4" dir="0 0 -1" directional="true" />
+    <geom name="floor" type="plane" size="0 0 0.05" material="groundplane" />
+  </worldbody>
+  <option timestep="0.002" integrator="implicitfast" />
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="140" elevation="-20" />
+  </visual>
+  <contact>
+    <exclude body1="link0" body2="link1" />
+  </contact>
+  <statistic center="0 -0.081570741 0.97216517" extent="1.9921572" />
+  <actuator>
+    <position name="base" joint="base" kp="2000" kv="200" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="shoulder" joint="shoulder" kp="2000" kv="200" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="elbow" joint="elbow" kp="2000" kv="200" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="wrist1" joint="wrist1" kp="2000" kv="200" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="wrist2" joint="wrist2" kp="2000" kv="200" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="wrist3" joint="wrist3" kp="2000" kv="200" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+  </actuator>
+</mujoco>

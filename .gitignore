@@ -100,6 +100,7 @@ CMakeLists.txt.user*
 *.o
 *.ko
 *.obj
+!rbpodo_mujoco_ros2/rbpodo_mujoco_description/meshes/**/*.obj
 *.elf
 *.slo
 *.smod

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="rbpodo_position_joint" params="name">
+    <joint name="${name}">
+      <command_interface name="position"/>
+      <state_interface name="position"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="velocity"><param name="initial_value">0.0</param></state_interface>
+      <state_interface name="effort"><param name="initial_value">0.0</param></state_interface>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="rbpodo_ros2_control" params="robot_model headless">
+    <ros2_control name="rbpodo_mujoco" type="system">
+      <hardware>
+        <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+        <param name="mujoco_model">$(find rbpodo_mujoco_description)/mjcf/${robot_model}.xml</param>
+        <param name="sim_speed_factor">1.0</param>
+        <param name="headless">${headless}</param>
+      </hardware>
+      <xacro:rbpodo_position_joint name="base"/>
+      <xacro:rbpodo_position_joint name="shoulder"/>
+      <xacro:rbpodo_position_joint name="elbow"/>
+      <xacro:rbpodo_position_joint name="wrist1"/>
+      <xacro:rbpodo_position_joint name="wrist2"/>
+      <xacro:rbpodo_position_joint name="wrist3"/>
+    </ros2_control>
+  </xacro:macro>
+</robot>
