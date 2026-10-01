@@ -62,3 +62,22 @@ def test_hand2_model_and_controllers(tmp_path, base, version, hand_model):
                   for e in composed.findall("contact/exclude")}
     assert expected_exclusions <= exclusions
     assert model.nexclude >= len(expected_exclusions)
+    for geom in composed.findall(".//geom"):
+        mesh = geom.get("mesh", "")
+        if not mesh.startswith(("l_", "r_")):
+            continue
+        assert geom.get("group") in ("1", "3")
+        if geom.get("group") == "1" and mesh.endswith(("_distal", "_tip_sensor_frame")):
+            assert geom.get("rgba") == "0.08 0.08 0.08 1"
+
+
+@pytest.mark.parametrize("base", ["a", "m"])
+def test_hand1_production_colors(base):
+    for side in ("left", "right"):
+        hand = ET.parse(DESCRIPTION / "mjcf" / f"rby1{base}" / "assets" /
+                        "wuji_hand" / f"{side}_body.xml")
+        for geom in hand.findall(".//geom"):
+            mesh = geom.get("mesh", "")
+            expected = "0.08 0.08 0.08 1" if mesh.endswith("palm_link") else (
+                "0.9 0.9 0.9 1" if mesh.endswith("tip_link") else "0.75 0.75 0.75 1")
+            assert geom.get("rgba") == expected

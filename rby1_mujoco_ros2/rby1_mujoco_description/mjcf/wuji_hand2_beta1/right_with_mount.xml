@@ -55,7 +55,7 @@
               <body name="r_thumb_distal" pos="-5e-05 0 -0.035">
                 <inertial pos="-1.969e-05 0.000584113 -0.0149297" quat="0.686409 -0.0415291 0.0330029 0.725279" mass="0.0159" diaginertia="1.38099e-06 1.3339e-06 6.79986e-07" />
                 <joint name="r_thumb_ip" pos="0 0 0" axis="1 0 0" range="-1.047 1.57" actuatorfrcrange="-0.3 0.3" />
-                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75 0.75 0.75 1" mesh="r_thumb_distal" />
+                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.08 0.08 0.08 1" mesh="r_thumb_distal" />
                 <geom type="mesh" rgba="0.8 0.6 1 0.3" mesh="r_thumb_distal" group="2" />
                 <site name="r_thumb_tip" pos="0 0 -0.02978" group="3" size="0.002" rgba="1 0 0 1" />
               </body>
@@ -80,7 +80,7 @@
               <body name="r_index_finger_distal" pos="0 0 -0.0295">
                 <inertial pos="0.000273616 -3.02075e-05 -0.0121849" quat="0.729924 -0.00300152 0.0683924 0.680091" mass="0.0078" diaginertia="5.74442e-07 5.40524e-07 2.7383e-07" />
                 <joint name="r_index_finger_dip" pos="0 0 0" axis="1 0 0" range="-1.047 1.57" actuatorfrcrange="-0.3 0.3" />
-                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75 0.75 0.75 1" mesh="r_index_finger_distal" />
+                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.08 0.08 0.08 1" mesh="r_index_finger_distal" />
                 <geom type="mesh" rgba="0.8 0.6 1 0.3" mesh="r_index_finger_distal" group="2" />
                 <site name="r_index_finger_tip" pos="0 0 -0.02475" group="3" size="0.002" rgba="1 0 0 1" />
               </body>
@@ -105,7 +105,7 @@
               <body name="r_middle_finger_distal" pos="0 0 -0.0295">
                 <inertial pos="0.000273616 -3.02075e-05 -0.0121849" quat="0.729924 -0.00300152 0.0683924 0.680091" mass="0.0078" diaginertia="5.74442e-07 5.40524e-07 2.7383e-07" />
                 <joint name="r_middle_finger_dip" pos="0 0 0" axis="1 0 0" range="-1.047 1.57" actuatorfrcrange="-0.3 0.3" />
-                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75 0.75 0.75 1" mesh="r_middle_finger_distal" />
+                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.08 0.08 0.08 1" mesh="r_middle_finger_distal" />
                 <geom type="mesh" rgba="0.8 0.6 1 0.3" mesh="r_middle_finger_distal" group="2" />
                 <site name="r_middle_finger_tip" pos="0 0 -0.02475" group="3" size="0.002" rgba="1 0 0 1" />
               </body>
@@ -130,7 +130,7 @@
               <body name="r_ring_finger_distal" pos="0 0 -0.0295">
                 <inertial pos="0.000273616 -3.02075e-05 -0.0121849" quat="0.729924 -0.00300152 0.0683924 0.680091" mass="0.0078" diaginertia="5.74442e-07 5.40524e-07 2.7383e-07" />
                 <joint name="r_ring_finger_dip" pos="0 0 0" axis="1 0 0" range="-1.047 1.57" actuatorfrcrange="-0.3 0.3" />
-                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75 0.75 0.75 1" mesh="r_ring_finger_distal" />
+                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.08 0.08 0.08 1" mesh="r_ring_finger_distal" />
                 <geom type="mesh" rgba="0.8 0.6 1 0.3" mesh="r_ring_finger_distal" group="2" />
                 <site name="r_ring_finger_tip" pos="0 0 -0.02475" group="3" size="0.002" rgba="1 0 0 1" />
               </body>
@@ -155,7 +155,7 @@
               <body name="r_pinky_distal" pos="0 0 -0.0275">
                 <inertial pos="0.000273616 -3.02075e-05 -0.0121849" quat="0.729924 -0.00300152 0.0683924 0.680091" mass="0.0078" diaginertia="5.74442e-07 5.40524e-07 2.7383e-07" />
                 <joint name="r_pinky_dip" pos="0 0 0" axis="1 0 0" range="-1.047 1.57" actuatorfrcrange="-0.3 0.3" />
-                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75 0.75 0.75 1" mesh="r_pinky_distal" />
+                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.08 0.08 0.08 1" mesh="r_pinky_distal" />
                 <geom type="mesh" rgba="0.8 0.6 1 0.3" mesh="r_pinky_distal" group="2" />
                 <site name="r_pinky_tip" pos="0 0 -0.02475" group="3" size="0.002" rgba="1 0 0 1" />
               </body>

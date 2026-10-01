@@ -382,6 +382,14 @@ The [COBOT MAGIC frame](https://global.agilex.ai/products/cobot-magic) retains i
 white side panels and chassis, with black mounts, front/rear covers and camera
 assembly. The original leader's white handle remains white.
 
+Wuji Hand 1 CAD identification colors are replaced by silver fingers, black
+palms and white fingertips, matching the [official Hand 1 images](https://wuji.tech/en/hand).
+Hand 2 uses silver skeleton links with black distal housings and sensor covers,
+following the [bare Hand 2 product images](https://www.wuji.tech/en/hand2).
+Whole-link STL finishes remain an approximation where metal and polymer share
+one mesh; the models do not include the optional full-hand soft skin.
+Hand 2 collision overlays use viewer group 3 when composed with RBY1.
+
 To regenerate the RB models from a checkout of that upstream commit, run from
 this repository's root (requires the Assimp CLI, Python `mujoco`, `trimesh`, and
 ROS `xacro`):

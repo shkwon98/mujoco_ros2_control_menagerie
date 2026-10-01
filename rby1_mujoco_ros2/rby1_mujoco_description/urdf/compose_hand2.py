@@ -65,6 +65,10 @@ def compose_hand2(description: Path, base_model: str, version: str,
             mesh.set("file", str((meshdir / mesh.get("file")).resolve()))
             assets.append(mesh)
         mount = hand.find("worldbody/body")
+        # Keep translucent collision overlays in RBY1's collision viewer group.
+        for geom in mount.iter("geom"):
+            if geom.get("group") == "2":
+                geom.set("group", "3")
         # RBY1's joint defaults include large damping; use the hand's own defaults.
         defaults = hand.find("default/joint").attrib
         for joint in mount.iter("joint"):
