@@ -38,6 +38,9 @@ headlight settings, and initial camera angles (azimuth 140°, elevation -20°).
 Camera centers and viewing ranges suit each robot; RB-Series models derive
 them from the complete visual geometry at the initial joint configuration.
 
+Bringup sets wheeled base controller loggers to `ERROR`. This suppresses their
+INFO/WARN messages while retaining other logger settings and command timeouts.
+
 ## Build
 
 From the workspace root:

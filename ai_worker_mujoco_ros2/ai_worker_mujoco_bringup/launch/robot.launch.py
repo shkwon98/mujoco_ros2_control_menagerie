@@ -315,7 +315,10 @@ def generate_launch_description():
                 namespace="/",
                 parameters=[controllers_yaml_value],
                 output="screen",
-                ros_arguments=["--log-level", log_level],
+                ros_arguments=[
+                    "--log-level", log_level,
+                    "--log-level", "control.body.swerve_drive_controller:=error",
+                ],
                 remappings=[
                     ("robot_description", "/robot_description"),
                 ],

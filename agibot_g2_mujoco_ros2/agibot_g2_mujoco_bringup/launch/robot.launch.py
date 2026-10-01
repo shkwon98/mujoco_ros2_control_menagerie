@@ -67,6 +67,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "headless",
                 default_value="false",
+                choices=["true", "false"],
                 description="Run MuJoCo without its GUI.",
             ),
             DeclareLaunchArgument(
@@ -154,6 +155,8 @@ def generate_launch_description():
                 executable="ros2_control_node",
                 namespace="/",
                 parameters=[controllers],
+                ros_arguments=["--log-level",
+                               "control.body.swerve_drive_controller:=error"],
                 remappings=[("robot_description", "/robot_description")],
                 output="screen",
             ),

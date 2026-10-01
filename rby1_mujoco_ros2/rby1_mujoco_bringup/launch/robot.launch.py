@@ -368,7 +368,10 @@ def launch_setup(context, *args, **kwargs):
             namespace="/",
             parameters=[controllers_yaml_value],
             output="screen",
-            ros_arguments=["--log-level", log_level],
+            ros_arguments=[
+                "--log-level", log_level,
+                "--log-level", "control.body.base_controller:=error",
+            ],
             remappings=[
                 ("robot_description", "/robot_description"),
             ],
@@ -589,6 +592,9 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "robot_version",
                 default_value="v1.2",
+                choices=sorted({
+                    version for model in ROBOT_MODELS.values() for version in model["versions"]
+                }),
                 description=(
                     "RBY1 model version. a/a_wuji: v1.0, v1.1, v1.2; "
                     "m: v1.0, v1.1, v1.2, v1.3; "

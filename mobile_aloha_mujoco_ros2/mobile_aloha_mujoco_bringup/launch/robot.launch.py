@@ -207,6 +207,8 @@ def generate_launch_description() -> LaunchDescription:
                 executable="ros2_control_node",
                 namespace="/",
                 parameters=[controllers],
+                ros_arguments=["--log-level",
+                               "control.body.mobile_base_controller:=error"],
                 remappings=[("robot_description", "/robot_description")],
                 output="screen",
             ),
