@@ -33,6 +33,11 @@ Each robot follows the same package split:
   <robot>_mujoco_ros2/         # metapackage
 ```
 
+All scene entry points use the same gradient skybox, checkerboard floor,
+headlight settings, and initial camera angles (azimuth 140°, elevation -20°).
+Camera centers and viewing ranges suit each robot; RB-Series models derive
+them from the complete visual geometry at the initial joint configuration.
+
 ## Build
 
 From the workspace root:
