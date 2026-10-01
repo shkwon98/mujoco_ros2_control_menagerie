@@ -369,7 +369,12 @@ unchanged.
 
 G2 visuals use the existing material-separated OBJ assets and original diffuse
 colors: light shells, black joints and orange accents, consistent with the
-[official G2 product](https://www.agibot.com/products/G2).
+[official G2 product](https://www.agibot.com/products/G2). FFW head and torso
+STLs are partitioned into their existing connected solids to preserve the white
+shell, black camera mask and rear cover; the original STLs remain the collision
+meshes. Swerve tires use the black finish shown in the
+[official FFW-SG2 images](https://www.robotis.us/ai-worker-ffw-sg2-us/).
+These visual changes do not modify scene settings, geometry, inertia or control.
 
 To regenerate the RB models from a checkout of that upstream commit, run from
 this repository's root (requires the Assimp CLI, Python `mujoco`, `trimesh`, and

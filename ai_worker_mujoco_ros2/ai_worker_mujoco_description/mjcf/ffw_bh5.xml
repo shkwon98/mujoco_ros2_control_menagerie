@@ -6,8 +6,12 @@
     <material name="white" rgba="1 1 1 1" />
     <mesh name="base_mobile_assy" file="common/follower/base/base_mobile_assy.stl" scale="0.001 0.001 0.001" />
     <mesh name="body_arm_assy" file="common/follower/body_arm_assy.stl" scale="0.001 0.001 0.001" />
+    <mesh name="body_arm_assy_white" file="common/follower/body_arm_assy_white.obj" scale="0.001 0.001 0.001"/>
+    <mesh name="body_arm_assy_black" file="common/follower/body_arm_assy_black.obj" scale="0.001 0.001 0.001"/>
     <mesh name="head_link1" file="common/follower/head_link1.stl" scale="0.001 0.001 0.001" />
     <mesh name="head_link2" file="common/follower/head_link2.stl" scale="0.001 0.001 0.001" />
+    <mesh name="head_link2_white" file="common/follower/head_link2_white.obj" scale="0.001 0.001 0.001"/>
+    <mesh name="head_link2_black" file="common/follower/head_link2_black.obj" scale="0.001 0.001 0.001"/>
     <mesh name="arm_l_link1" file="common/follower/arm_l_link1.stl" scale="0.001 0.001 0.001" />
     <mesh name="arm_l_link2" file="common/follower/arm_l_link2.stl" scale="0.001 0.001 0.001" />
     <mesh name="arm_l_link3" file="common/follower/arm_l_link3.stl" scale="0.001 0.001 0.001" />
@@ -166,7 +170,8 @@
     <body name="arm_base_link" pos="0.0055 0 1.4316">
       <inertial pos="-0.0460732 -2.28101e-05 -0.0270208" quat="0.295276 0.295528 -0.642514 0.642379" mass="8.72176" diaginertia="0.106112 0.0836519 0.0576143" />
       <joint name="lift_joint" class="lift_joint" />
-      <geom type="mesh" mesh="body_arm_assy" material="white" class="visual" />
+      <geom type="mesh" mesh="body_arm_assy_white" material="white" class="visual"/>
+      <geom type="mesh" mesh="body_arm_assy_black" material="black" class="visual"/>
       <geom type="mesh" mesh="body_arm_assy" class="collision" />
       <body name="head_link1" pos="0.0494878 0 0.102123">
         <joint name="head_joint1" class="head_joint1" />
@@ -174,7 +179,8 @@
         <geom type="mesh" mesh="head_link1" class="collision" />
         <body name="head_link2" pos="0.0365694 0 0.0563797">
           <joint name="head_joint2" class="head_joint2" />
-          <geom type="mesh" mesh="head_link2" material="white" class="visual" />
+          <geom type="mesh" mesh="head_link2_white" material="white" class="visual"/>
+          <geom type="mesh" mesh="head_link2_black" material="black" class="visual"/>
           <geom type="mesh" mesh="head_link2" class="collision" />
         </body>
       </body>
