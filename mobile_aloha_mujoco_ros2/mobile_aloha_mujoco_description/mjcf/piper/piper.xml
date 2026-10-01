@@ -224,8 +224,9 @@
                   <inertial pos="0.0010312 0.0121761 0.0315481" quat="0.0230402 0.707091 0.0373344 0.70576" mass="1.2"
                     diaginertia="0.001 0.001 0.001"/>
                   <joint name="joint6" axis="0 0 1" range="-3.14 3.14"/>
-                  <geom mesh="link6" material="gray_mat" class="visual"/>
-                  <geom mesh="link6" class="collision"/>
+                  <!-- Map the official gripper frame into the Menagerie wrist frame. -->
+                  <geom mesh="link6" euler="0 0 1.57079632679" material="gray_mat" class="visual"/>
+                  <geom mesh="link6" euler="0 0 1.57079632679" class="collision"/>
                   <body name="link7" pos="0 0 0.13503" quat="1.89468e-08 1.89469e-08 0.707108 0.707105" gravcomp="1">
                     <inertial pos="-0.000277778 -0.0467673 -0.00921029" quat="0.46134 0.536174 -0.553273 0.439968"
                       mass="0.0264823" diaginertia="0.001 0.001 0.001"/>

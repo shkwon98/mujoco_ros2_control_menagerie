@@ -224,9 +224,10 @@
                   <inertial pos="0.0010312 0.0121761 0.0315481" quat="0.0230402 0.707091 0.0373344 0.70576" mass="1.2"
                     diaginertia="0.001 0.001 0.001"/>
                   <joint name="joint6" axis="0 0 1" range="-3.14 3.14"/>
-                  <geom mesh="link6" material="white_mat" class="visual"/>
-                  <geom mesh="link6" class="collision"/>
-                  <body name="link7" pos="0 -0.043177 0.0685" quat="1.89468e-08 1.89469e-08 0.707108 0.707105" gravcomp="1">
+                  <!-- Map the official handle frame into the Menagerie wrist frame. -->
+                  <geom mesh="link6" euler="0 0 1.57079632679" material="white_mat" class="visual"/>
+                  <geom mesh="link6" euler="0 0 1.57079632679" class="collision"/>
+                  <body name="link7" pos="0.043177 0 0.0685" quat="1.89468e-08 1.89469e-08 0.707108 0.707105" gravcomp="1">
                     <inertial pos="-0.000277778 -0.0467673 -0.00921029" quat="0.46134 0.536174 -0.553273 0.439968"
                       mass="0.0264823" diaginertia="0.001 0.001 0.001"/>
                     <joint name="joint7" axis="0 0 -1" class="finger" range="0 0.035"/>
@@ -234,7 +235,7 @@
                     <geom type="box" size=".012 .015 .0025" pos="0 -0.015 -0.0025" rgba="1 0 0 .2" class="collision"/>
                     <geom type="box" size=".015 .015 .0025" pos="0 -0.045 -0.0025" rgba="0 0 1 .2" class="collision"/>
                   </body>
-                  <body name="link8" pos="0 -0.043177 0.0685" quat="1.89468e-08 -1.89469e-08 -0.707108 0.707105" gravcomp="1">
+                  <body name="link8" pos="0.043177 0 0.0685" quat="1.89468e-08 -1.89469e-08 -0.707108 0.707105" gravcomp="1">
                     <inertial pos="0.000277817 0.0467674 -0.0092103" quat="0.553273 0.439968 -0.46134 0.536174"
                       mass="0.0264822" diaginertia="0.001 0.001 0.001"/>
                     <joint name="joint8" axis="0 0 1" class="finger" range="-0.035 0"/>

@@ -134,38 +134,39 @@
   </link>
 
   <link name="body_link">
+    <!-- The bundled STL parts already include the upstream body's yaw transform. -->
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_0.STL"/></geometry>
       <material name="body_white"/>
     </visual>
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_1.STL"/></geometry>
       <material name="body_white"/>
     </visual>
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_2.STL"/></geometry>
       <material name="body_white"/>
     </visual>
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_3.STL"/></geometry>
       <material name="body_white"/>
     </visual>
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_4.STL"/></geometry>
       <material name="body_white"/>
     </visual>
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_5.STL"/></geometry>
       <material name="body_white"/>
     </visual>
     <visual>
-      <origin xyz="0 0 0.168" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0.168"/>
       <geometry><mesh filename="${official_mesh_root}/body_6.STL"/></geometry>
       <material name="body_white"/>
     </visual>

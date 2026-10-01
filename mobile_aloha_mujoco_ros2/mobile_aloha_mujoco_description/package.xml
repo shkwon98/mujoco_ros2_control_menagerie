@@ -18,6 +18,8 @@
   <exec_depend>joint_trajectory_controller</exec_depend>
   <exec_depend>mujoco_ros2_control</exec_depend>
 
+  <test_depend>python3-numpy</test_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
