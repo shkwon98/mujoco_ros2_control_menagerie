@@ -19,7 +19,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../README.md"
+  FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../README.md" LICENSE.wuji_description
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

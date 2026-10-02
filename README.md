@@ -1,150 +1,21 @@
 # MuJoCo ROS 2 Control Menagerie
 
-ROS 2 packages for running robot MuJoCo models through `ros2_control`.
+ROS 2 Jazzy packages for running robot models in MuJoCo through `ros2_control`.
 
-This repository provides robot simulation assets and ROS 2 control bringup:
+## Supported robots
 
-- MuJoCo model files, meshes, and URDF/xacro wrappers
-- `ros2_control` hardware descriptions
-- Controller YAML files
-- Launch files that start `ros2_control_node`, `robot_state_publisher`, and controller spawners
-
-Hardware drivers and application-level software integrate with it through
-standard ROS 2 interfaces.
-
-## Supported Robots
-
-| Robot | Launch package | `robot_model` values | Notes |
+| Robot | Launch package | `robot_model` values | Default |
 | --- | --- | --- | --- |
-| AgiBot G2 | `agibot_g2_mujoco_bringup` | — | Dual-arm robot with torso, head, and four-module swerve-base control |
-| AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `g2` models use grippers, `h5` models use 20-joint hands, `s` models include mobile-base wheel control |
-| Mobile ALOHA | `mobile_aloha_mujoco_bringup` | `vx300s`, `piper` | Dual ViperX follower arms or the four-PiPER official layout on a simplified Tracer-compatible base |
-| Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | Hand variants default to fixed-base scenes for upper-body work |
-| Rainbow Robotics RB-Series | `rbpodo_mujoco_bringup` | See RB-Series table below | 14 fixed-base, six-axis collaborative robot models |
-| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | Wuji variants replace the stock grippers with separate hand controllers |
+| AgiBot G2 | `agibot_g2_mujoco_bringup` | — | — |
+| AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `ffw_bg2` |
+| Mobile ALOHA | `mobile_aloha_mujoco_bringup` | `vx300s`, `piper` | `vx300s` |
+| Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | `g1` |
+| Rainbow Robotics RB-Series | `rbpodo_mujoco_bringup` | See below | Required |
+| RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | `a` |
 
-Each robot follows the same package split:
+RB-Series models:
 
-```text
-<robot>_mujoco_ros2/
-  <robot>_mujoco_description/  # URDF, MJCF, meshes, ros2_control config
-  <robot>_mujoco_bringup/      # launch files
-  <robot>_mujoco_nav/          # mobile-base Nav2 config and launch
-  <robot>_mujoco_ros2/         # metapackage
-```
-
-All scene entry points use the same gradient skybox, checkerboard floor,
-headlight settings, and initial camera angles (azimuth 140°, elevation -20°).
-Camera centers and viewing ranges suit each robot; RB-Series models derive
-them from the complete visual geometry at the initial joint configuration.
-
-Bringup sets wheeled base controller loggers to `ERROR`. This suppresses their
-INFO/WARN messages while retaining other logger settings and command timeouts.
-
-## Build
-
-From the workspace root:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-
-colcon build --merge-install --symlink-install \
-  --base-paths src/robot/mujoco_ros2_control_menagerie
-
-source install/setup.bash
-```
-
-## Launch
-
-Run one bringup at a time unless you intentionally isolate them with different
-ROS domains or namespaces.
-
-### AgiBot G2
-
-```bash
-ros2 launch agibot_g2_mujoco_bringup robot.launch.py
-```
-
-Use `headless:=true` to run without the MuJoCo viewer. The four-module swerve
-base accepts `geometry_msgs/msg/Twist` on `/cmd_vel` and publishes `/odom`.
-
-### AI Worker
-
-```bash
-ros2 launch ai_worker_mujoco_bringup robot.launch.py
-```
-
-Examples:
-
-```bash
-ros2 launch ai_worker_mujoco_bringup robot.launch.py robot_model:=ffw_bh5
-ros2 launch ai_worker_mujoco_bringup robot.launch.py robot_model:=ffw_sg2
-```
-
-### Unitree G1
-
-```bash
-ros2 launch g1_mujoco_bringup robot.launch.py
-```
-
-Model variants:
-
-| `robot_model` | Default MuJoCo file | Controllers | Base behavior |
-| --- | --- | --- | --- |
-| `g1` | `scene.xml` | body, arms, torso, legs | floating base |
-| `g1_with_hands` | `scene_with_hands_fixed.xml` | body, arms, torso, legs, hands | pelvis welded to world |
-| `g1_with_inspire_hands` | `scene_inspire_hand_fixed.xml` | body, arms, torso, legs, Inspire hands | pelvis welded to world |
-
-Examples:
-
-```bash
-ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
-ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_inspire_hands
-ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands mujoco_model_file:=scene_with_hands.xml
-ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_inspire_hands mujoco_model_file:=scene_inspire_hand.xml
-ros2 launch g1_mujoco_bringup robot.launch.py mujoco_model_file:=g1_29dof_fixed.xml
-```
-
-G1 hand variants default to fixed-base scenes so arm and hand control can be
-tested without a balance controller. Override `mujoco_model_file` with
-`scene_with_hands.xml` or `scene_inspire_hand.xml` when you explicitly want the
-original floating-base hand scene.
-
-Useful G1 launch arguments:
-
-| Argument | Default | Description |
-| --- | --- | --- |
-| `robot_model` | `g1` | `g1`, `g1_with_hands`, or `g1_with_inspire_hands` |
-| `mujoco_model_file` | `auto` | MJCF file under `g1_mujoco_description/mjcf` |
-| `controllers_yaml` | `auto` | Controller YAML selected by `robot_model` |
-| `initial_positions_file` | package default | Initial joint positions YAML |
-| `log_level` | `info` | ROS log level |
-
-### Mobile ALOHA
-
-```bash
-ros2 launch mobile_aloha_mujoco_bringup robot.launch.py robot_model:=vx300s
-ros2 launch mobile_aloha_mujoco_bringup robot.launch.py robot_model:=piper
-```
-
-Use `headless:=true` to run without the MuJoCo viewer. The base accepts
-`geometry_msgs/msg/TwistStamped` on `/cmd_vel` and publishes `/odom`.
-
-The `piper` model follows the official four-arm arrangement. Its front-left
-and front-right follower arms use the common arm and gripper interfaces; the
-rear leader arms have separate `leader_*_controller` trajectory interfaces.
-
-### Rainbow Robotics RB-Series
-
-Choose the model explicitly:
-
-```bash
-ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb5_850e
-ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb10_1300e_u headless:=true
-ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb3_730es_u use_rqt:=true
-```
-
-| Product family | `robot_model` values |
+| Family | `robot_model` values |
 | --- | --- |
 | RB1 | `rb1_500es_u` |
 | RB3 | `rb3_730es_u`, `rb3_1200e`, `rb3_1200e_u` |
@@ -155,290 +26,110 @@ ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb3_730es_u use_r
 | RB20 | `rb20_1800e_u`, `rb20_1900es_u` |
 | RB30 | `rb30_1400es_u` |
 
-All models expose `base`, `shoulder`, `elbow`, `wrist1`, `wrist2`, and `wrist3`
-through `/control/body/arm_controller/joint_trajectory` and the corresponding
-`/control/body/arm_controller/follow_joint_trajectory` action. Joint states appear
-on `/sensors/proprio/body/joint_states`; the base frame is `link0`, and the tool
-frame is `tcp`. Positions are in radians and ROS TF distances are in metres.
+## Build
 
-The models retain the official joint axes, origins, limits, link inertias, TCP
-offsets, and collision geometry. MuJoCo renders material-separated OBJ meshes
-converted from the official DAE visuals, with a common RB5-850E color palette.
-The STL meshes remain responsible for contact; the ROS URDF retains the DAE visuals.
-Contact between the adjacent `link0` and `link1` mounting faces is excluded;
-all other non-adjacent self-collisions and external contacts remain enabled.
-The bases are fixed. Position servos use simulation gains (`kp=2000`, `kv=200`)
-and ideal gravity compensation; force limits come from the official URDF.
-These settings are not a calibrated model of the physical robot's controller.
-
-### RBY1
+Run from the workspace root:
 
 ```bash
-ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=a
+source /opt/ros/jazzy/setup.bash
+
+rosdep install --from-paths src/robot/mujoco_ros2_control_menagerie \
+  --ignore-src --rosdistro jazzy -r -y
+
+colcon build --merge-install --symlink-install \
+  --base-paths src/robot/mujoco_ros2_control_menagerie
+
+source install/setup.bash
 ```
 
-Examples:
+## Launch
+
+Choose one command; run one robot per ROS domain:
 
 ```bash
-ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m robot_version:=v1.2
-ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=a_wuji robot_version:=v1.2
-ros2 launch rby1_mujoco_bringup robot.launch.py robot_model:=m_wuji robot_version:=v1.2
+ros2 launch agibot_g2_mujoco_bringup robot.launch.py
+ros2 launch ai_worker_mujoco_bringup robot.launch.py
+ros2 launch mobile_aloha_mujoco_bringup robot.launch.py
+ros2 launch g1_mujoco_bringup robot.launch.py
+ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb5_850e
+ros2 launch rby1_mujoco_bringup robot.launch.py
 ```
 
-`robot_model:=a_wuji` and `robot_model:=m_wuji` use the RBY1A/RBY1M bodies and
-replace the stock grippers with separate Wuji hand controllers. Hand1 is the default;
-select Hand2 Beta1 or Beta2 for both hands with:
+| Argument | Default | Purpose |
+| --- | --- | --- |
+| `headless` | `false` | Run without the MuJoCo viewer |
+| `use_rqt` | `false` | Open the joint trajectory controller GUI in monitor mode |
+| `log_level` | `info` | ROS log level; wheeled base loggers stay at `ERROR` |
+| `use_navigation` | `true` | Start Nav2 on mobile models; disable for direct base control |
+
+G1 and RB-Series have no Nav2 pipeline. To list a package's arguments:
 
 ```bash
-ros2 launch rby1_mujoco_bringup robot.launch.py \
-  robot_model:=a_wuji hand_model:=wuji_hand2_beta1
+ros2 launch g1_mujoco_bringup robot.launch.py --show-args
+```
+
+Model options:
+
+- FFW: `g2` variants use grippers, `h5` variants use dexterous hands;
+  `ffw_sg2` and `ffw_sh5` have mobile bases.
+- Mobile ALOHA: `piper` uses four arms, with front followers and rear leaders.
+- G1: `g1` has a floating base; hand variants default to fixed bases.
+  Select `mujoco_model_file:=scene_with_hands.xml` or `scene_inspire_hand.xml`
+  for the corresponding floating-base hand model.
+- RBY1: `a_wuji` and `m_wuji` use Wuji hands. `hand_model` defaults to
+  `wuji_hand`; Hand2 options are `wuji_hand2_beta1` and `wuji_hand2_beta2`.
+  `robot_version` defaults to `v1.2`; A models support `v1.0`–`v1.2`,
+  M models support `v1.0`–`v1.3`.
+
+For example:
+
+```bash
+ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
 ros2 launch rby1_mujoco_bringup robot.launch.py \
   robot_model:=a_wuji hand_model:=wuji_hand2_beta2
 ```
 
-The same hand selection works with `m_wuji`. Hand2 geometry, mounts, and
-internal collision exclusions are bundled in `rby1_mujoco_description`.
+## Common ROS interface
 
-Useful RBY1 launch arguments:
+| Endpoint | Purpose |
+| --- | --- |
+| `/controller_manager` | One controller manager for the robot |
+| `/robot_description` | Full control URDF, including `ros2_control` metadata |
+| `/control/<segment>/robot_description` | Body or hand URDF without control metadata |
+| `/sensors/proprio/<segment>/joint_states` | `sensor_msgs/msg/JointState` |
+| `/sensors/proprio/<segment>/dynamic_joint_states` | Joint interface states |
+| `/control/body/<controller>/joint_trajectory` | Body `trajectory_msgs/msg/JointTrajectory` commands |
+| `/control/hand_<side>/hand_<side>_controller/joint_trajectory` | Hand or follower-gripper trajectory commands |
 
-| Argument | Default | Description |
-| --- | --- | --- |
-| `robot_model` | `a` | `a`, `m`, `a_wuji`, or `m_wuji` |
-| `robot_version` | `v1.2` | `a/a_wuji`: `v1.0`, `v1.1`, `v1.2`; `m/m_wuji`: `v1.0`, `v1.1`, `v1.2`, `v1.3` |
-| `hand_model` | `wuji_hand` | `wuji_hand`, `wuji_hand2_beta1`, or `wuji_hand2_beta2`, for both hands on `a_wuji`/`m_wuji` |
-| `controllers_yaml` | `auto` | Controller YAML selected by `robot_model`; hand joint names follow `hand_model` |
-| `use_navigation` | `true` | Start the matching Nav2 control pipeline |
-| `log_level` | `info` | ROS log level |
+`<segment>` is `body`, `hand_left` or `hand_right`; `<side>` is `left` or `right`.
+Hand topics exist for models with separate moving hand joints. Description topics
+publish `std_msgs/msg/String` with reliable, transient-local QoS. Each trajectory
+controller also provides `controller_state` and a `follow_joint_trajectory` action
+under the same prefix.
 
-## Common ROS Interface
+RB-Series uses `arm_controller`; dual-arm robots use `arm_left_controller` and
+`arm_right_controller`, with torso, head or leg controllers where available.
+G2 grippers provide state only. RBY1 stock grippers remain in the body interface;
+PiPER rear leaders have additional `leader_*_controller` body interfaces.
 
-All bringup files use the same top-level control and sensor namespaces.
+All nodes use `use_sim_time=true`; message timestamps follow `/clock`.
+Mobile robots use `map -> odom -> base_link` TF; fixed FFW models use
+`map -> base_link`, RB-Series uses `map -> link0`, and G1 uses `map -> pelvis`
+(static for fixed scenes, dynamic for floating scenes). Floating G1 also
+publishes `/sensors/proprio/body/base_pose`. RB-Series exposes the tool frame `tcp`.
 
-### Description and controller manager
+### Mobile bases
 
-```text
-/controller_manager
-```
+G2, FFW `ffw_sg2`/`ffw_sh5`, Mobile ALOHA and RBY1 expose:
 
-One controller manager handles the whole simulated robot. Controllers keep their
-body and hand namespaces under `/control/body`, `/control/hand_left`, and
-`/control/hand_right`.
+| Topic/action | Type |
+| --- | --- |
+| `/cmd_vel` | `geometry_msgs/msg/TwistStamped` |
+| `/odom` | `nav_msgs/msg/Odometry` |
+| `/follow_path` | Nav2 path-following action, when navigation is enabled |
 
-Robot description topics vary with the package layout. Bringup packages expose
-them on `/robot_description`, `/control/body/robot_description`, or
-`/sensors/proprio/body/robot_description` as required by their publishers and
-controller managers.
-
-### Body trajectory controllers
-
-Available controllers depend on the robot model, but the naming convention is
-kept stable:
-
-```text
-/control/body/arm_left_controller/joint_trajectory
-/control/body/arm_right_controller/joint_trajectory
-/control/body/arm_controller/joint_trajectory
-/control/body/torso_controller/joint_trajectory
-/control/body/head_controller/joint_trajectory
-/control/body/leg_controller/joint_trajectory
-```
-
-The corresponding `FollowJointTrajectory` actions live beside those topics:
-
-```text
-/control/body/<controller_name>/follow_joint_trajectory
-```
-
-### Hand trajectory controllers
-
-Dexterous-hand variants use:
-
-```text
-/control/hand_left/hand_left_controller/joint_trajectory
-/control/hand_right/hand_right_controller/joint_trajectory
-/control/hand_left/hand_left_controller/follow_joint_trajectory
-/control/hand_right/hand_right_controller/follow_joint_trajectory
-```
-
-Mobile ALOHA uses parallel-gripper trajectories instead:
-
-```text
-/control/hand_left/gripper_controller/joint_trajectory
-/control/hand_right/gripper_controller/joint_trajectory
-/control/body/gripper_left_controller/follow_joint_trajectory
-/control/body/gripper_right_controller/follow_joint_trajectory
-```
-
-### Proprioception
-
-```text
-/sensors/proprio/body/joint_states
-/sensors/proprio/hand_left/joint_states
-/sensors/proprio/hand_right/joint_states
-```
-
-Mobile ALOHA and RBY1 `a` and `m` publish all joint states through body
-proprioception. AI Worker, G1 hand variants, and RBY1 Wuji variants split hand
-proprioception into `hand_left` and `hand_right` when hand controllers are
-present.
-
-### Mobile base
-
-AgiBot G2, AI Worker `ffw_sg2` and `ffw_sh5`, all RBY1 variants, and Mobile
-ALOHA accept planar velocity commands on:
-
-```text
-/cmd_vel
-```
-
-They publish planar odometry on `/odom`.
-
-Mobile-capable bringups start their matching Nav2 control pipeline by default
-and expose `/follow_path`. Disable it when only direct `/cmd_vel` or upper-body
-control is needed:
-
-```bash
-ros2 launch rby1_mujoco_bringup robot.launch.py \
-  robot_model:=a_wuji use_navigation:=false
-```
-
-AI Worker starts Nav2 only for the `ffw_sg2` and `ffw_sh5` mobile models. G1
-has no mobile-base Nav2 pipeline. Each navigation package sends its smoothed
-command to `/cmd_vel` by default.
-
-The AI Worker swerve variants additionally expose their lower-level controller
-interfaces:
-
-```text
-/control/body/base_steer_controller/joint_trajectory
-/control/body/base_drive_controller/commands
-```
-
-The low-level drive command is `std_msgs/msg/Float64MultiArray` in left, right,
-rear wheel order.
-
-## rqt Joint Trajectory Controller
-
-All bringup packages accept `use_rqt:=true` to open one RQT window alongside
-the simulation. It defaults to `false`.
-
-```bash
-ros2 launch g1_mujoco_bringup robot.launch.py \
-  robot_model:=g1_with_inspire_hands use_rqt:=true
-
-ros2 launch rby1_mujoco_bringup robot.launch.py \
-  robot_model:=a_wuji use_rqt:=true
-```
-
-RQT opens after `arm_left_controller` (`arm_controller` for RB-Series) activates and automatically selects it
-under `/controller_manager`. Use the controller dropdown to switch
-to another active joint trajectory controller. The window starts in monitor
-mode, without sending commands.
-
-Each launch uses the existing full robot description and remaps the hand or
-gripper topics as needed. No separate terminal command or additional URDF is
-required. The native RQT perspective lives in the bringup package's `config/`
-directory; it does not clear your other RQT settings.
-
-## Notes
-
-- Launch files are MuJoCo-only.
-- If topic discovery looks stale, stop the old launch process before starting a new robot.
-- `source /opt/ros/jazzy/setup.bash` before building or launching from a clean shell.
-- Keep each robot variant's MuJoCo file, URDF/xacro wrapper, and controller YAML
-  on the same joint set. Hand joints must exist in both the URDF and the MJCF.
-
-## Third-party assets
-
-RB-Series assets come from
-[RainbowRobotics/rbpodo_ros2](https://github.com/RainbowRobotics/rbpodo_ros2/tree/5e8294a985e7ce5e20e70564c2681130afc5f502/rbpodo_description),
-commit `5e8294a985e7ce5e20e70564c2681130afc5f502`, under Apache-2.0.
-The license is retained in
-`rbpodo_mujoco_ros2/rbpodo_mujoco_description/LICENSE.rbpodo_description`.
-URDFs are expanded from the upstream Xacro/YAML with the control-box driver
-removed and package resource paths adapted. MJCFs are generated with MuJoCo's
-native URDF importer, with DAE visuals converted through Assimp to material-separated
-OBJ meshes. Visual geoms are non-colliding and have zero density; collision meshes
-are hidden in viewer group 3. The RB1 `link6` collision mesh is also converted to OBJ
-without decimation because it exceeds MuJoCo's 200,000-face STL limit.
-
-All 14 RB models use RB5-850E's silver housings, gray arm covers and black seals.
-The importer's `product_rgba` maps varying CAD colors to this shared palette,
-including both arm covers on RB20/RB30. RB1-500ES-U has no source material
-definitions: its visual surfaces are partitioned at measured link-frame cover
-and seal boundaries to apply the same finish. This subdivision preserves the
-source surface. Original DAE/STL assets, collision geometry and dynamics are
-unchanged.
-
-G2 visuals use the existing material-separated OBJ assets and original diffuse
-colors: light shells, black joints and orange accents, consistent with the
-[official G2 product](https://www.agibot.com/products/G2). FFW head and torso
-STLs are partitioned into their existing connected solids to preserve the white
-shell, black camera mask and rear cover; the original STLs remain the collision
-meshes. Swerve tires use the black finish shown in the
-[official FFW-SG2 images](https://www.robotis.us/ai-worker-ffw-sg2-us/).
-These visual changes do not modify scene settings, geometry, inertia or control.
-
-PiPER leader and follower arms use silver arm covers with black base, wrist
-and gripper housings, following the [manufacturer's PiPER images](https://global.agilex.ai/products/piper).
-The [COBOT MAGIC frame](https://global.agilex.ai/products/cobot-magic) retains its
-white side panels and chassis, with black mounts, front/rear covers and camera
-assembly. The original leader's white handle remains white.
-
-Wuji Hand 1 CAD identification colors are replaced by silver fingers, black
-palms and white fingertips, matching the [official Hand 1 images](https://wuji.tech/en/hand).
-Hand 2 uses silver skeleton links with black distal housings and sensor covers,
-following the [bare Hand 2 product images](https://www.wuji.tech/en/hand2).
-Whole-link STL finishes remain an approximation where metal and polymer share
-one mesh; the models do not include the optional full-hand soft skin.
-Hand 2 collision overlays use viewer group 3 when composed with RBY1.
-
-To regenerate the RB models from a checkout of that upstream commit, run from
-this repository's root (requires the Assimp CLI, Python `mujoco`, `trimesh`, and
-ROS `xacro`):
-
-```bash
-python3 rbpodo_mujoco_ros2/rbpodo_mujoco_description/scripts/import_rbpodo.py \
-  /path/to/rbpodo_ros2/rbpodo_description
-```
-
-After building and sourcing the install space, check all 14 models with:
-
-```bash
-python3 rbpodo_mujoco_ros2/rbpodo_mujoco_description/test/test_models.py
-```
-
-Wuji Hand2 Beta1/Beta2 assets come from
-[wuji-description](https://github.com/wuji-technology/wuji-description/tree/c2cd7f8d1ef8b6dc8cb907c17daa5a88b4442d95),
-commit `c2cd7f8d1ef8b6dc8cb907c17daa5a88b4442d95`, package version `2026.9.11`.
-The mounted URDF/MJCF models and referenced meshes are taken from
-`hand2/hand2_beta1/body` and `hand2/hand2_beta2/body`; only resource paths are changed.
-
-<details>
-<summary>Wuji model assets — MIT License</summary>
-
-```text
-MIT License
-
-Copyright (c) 2025 Wuji Technology
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-</details>
+Stamp velocity commands with `/clock` and express them in `base_link`
+(an empty `header.frame_id` also denotes this frame). Linear velocity uses m/s;
+angular velocity uses rad/s. Differential bases support forward motion and yaw;
+swerve/mecanum bases also support lateral motion. Commands that expire trigger
+braking. `use_navigation:=false` leaves direct `/cmd_vel` control available.
