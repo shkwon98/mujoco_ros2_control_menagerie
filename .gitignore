@@ -101,7 +101,7 @@ CMakeLists.txt.user*
 *.ko
 *.obj
 !ai_worker_mujoco_ros2/ai_worker_mujoco_description/meshes/**/*.obj
-!rbpodo_mujoco_ros2/rbpodo_mujoco_description/meshes/**/*.obj
+!rb_mujoco_ros2/rb_mujoco_description/meshes/**/*.obj
 *.elf
 *.slo
 *.smod

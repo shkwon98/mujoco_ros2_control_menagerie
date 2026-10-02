@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="$(arg robot_model)">
-  <xacro:arg name="headless" default="false"/>
-  <xacro:include filename="$(find rbpodo_mujoco_description)/urdf/$(arg robot_model).urdf"/>
-  <xacro:include filename="$(find rbpodo_mujoco_description)/urdf/rbpodo.ros2_control.xacro"/>
-  <xacro:rbpodo_ros2_control robot_model="$(arg robot_model)" headless="$(arg headless)"/>
-</robot>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>rb_mujoco_description</name>
+  <version>0.1.0</version>
+  <description>Rainbow Robotics RB-Series descriptions and fixed-base MuJoCo models.</description>
+  <maintainer email="shkwon@tommoro.ai">Sunghyun Kwon</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>mujoco_ros2_control</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <test_depend>ament_index_python</test_depend>
+  <test_depend>wuji_description</test_depend>
+  <test_depend>wuji_hand2_beta1_description</test_depend>
+  <test_depend>wuji_hand2_beta2_description</test_depend>
+  <test_depend>python3-numpy</test_depend>
+  <test_depend>python3-scipy</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

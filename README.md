@@ -10,7 +10,7 @@ ROS 2 Jazzy packages for running robot models in MuJoCo through `ros2_control`.
 | AI Worker FFW | `ai_worker_mujoco_bringup` | `ffw_bg2`, `ffw_bh5`, `ffw_sg2`, `ffw_sh5` | `ffw_bg2` |
 | Mobile ALOHA | `mobile_aloha_mujoco_bringup` | `vx300s`, `piper` | `vx300s` |
 | Unitree G1 | `g1_mujoco_bringup` | `g1`, `g1_with_hands`, `g1_with_inspire_hands` | `g1` |
-| Rainbow Robotics RB-Series | `rbpodo_mujoco_bringup` | See below | Required |
+| Rainbow Robotics RB-Series | `rb_mujoco_bringup` | See below | Required |
 | RBY1 | `rby1_mujoco_bringup` | `a`, `m`, `a_wuji`, `m_wuji` | `a` |
 
 RB-Series models:
@@ -54,7 +54,7 @@ ros2 launch agibot_g2_mujoco_bringup robot.launch.py
 ros2 launch ai_worker_mujoco_bringup robot.launch.py
 ros2 launch mobile_aloha_mujoco_bringup robot.launch.py
 ros2 launch g1_mujoco_bringup robot.launch.py
-ros2 launch rbpodo_mujoco_bringup robot.launch.py robot_model:=rb5_850e
+ros2 launch rb_mujoco_bringup robot.launch.py robot_model:=rb5_850e
 ros2 launch rby1_mujoco_bringup robot.launch.py
 ```
 
@@ -91,7 +91,7 @@ For example:
 
 ```bash
 ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
-ros2 launch rbpodo_mujoco_bringup robot.launch.py \
+ros2 launch rb_mujoco_bringup robot.launch.py \
   robot_model:=rb5_850e hand_model:=wuji_hand2_beta2 hand_side:=right
 ros2 launch rby1_mujoco_bringup robot.launch.py \
   robot_model:=a_wuji hand_model:=wuji_hand2_beta2
