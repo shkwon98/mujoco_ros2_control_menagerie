@@ -180,7 +180,11 @@ def main() -> None:
             model = ET.parse(output_file).getroot()
             for mesh in model.findall("asset/mesh"):
                 mesh.set("file", "../" + str(Path(mesh.get("file")).relative_to(ROOT)))
-            ET.SubElement(model, "option", timestep="0.002", integrator="implicitfast")
+            # Lightweight bare wrists need finer steps than hand-mounted arms.
+            timestep = {"rb3_730es_u": "0.0001", "rb3_1200e_u": "0.00025",
+                        "rb5_850e": "0.00025", "rb5_850e_u": "0.00025"}.get(
+                            model_name, "0.0005")
+            ET.SubElement(model, "option", timestep=timestep, integrator="implicitfast")
             visual_settings = ET.SubElement(model, "visual")
             ET.SubElement(visual_settings, "headlight", diffuse="0.6 0.6 0.6",
                           ambient="0.3 0.3 0.3", specular="0 0 0")
@@ -265,8 +269,9 @@ def main() -> None:
             for joint in robot.findall("joint[@type='revolute']"):
                 limit = joint.find("limit")
                 effort = limit.get("effort")
+                # Scale damping with each joint's inertia instead of a fixed velocity gain.
                 ET.SubElement(actuator, "position", name=joint.get("name"),
-                              joint=joint.get("name"), kp="2000", kv="200",
+                              joint=joint.get("name"), kp="2000", dampratio="2",
                               ctrlrange=f"{limit.get('lower')} {limit.get('upper')}",
                               forcerange=f"-{effort} {effort}")
             ET.indent(model, space="  ")

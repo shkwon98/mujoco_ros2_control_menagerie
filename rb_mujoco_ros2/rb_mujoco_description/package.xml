@@ -12,6 +12,7 @@
   <exec_depend>mujoco_ros2_control</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
   <test_depend>ament_index_python</test_depend>
+  <test_depend>mujoco_vendor</test_depend>
   <test_depend>wuji_description</test_depend>
   <test_depend>wuji_hand2_beta1_description</test_depend>
   <test_depend>wuji_hand2_beta2_description</test_depend>
