@@ -21,6 +21,10 @@ for arm, hand, side in (("rb5_850e", "wuji_hand", "right"), ("rb5_850e", "wuji_h
         xml, controllers = compose(xml, root, Path(get_package_share_directory(package)),
                                    arm, hand, side, Path(directory))
         robot = ET.fromstring(xml)
+        if hand != "wuji_hand":
+            mount = robot.find(f"joint[@name='{side}_hand_base_mount_joint']")
+            assert mount.find("origin").get("xyz") == "0 0 0"
+            assert len(robot.find(f"link[@name='{side}_hand_base']")) == 0
         control = robot.find("ros2_control")
         model = mujoco.MjModel.from_xml_path(
             control.findtext("hardware/param[@name='mujoco_model']"))

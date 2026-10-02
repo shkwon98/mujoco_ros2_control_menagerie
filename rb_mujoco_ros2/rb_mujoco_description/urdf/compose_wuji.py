@@ -1,6 +1,5 @@
 """Attach one Wuji hand to an RB TCP without changing the arm model."""
 import xml.etree.ElementTree as ET
-from math import pi
 from pathlib import Path
 
 import yaml
@@ -57,7 +56,7 @@ def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
             joint.attrib.setdefault(key, value)
 
     base = f"{side}_hand_base"
-    base_link = ET.SubElement(robot, "link", name=base)
+    ET.SubElement(robot, "link", name=base)
     base_body = ET.Element("body", name=base)
     mounts = [("tcp", base, "0 0 0", "-1.5707963267948966 0 0", base_body)]
     if hand_model == "wuji_hand":
@@ -90,33 +89,6 @@ def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
              palm_rpy, hand_body),
         ])
     else:
-        # Nominal aluminium spacer clears the large RB20/RB30 wrist housings.
-        # Dimensions and mass describe a simulation adapter, not a physical part.
-        mounts[0] = ("tcp", base, "0 -0.02 0",
-                     "-1.5707963267948966 0 0", base_body)
-        radius, length = 0.025, 0.02
-        mass = pi * radius**2 * length * 2700
-        transverse = mass * (radius**2 / 4 + length**2 / 12)
-        axial = mass * radius**2 / 2
-        inertia = ET.SubElement(base_link, "inertial")
-        ET.SubElement(inertia, "origin", xyz="0 0 0.01", rpy="0 0 0")
-        ET.SubElement(inertia, "mass", value=str(mass))
-        ET.SubElement(inertia, "inertia", ixx=str(transverse), iyy=str(transverse),
-                      izz=str(axial), ixy="0", ixz="0", iyz="0")
-        ET.SubElement(base_body, "inertial", pos="0 0 0.01", mass=str(mass),
-                      diaginertia=f"{transverse} {transverse} {axial}")
-        for tag, group, collide in (("visual", "2", "0"), ("collision", "3", "1")):
-            element = ET.SubElement(base_link, tag)
-            ET.SubElement(element, "origin", xyz="0 0 0.01", rpy="0 0 0")
-            geometry = ET.SubElement(element, "geometry")
-            ET.SubElement(geometry, "cylinder", radius=str(
-                radius), length=str(length))
-            if tag == "visual":
-                ET.SubElement(ET.SubElement(element, "material", name="rb_wuji_spacer"),
-                              "color", rgba="0.3 0.3 0.3 1")
-            ET.SubElement(base_body, "geom", type="cylinder", size=f"{radius} {length / 2}",
-                          pos="0 0 0.01", group=group, contype=collide,
-                          conaffinity=collide, density="0", rgba="0.3 0.3 0.3 1")
         mounts.append((base, hand_body.get("name"),
                       "0 0 0", "0 0 0", hand_body))
     model.find("compiler").set("eulerseq", "XYZ")
