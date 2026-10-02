@@ -3,17 +3,21 @@
 
 import xml.etree.ElementTree as ET
 from copy import deepcopy
+from pathlib import Path
+from runpy import run_path
+from tempfile import TemporaryDirectory
 
 import xacro
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     OpaqueFunction,
     RegisterEventHandler,
     SetLaunchConfiguration,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.substitutions import LaunchConfiguration, PathSubstitution
 from launch_ros.actions import Node, SetParameter
 from launch_ros.parameter_descriptions import ParameterValue
@@ -114,7 +118,7 @@ def description_nodes() -> list:
                 executable="robot_state_publisher",
                 namespace=f"/sensors/proprio/{segment}",
                 condition=(
-                    IfCondition(LaunchConfiguration("_has_hands"))
+                    IfCondition(LaunchConfiguration(f"_has_{segment}"))
                     if segment != "body"
                     else None
                 ),
@@ -136,7 +140,7 @@ def description_nodes() -> list:
                 ros_arguments=["--log-level", log_level],
                 output="screen",
             )
-            for segment in ("body",)
+            for segment in ("body", "hand_left", "hand_right")
         ],
     ]
 
@@ -173,12 +177,27 @@ def prepare_descriptions(context) -> list:
             "headless": LaunchConfiguration("headless").perform(context),
         },
     ).toxml()
-    hand_roots = {}
+    hand = LaunchConfiguration("hand_model").perform(context)
+    side = LaunchConfiguration("hand_side").perform(context)
+    hand_roots, temporary = {}, None
+    if hand != "none":
+        package = "wuji_description" if hand == "wuji_hand" else f"{hand}_description"
+        temporary = TemporaryDirectory(prefix="rbpodo_wuji_")
+        compose = run_path(
+            (description / "urdf" / "compose_wuji.py").perform(context)
+        )["compose_wuji"]
+        xml, controllers = compose(
+            xml, Path(description.perform(context)),
+            Path(FindPackageShare(package).perform(context)),
+            model, hand, side, Path(temporary.name),
+        )
+        hand_roots[side] = f"{side}_hand_base"
     parts = split_description(xml, hand_roots)
     values = {
         "_full_robot_description": xml,
         "_controllers_yaml": str(controllers),
-        "_has_hands": str(bool(hand_roots)).lower(),
+        **{f"_has_hand_{side}": str(side in hand_roots).lower()
+           for side in ("left", "right")},
         "_body_robot_description": parts["body"],
         **{
             f"_hand_{side}_robot_description": value
@@ -188,6 +207,11 @@ def prepare_descriptions(context) -> list:
     }
     actions = [SetLaunchConfiguration(name, value)
                for name, value in values.items()]
+    if temporary is not None:
+        actions.append(RegisterEventHandler(OnShutdown(
+            on_shutdown=[OpaqueFunction(
+                function=lambda _: temporary.cleanup())]
+        )))
     return actions
 
 
@@ -203,6 +227,9 @@ def generate_launch_description() -> LaunchDescription:
         for name in body_controllers
     }
     trajectory_names = [(name, "body") for name in body_controllers]
+    trajectory_names.extend(
+        (f"hand_{side}_controller", f"hand_{side}") for side in ("left", "right")
+    )
     placement_frame = "link0"
     rqt = Node(
         package="rqt_gui",
@@ -237,6 +264,16 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="false",
                 choices=["true", "false"],
                 description="Run MuJoCo without its graphical window",
+            ),
+            DeclareLaunchArgument(
+                "hand_model", default_value="none",
+                choices=["none", "wuji_hand",
+                         "wuji_hand2_beta1", "wuji_hand2_beta2"],
+                description="Optional Wuji hand at the RB TCP (simulation mount)",
+            ),
+            DeclareLaunchArgument(
+                "hand_side", default_value="right", choices=["left", "right"],
+                description="Side of the single attached Wuji hand",
             ),
             DeclareLaunchArgument(
                 "use_rqt",
@@ -288,5 +325,27 @@ def generate_launch_description() -> LaunchDescription:
                 ),
             ),
             *body_spawners.values(),
+            *[
+                GroupAction(
+                    condition=IfCondition(
+                        LaunchConfiguration(f"_has_hand_{side}")),
+                    actions=[
+                        controller_spawner(
+                            f"hand_{side}_joint_state_broadcaster", f"/control/hand_{side}",
+                            remappings=(
+                                ("joint_states",
+                                 f"/sensors/proprio/hand_{side}/joint_states"),
+                                ("dynamic_joint_states",
+                                 f"/sensors/proprio/hand_{side}/dynamic_joint_states"),
+                            ),
+                        ),
+                        controller_spawner(
+                            f"hand_{side}_controller", f"/control/hand_{side}",
+                            remappings=(
+                                ("~/joint_states", f"/sensors/proprio/hand_{side}/joint_states"),),
+                        ),
+                    ],
+                ) for side in ("left", "right")
+            ],
         ]
     )

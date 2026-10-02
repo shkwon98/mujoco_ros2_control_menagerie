@@ -42,6 +42,9 @@ colcon build --merge-install --symlink-install \
 source install/setup.bash
 ```
 
+Wuji-equipped RB models also require the `wuji_description`,
+`wuji_hand2_beta1_description` and `wuji_hand2_beta2_description` asset packages.
+
 ## Launch
 
 Choose one command; run one robot per ROS domain:
@@ -76,6 +79,9 @@ Model options:
 - G1: `g1` has a floating base; hand variants default to fixed bases.
   Select `mujoco_model_file:=scene_with_hands.xml` or `scene_inspire_hand.xml`
   for the corresponding floating-base hand model.
+- RB-Series: `hand_model` defaults to `none`; options are `wuji_hand`,
+  `wuji_hand2_beta1` and `wuji_hand2_beta2`. `hand_side` selects `right` (default)
+  or `left`, using a simulated TCP mount.
 - RBY1: `a_wuji` and `m_wuji` use Wuji hands. `hand_model` defaults to
   `wuji_hand`; Hand2 options are `wuji_hand2_beta1` and `wuji_hand2_beta2`.
   `robot_version` defaults to `v1.2`; A models support `v1.0`–`v1.2`,
@@ -85,6 +91,8 @@ For example:
 
 ```bash
 ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
+ros2 launch rbpodo_mujoco_bringup robot.launch.py \
+  robot_model:=rb5_850e hand_model:=wuji_hand2_beta2 hand_side:=right
 ros2 launch rby1_mujoco_bringup robot.launch.py \
   robot_model:=a_wuji hand_model:=wuji_hand2_beta2
 ```
