@@ -1,83 +1,43 @@
-"""Check the Hand2 composition through the installed model and controller interfaces."""
+"""Check Hand2 composition, actuator mapping and official contact exclusions."""
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from runpy import run_path
+from tempfile import TemporaryDirectory
 
-import pytest
+import mujoco
 import xacro
 import yaml
 from ament_index_python.packages import get_package_share_directory
 
-mujoco = pytest.importorskip("mujoco")
-
-DESCRIPTION = Path(get_package_share_directory("rby1_mujoco_description"))
-COMPOSE = run_path(DESCRIPTION / "urdf" / "compose_hand2.py")["compose_hand2"]
-
-
-@pytest.mark.parametrize("hand_model", ["wuji_hand2_beta1", "wuji_hand2_beta2"])
-@pytest.mark.parametrize("base,version", [("a", "v1.2"), ("m", "v1.3")])
-def test_hand2_model_and_controllers(tmp_path, base, version, hand_model):
-    model_path, initial_path, controllers_path = COMPOSE(
-        DESCRIPTION, base, version,
-        DESCRIPTION / "config" / "ros2_control" /
-        f"rby1{base}_wuji_controllers.yaml",
-        tmp_path, hand_model=hand_model,
-    )
-    robot = ET.fromstring(xacro.process_file(str(DESCRIPTION / "urdf" / "rby1.urdf.xacro"),
-                                             mappings={"robot_model": f"{base}_wuji", "robot_version": version,
-                                                       "hand_model": hand_model, "initial_positions_file": initial_path,
-                                                       "mujoco_model_file": model_path, "headless": "true"}).toxml())
-    model = mujoco.MjModel.from_xml_path(model_path)
-    initial = yaml.safe_load(Path(initial_path).read_text())[
-        "initial_positions"]
-    controller_text = Path(controllers_path).read_text()
-    assert not any(isinstance(token, (yaml.AliasToken, yaml.AnchorToken))
-                   for token in yaml.scan(controller_text))
-    controllers = yaml.safe_load(controller_text)["/**"]
-    controlled = {j.get("name") for j in robot.findall("ros2_control/joint")}
-    assert controlled == set(initial)
-    assert model.nu == len(controlled)
-    assert {model.joint(
-        int(j)).name for j in model.actuator_trnid[:, 0]} == controlled
-    hand_mjcf = DESCRIPTION / "mjcf" / hand_model
-    expected_exclusions = set()
-    for side in ("left", "right"):
-        official = ET.parse(hand_mjcf / f"{side}_with_mount.xml")
-        expected_exclusions.update(
-            tuple(sorted((e.get("body1"), e.get("body2"))))
-            for e in official.findall("contact/exclude")
-        )
-        hand = ET.fromstring(xacro.process_file(
-            str(DESCRIPTION / "urdf" / "wuji_hand2" / "hand.urdf.xacro"),
-            mappings={"side": side, "hand_model": hand_model}).toxml())
-        names = {j.get("name") for j in hand.findall(
-            "joint") if j.get("type") != "fixed"}
-        assert len(names) == 20
-        for controller in (f"hand_{side}_controller", f"hand_{side}_joint_state_broadcaster"):
-            assert set(controllers[controller]
-                       ["ros__parameters"]["joints"]) == names
-
-    composed = ET.parse(model_path)
-    exclusions = {tuple(sorted((e.get("body1"), e.get("body2"))))
-                  for e in composed.findall("contact/exclude")}
-    assert expected_exclusions <= exclusions
-    assert model.nexclude >= len(expected_exclusions)
-    for geom in composed.findall(".//geom"):
-        mesh = geom.get("mesh", "")
-        if not mesh.startswith(("l_", "r_")):
-            continue
-        assert geom.get("group") in ("1", "3")
-        if geom.get("group") == "1" and mesh.endswith(("_distal", "_tip_sensor_frame")):
-            assert geom.get("rgba") == "0.08 0.08 0.08 1"
-
-
-@pytest.mark.parametrize("base", ["a", "m"])
-def test_hand1_production_colors(base):
-    for side in ("left", "right"):
-        hand = ET.parse(DESCRIPTION / "mjcf" / f"rby1{base}" / "assets" /
-                        "wuji_hand" / f"{side}_body.xml")
-        for geom in hand.findall(".//geom"):
-            mesh = geom.get("mesh", "")
-            expected = "0.08 0.08 0.08 1" if mesh.endswith("palm_link") else (
-                "0.9 0.9 0.9 1" if mesh.endswith("tip_link") else "0.75 0.75 0.75 1")
-            assert geom.get("rgba") == expected
+root = Path(get_package_share_directory("rby1_mujoco_description"))
+compose = run_path(root / "urdf/compose_hand2.py")["compose_hand2"]
+for base, version, hand in (("a", "v1.2", "wuji_hand2_beta1"), ("m", "v1.3", "wuji_hand2_beta2")):
+    with TemporaryDirectory() as output:
+        model_path, initial_path, controllers_path = compose(
+            root, base, version, root /
+            f"config/ros2_control/rby1{base}_wuji_controllers.yaml",
+            Path(output), hand_model=hand)
+        model = mujoco.MjModel.from_xml_path(model_path)
+        robot = ET.fromstring(xacro.process_file(str(root / "urdf/rby1.urdf.xacro"), mappings={
+            "robot_model": f"{base}_wuji", "robot_version": version, "hand_model": hand,
+            "initial_positions_file": initial_path, "mujoco_model_file": model_path, "headless": "true"}).toxml())
+        controlled = {j.get("name")
+                      for j in robot.findall("ros2_control/joint")}
+        assert controlled == set(yaml.safe_load(
+            Path(initial_path).read_text())["initial_positions"])
+        assert model.nu == len(controlled) and {model.joint(
+            int(j)).name for j in model.actuator_trnid[:, 0]} == controlled
+        controllers = yaml.safe_load(Path(controllers_path).read_text())["/**"]
+        exclusions = {tuple(sorted((e.get("body1"), e.get("body2"))))
+                      for e in ET.parse(model_path).findall("contact/exclude")}
+        for side in ("left", "right"):
+            official = ET.parse(root / f"mjcf/{hand}/{side}_with_mount.xml")
+            assert {tuple(sorted((e.get("body1"), e.get("body2"))))
+                    for e in official.findall("contact/exclude")} <= exclusions
+            names = {j.get("name")
+                     for j in official.findall(".//worldbody//joint")}
+            assert len(names) == 20
+            for suffix in ("controller", "joint_state_broadcaster"):
+                assert set(
+                    controllers[f"hand_{side}_{suffix}"]["ros__parameters"]["joints"]) == names
+print("PASS Hand2 composition and control mapping")

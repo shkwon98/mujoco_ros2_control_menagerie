@@ -15,7 +15,6 @@
   <exec_depend>xacro</exec_depend>
   <exec_depend>mujoco_ros2_control</exec_depend>
 
-  <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>ament_index_python</test_depend>
 
   <export>

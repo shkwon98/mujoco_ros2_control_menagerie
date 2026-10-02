@@ -17,6 +17,10 @@
   <exec_depend>rbpodo_mujoco_ros2</exec_depend>
   <exec_depend>rby1_mujoco_ros2</exec_depend>
 
+  <test_depend>launch</test_depend>
+  <test_depend>launch_ros</test_depend>
+  <test_depend>xacro</test_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

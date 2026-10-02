@@ -4,8 +4,11 @@ project(ai_worker_mujoco_description)
 find_package(ament_cmake REQUIRED)
 
 if(BUILD_TESTING)
-  find_package(ament_cmake_pytest REQUIRED)
-  ament_add_pytest_test(test_description_split test/test_description_split.py)
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+  add_test(
+    NAME visual_materials
+    COMMAND
+      ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_visuals.py)
 endif()
 
 install(
