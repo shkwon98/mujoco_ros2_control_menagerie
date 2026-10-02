@@ -489,6 +489,8 @@
     <accelerometer name="imu-torso-linear-acceleration" site="imu_in_torso" noise="1e-2" cutoff="157"/>
     <gyro name="imu-pelvis-angular-velocity" site="imu_in_pelvis" noise="5e-4" cutoff="34.9"/>
     <accelerometer name="imu-pelvis-linear-acceleration" site="imu_in_pelvis" noise="1e-2" cutoff="157"/>
+    <framepos name="base_pose_pos" objtype="body" objname="pelvis"/>
+    <framequat name="base_pose_quat" objtype="body" objname="pelvis"/>
   </sensor>
 
   <keyframe>

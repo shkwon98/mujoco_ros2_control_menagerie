@@ -1,203 +1,295 @@
 #!/usr/bin/env python3
+"""Launch this robot with its own descriptions, state publishers and controllers."""
 
-from launch import LaunchContext, LaunchDescription, Substitution
+from copy import deepcopy
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+import xacro
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
-    GroupAction,
     IncludeLaunchDescription,
+    OpaqueFunction,
     RegisterEventHandler,
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import (
-    AnySubstitution,
-    Command,
-    EqualsSubstitution,
-    FindExecutable,
-    IfElseSubstitution,
-    LaunchConfiguration,
-    PathSubstitution,
-)
-from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node, SetParameter
 from launch_ros.parameter_descriptions import ParameterValue
-from launch_ros.substitutions import FindPackageShare
+
+ROBOT_MODELS = ("ffw_bg2", "ffw_bh5", "ffw_sg2", "ffw_sh5")
 
 
-def described_path(value: Substitution, **placeholders: str) -> Substitution:
-    context = LaunchContext()
-    context.launch_configurations.update(placeholders)
-    value.describe = lambda: value.perform(context)
-    return value
+def split_description(xml: str, hand_roots: dict[str, str]) -> dict[str, str]:
+    """Keep each hand's attachment link in the body and as an empty hand root.
 
-
-def make_robot_description(xacro_file, **mappings):
-    command = [
-        FindExecutable(name="xacro"),
-        " ",
-        xacro_file,
-    ]
-    for name, value in mappings.items():
-        command.extend([" ", name, ":=", value])
-
-    return {
-        "robot_description": ParameterValue(
-            Command(command),
-            value_type=str,
+    Every original link geometry and joint belongs to exactly one partition.
+    All partitions retain global materials and omit ros2_control metadata.
+    """
+    full = ET.fromstring(xml)
+    links = {link.get("name") for link in full.findall("link")}
+    joints = full.findall("joint")
+    children: dict[str, list[str]] = {}
+    for joint in joints:
+        children.setdefault(joint.find("parent").get("link"), []).append(
+            joint.find("child").get("link")
         )
-    }
+
+    hands: dict[str, set[str]] = {}
+    for side, root in hand_roots.items():
+        if not root:
+            continue
+        if root not in links:
+            raise ValueError(f"Unknown {side} hand attachment link: {root}")
+        descendants: set[str] = set()
+        pending = list(children.get(root, []))
+        while pending:
+            child = pending.pop()
+            if child == root or child in descendants:
+                raise ValueError(f"Cyclic URDF subtree at {root}")
+            descendants.add(child)
+            pending.extend(children.get(child, []))
+        hands[side] = descendants
+    removed = set().union(*hands.values())
+    if sum(map(len, hands.values())) != len(removed) or removed.intersection(
+        hand_roots.values()
+    ):
+        raise ValueError("Hand URDF subtrees must be disjoint")
+
+    result = {}
+    for part, selected in {"body": links - removed, **hands}.items():
+        robot = ET.Element("robot", name=f"{full.get('name')}_{part}")
+        if part != "body":
+            ET.SubElement(robot, "link", name=hand_roots[part])
+        for element in full:
+            if (
+                element.tag == "material"
+                or element.tag == "link"
+                and element.get("name") in selected
+                or element.tag == "joint"
+                and element.find("child").get("link") in selected
+            ):
+                robot.append(deepcopy(element))
+        result[part] = ET.tostring(robot, encoding="unicode")
+    return result
 
 
-def generate_launch_description():
-    robot_model = LaunchConfiguration("robot_model")
-    controllers_yaml = LaunchConfiguration("controllers_yaml")
-    initial_positions_file = LaunchConfiguration("initial_positions_file")
-    headless = LaunchConfiguration("headless")
+def description_nodes(xml: str, hand_roots: dict[str, str]) -> list:
+    descriptions = split_description(xml, hand_roots)
     log_level = LaunchConfiguration("log_level")
-    controllers_yaml_value = IfElseSubstitution(
-        EqualsSubstitution(controllers_yaml, "auto"),
-        PathSubstitution(FindPackageShare("ai_worker_mujoco_description"))
-        / "config"
-        / "ros2_control"
-        / ["ai_worker_", robot_model, "_controllers.yaml"],
-        controllers_yaml,
-    )
-
-    xacro_file = (
-        PathSubstitution(FindPackageShare("ai_worker_mujoco_description"))
-        / "urdf"
-        / "ai_worker_mujoco.urdf.xacro"
-    )
-    full_robot_description = make_robot_description(
-        xacro_file,
-        robot_model=robot_model,
-        initial_positions_file=initial_positions_file,
-        headless=headless,
-        include_hands="true",
-        include_ros2_control="true",
-    )
-
-    body_robot_description = make_robot_description(
-        xacro_file,
-        robot_model=robot_model,
-        initial_positions_file=initial_positions_file,
-        headless=headless,
-        include_hands="false",
-        include_ros2_control="false",
-    )
-
-    hand_xacro_file = (
-        PathSubstitution(FindPackageShare("ai_worker_mujoco_description"))
-        / "urdf"
-        / "ai_worker_hand.urdf.xacro"
-    )
-    left_hand_robot_description = make_robot_description(
-        hand_xacro_file, robot_model=robot_model, side="left"
-    )
-
-    right_hand_robot_description = make_robot_description(
-        hand_xacro_file, robot_model=robot_model, side="right"
-    )
-
-    def make_joint_state_broadcaster_spawner(
-        controller_name,
-        joint_states_topic,
-        dynamic_joint_states_topic,
-    ):
-        return Node(
-            package="controller_manager",
-            executable="spawner",
+    nodes = [
+        Node(
+            package="ai_worker_mujoco_bringup",
+            executable="robot_description_publisher.py",
             namespace="/",
-            output="screen",
-            arguments=[
-                controller_name,
-                "--controller-ros-args",
-                f"--ros-args -r __ns:=/control/body --remap joint_states:={joint_states_topic}",
-                "--controller-ros-args",
-                f"--ros-args --remap dynamic_joint_states:={dynamic_joint_states_topic}",
-            ],
+            parameters=[{"robot_description": ParameterValue(xml, value_type=str)}],
             ros_arguments=["--log-level", log_level],
-        )
-
-    def make_controller_spawner(
-        controller_name,
-        command_topic=None,
-        action_topic=None,
-        controller_namespace="/control/body",
-        joint_states_topic="/sensors/proprio/body/joint_states",
-    ):
-        controller_args = [
-            controller_name,
-            "--controller-ros-args",
-            f"--ros-args --remap ~/joint_states:={joint_states_topic}",
-        ]
-        if controller_namespace:
-            controller_args.extend(
-                [
-                    "--controller-ros-args",
-                    f"--ros-args -r __ns:={controller_namespace}",
-                ]
-            )
-        if command_topic:
-            controller_args.extend(
-                [
-                    "--controller-ros-args",
-                    f"--ros-args --remap ~/joint_trajectory:={command_topic}",
-                ]
-            )
-        if action_topic:
-            controller_args.extend(
-                [
-                    "--controller-ros-args",
-                    f"--ros-args --remap ~/follow_joint_trajectory:={action_topic}",
-                ]
-            )
-        return Node(
-            package="controller_manager",
-            executable="spawner",
-            namespace="/",
             output="screen",
-            arguments=controller_args,
-            ros_arguments=["--log-level", log_level],
         )
+    ]
+    for part, description in descriptions.items():
+        segment = "body" if part == "body" else f"hand_{part}"
+        nodes.append(
+            Node(
+                package="robot_state_publisher",
+                executable="robot_state_publisher",
+                namespace=f"/sensors/proprio/{segment}",
+                parameters=[
+                    {"robot_description": ParameterValue(description, value_type=str)}
+                ],
+                remappings=[
+                    ("robot_description", f"/control/{segment}/robot_description"),
+                    ("joint_states", f"/sensors/proprio/{segment}/joint_states"),
+                ],
+                ros_arguments=["--log-level", log_level],
+                output="screen",
+            )
+        )
+    return nodes
 
-    # Keep the process instance used by the RQT startup event.
-    arm_left_controller_spawner = make_controller_spawner(
+
+def controller_spawner(
+    name: str, namespace: str = "/control/body", remappings: tuple = ()
+) -> Node:
+    controller_args = ["--ros-args", "-r", f"__ns:={namespace}"]
+    for source, target in remappings:
+        controller_args.extend(["-r", f"{source}:={target}"])
+    return Node(
+        package="controller_manager",
+        executable="spawner",
+        namespace="/",
+        arguments=[name, "--controller-ros-args", " ".join(controller_args)],
+        ros_arguments=["--log-level", LaunchConfiguration("log_level")],
+        output="screen",
+    )
+
+
+def launch_setup(context) -> list:
+    description = Path(get_package_share_directory("ai_worker_mujoco_description"))
+    bringup = Path(get_package_share_directory("ai_worker_mujoco_bringup"))
+    log_level = LaunchConfiguration("log_level")
+    model = LaunchConfiguration("robot_model").perform(context)
+    controllers = LaunchConfiguration("controllers_yaml").perform(context)
+    if controllers == "auto":
+        controllers = (
+            description / f"config/ros2_control/ai_worker_{model}_controllers.yaml"
+        )
+    xml = xacro.process_file(
+        str(description / "urdf/ai_worker_mujoco.urdf.xacro"),
+        mappings={
+            "robot_model": model,
+            "initial_positions_file": LaunchConfiguration(
+                "initial_positions_file"
+            ).perform(context),
+            "headless": LaunchConfiguration("headless").perform(context),
+            "include_hands": "true",
+            "include_ros2_control": "true",
+        },
+    ).toxml()
+    mobile = model in ("ffw_sg2", "ffw_sh5")
+    placement_frame = "odom" if mobile else "base_link"
+    body_controllers = (
         "arm_left_controller",
-        "/control/body/arm_left_controller/joint_trajectory",
-        "/control/body/arm_left_controller/follow_joint_trajectory",
+        "arm_right_controller",
+        "torso_controller",
+        "head_controller",
     )
-
-    is_swerve = AnySubstitution(
-        EqualsSubstitution(robot_model, "ffw_sg2"),
-        EqualsSubstitution(robot_model, "ffw_sh5"),
+    hand_roots = {"left": "arm_l_link7", "right": "arm_r_link7"}
+    segments = [
+        "body",
+        *[f"hand_{side}" for side, anchor in hand_roots.items() if anchor],
+    ]
+    body_spawners = {
+        name: controller_spawner(
+            name, remappings=(("~/joint_states", "/sensors/proprio/body/joint_states"),)
+        )
+        for name in body_controllers
+    }
+    selected_spawner = body_spawners[body_controllers[0]]
+    trajectory_names = [(name, "body") for name in body_controllers]
+    trajectory_names += [
+        (f"hand_{side}_controller", f"hand_{side}")
+        for side, anchor in hand_roots.items()
+        if anchor
+    ]
+    rqt = Node(
+        package="rqt_gui",
+        executable="rqt_gui",
+        namespace="/",
+        arguments=[
+            "--perspective-file",
+            str(bringup / "config/ai_worker_mujoco.perspective"),
+            "--force-discover",
+        ],
+        remappings=[
+            ("robot_description", "/robot_description"),
+            *[
+                (f"/{name}/{topic}", f"/control/{segment}/{name}/{topic}")
+                for name, segment in trajectory_names
+                for topic in ("controller_state", "joint_trajectory")
+            ],
+        ],
+        ros_arguments=["--log-level", log_level],
+        output="screen",
     )
+    nodes = [
+        RegisterEventHandler(
+            OnProcessExit(
+                target_action=selected_spawner,
+                on_exit=lambda event, _: [rqt] if event.returncode == 0 else [],
+            ),
+            condition=IfCondition(LaunchConfiguration("use_rqt")),
+        ),
+        *description_nodes(xml, hand_roots),
+        Node(
+            package="controller_manager",
+            executable="ros2_control_node",
+            namespace="/",
+            parameters=[str(controllers)],
+            remappings=[("robot_description", "/robot_description")],
+            ros_arguments=[
+                "--log-level",
+                log_level,
+                "--log-level",
+                "control.body.swerve_drive_controller:=error",
+            ],
+            output="screen",
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name=f"map_to_{placement_frame}",
+            arguments=["--frame-id", "map", "--child-frame-id", placement_frame],
+            ros_arguments=["--log-level", log_level],
+        ),
+        *[
+            controller_spawner(
+                f"{segment}_joint_state_broadcaster",
+                namespace="/control/body",
+                remappings=(
+                    ("joint_states", f"/sensors/proprio/{segment}/joint_states"),
+                    (
+                        "dynamic_joint_states",
+                        f"/sensors/proprio/{segment}/dynamic_joint_states",
+                    ),
+                ),
+            )
+            for segment in segments
+        ],
+        *body_spawners.values(),
+        *[
+            controller_spawner(
+                f"hand_{side}_controller",
+                namespace=f"/control/hand_{side}",
+                remappings=(
+                    ("~/joint_states", f"/sensors/proprio/hand_{side}/joint_states"),
+                ),
+            )
+            for side, anchor in hand_roots.items()
+            if anchor
+        ],
+    ]
+    if mobile:
+        nodes.append(
+            controller_spawner(
+                "swerve_drive_controller", remappings=(("/control/body/odom", "/odom"),)
+            )
+        )
+        if LaunchConfiguration("use_navigation").perform(context) == "true":
+            nodes.append(
+                IncludeLaunchDescription(
+                    str(
+                        Path(get_package_share_directory("ai_worker_mujoco_nav"))
+                        / "launch/navigation.launch.py"
+                    )
+                )
+            )
+    return nodes
 
-    fixed_frame_child = IfElseSubstitution(is_swerve, "odom", "base_link")
 
+def generate_launch_description() -> LaunchDescription:
     return LaunchDescription(
         [
+            SetParameter(name="use_sim_time", value=True),
             DeclareLaunchArgument(
                 "robot_model",
                 default_value="ffw_bg2",
-                choices=[
-                    "ffw_bg2",
-                    "ffw_bh5",
-                    "ffw_sg2",
-                    "ffw_sh5",
-                ],
+                choices=list(ROBOT_MODELS),
                 description="AI Worker FFW model",
             ),
             DeclareLaunchArgument(
                 "controllers_yaml",
                 default_value="auto",
-                description="Controller configuration YAML, or 'auto' to select by robot_model",
+                description="Controller YAML, or 'auto' to select by robot_model",
             ),
             DeclareLaunchArgument(
                 "initial_positions_file",
-                default_value=described_path(
-                    PathSubstitution(FindPackageShare(
-                        "ai_worker_mujoco_description"))
-                    / "config" / "initial_positions.yaml",
+                default_value=str(
+                    Path(get_package_share_directory("ai_worker_mujoco_description"))
+                    / "config/initial_positions.yaml"
                 ),
                 description="Initial joint positions YAML",
             ),
@@ -208,10 +300,10 @@ def generate_launch_description():
                 description="Run MuJoCo without its graphical window",
             ),
             DeclareLaunchArgument(
-                "use_navigation",
-                default_value="true",
+                "use_rqt",
+                default_value="false",
                 choices=["true", "false"],
-                description="Start Nav2 for mobile-base models",
+                description="Launch RQT joint trajectory controller",
             ),
             DeclareLaunchArgument(
                 "log_level",
@@ -220,214 +312,27 @@ def generate_launch_description():
                 description="ROS log level",
             ),
             DeclareLaunchArgument(
-                "use_rqt",
-                default_value="false",
+                "use_navigation",
+                default_value="true",
                 choices=["true", "false"],
-                description="Launch RQT joint trajectory controller for the robot.",
+                description="Start Nav2 for mobile-base models",
             ),
-            # Open RQT only after its selected controller is active.
-            RegisterEventHandler(
-                OnProcessExit(
-                    target_action=arm_left_controller_spawner,
-                    on_exit=lambda event, _: (
-                        [
-                            Node(
-                                package="rqt_gui",
-                                executable="rqt_gui",
-                                namespace="/",
-                                arguments=[
-                                    "--perspective-file",
-                                    PathSubstitution(
-                                        FindPackageShare(
-                                            "ai_worker_mujoco_bringup")
-                                    )
-                                    / "config"
-                                    / "ai_worker_mujoco.perspective",
-                                    "--force-discover",
-                                ],
-                                parameters=[{"use_sim_time": True}],
-                                remappings=[
-                                    ("robot_description", "/robot_description"),
-                                    *[
-                                        (
-                                            f"/hand_{side}_controller/{topic}",
-                                            f"/control/hand_{side}/hand_{side}_controller/{topic}",
-                                        )
-                                        for side in ("left", "right")
-                                        for topic in (
-                                            "controller_state",
-                                            "joint_trajectory",
-                                        )
-                                    ],
-                                    *[
-                                        (
-                                            f"/{name}/{topic}",
-                                            f"/control/body/{name}/{topic}",
-                                        )
-                                        for name in (
-                                            "arm_left_controller",
-                                            "arm_right_controller",
-                                            "torso_controller",
-                                            "head_controller",
-                                        )
-                                        for topic in (
-                                            "controller_state",
-                                            "joint_trajectory",
-                                        )
-                                    ],
-                                ],
-                                output="screen",
-                            )
-                        ]
-                        if event.returncode == 0
-                        else []
-                    ),
+            DeclareLaunchArgument(
+                "namespace", default_value="", description="Nav2 node namespace"
+            ),
+            DeclareLaunchArgument(
+                "params_file",
+                default_value=str(
+                    Path(get_package_share_directory("ai_worker_mujoco_nav"))
+                    / "config/nav2.yaml"
                 ),
-                condition=IfCondition(LaunchConfiguration("use_rqt")),
+                description="Nav2 parameter YAML",
             ),
-            Node(
-                package="tf2_ros",
-                executable="static_transform_publisher",
-                name=["map_to_", fixed_frame_child],
-                # fmt: off
-                arguments=[
-                    "--x", "0",
-                    "--y", "0",
-                    "--z", "0",
-                    "--yaw", "0",
-                    "--pitch", "0",
-                    "--roll", "0",
-                    "--frame-id", "map",
-                    "--child-frame-id", fixed_frame_child,
-                ],
-                # fmt: on
+            DeclareLaunchArgument(
+                "cmd_vel_topic",
+                default_value="/cmd_vel",
+                description="Stamped velocity command output topic",
             ),
-            Node(
-                package="ai_worker_mujoco_bringup",
-                executable="robot_description_publisher.py",
-                parameters=[full_robot_description],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-            ),
-            Node(
-                package="controller_manager",
-                executable="ros2_control_node",
-                namespace="/",
-                parameters=[controllers_yaml_value],
-                output="screen",
-                ros_arguments=[
-                    "--log-level", log_level,
-                    "--log-level", "control.body.swerve_drive_controller:=error",
-                ],
-                remappings=[
-                    ("robot_description", "/robot_description"),
-                ],
-            ),
-            Node(
-                package="robot_state_publisher",
-                executable="robot_state_publisher",
-                namespace="/sensors/proprio/body",
-                parameters=[body_robot_description],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-                remappings=[
-                    ("robot_description", "/control/body/robot_description"),
-                    ("joint_states", "/sensors/proprio/body/joint_states"),
-                ],
-            ),
-            Node(
-                package="robot_state_publisher",
-                executable="robot_state_publisher",
-                namespace="/sensors/proprio/hand_left",
-                parameters=[left_hand_robot_description],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-                remappings=[
-                    ("robot_description", "/control/hand_left/robot_description"),
-                    ("joint_states", "/sensors/proprio/hand_left/joint_states"),
-                ],
-            ),
-            Node(
-                package="robot_state_publisher",
-                executable="robot_state_publisher",
-                namespace="/sensors/proprio/hand_right",
-                parameters=[right_hand_robot_description],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-                remappings=[
-                    ("robot_description", "/control/hand_right/robot_description"),
-                    ("joint_states", "/sensors/proprio/hand_right/joint_states"),
-                ],
-            ),
-            make_joint_state_broadcaster_spawner(
-                "body_joint_state_broadcaster",
-                "/sensors/proprio/body/joint_states",
-                "/sensors/proprio/body/dynamic_joint_states",
-            ),
-            make_joint_state_broadcaster_spawner(
-                "hand_left_joint_state_broadcaster",
-                "/sensors/proprio/hand_left/joint_states",
-                "/sensors/proprio/hand_left/dynamic_joint_states",
-            ),
-            make_joint_state_broadcaster_spawner(
-                "hand_right_joint_state_broadcaster",
-                "/sensors/proprio/hand_right/joint_states",
-                "/sensors/proprio/hand_right/dynamic_joint_states",
-            ),
-            make_controller_spawner(
-                "arm_right_controller",
-                "/control/body/arm_right_controller/joint_trajectory",
-                "/control/body/arm_right_controller/follow_joint_trajectory",
-            ),
-            arm_left_controller_spawner,
-            make_controller_spawner(
-                "torso_controller",
-                "/control/body/torso_controller/joint_trajectory",
-                "/control/body/torso_controller/follow_joint_trajectory",
-            ),
-            make_controller_spawner(
-                "head_controller",
-                "/control/body/head_controller/joint_trajectory",
-                "/control/body/head_controller/follow_joint_trajectory",
-            ),
-            make_controller_spawner(
-                "hand_left_controller",
-                "/control/hand_left/hand_left_controller/joint_trajectory",
-                "/control/hand_left/hand_left_controller/follow_joint_trajectory",
-                "/control/hand_left",
-                "/sensors/proprio/hand_left/joint_states",
-            ),
-            make_controller_spawner(
-                "hand_right_controller",
-                "/control/hand_right/hand_right_controller/joint_trajectory",
-                "/control/hand_right/hand_right_controller/follow_joint_trajectory",
-                "/control/hand_right",
-                "/sensors/proprio/hand_right/joint_states",
-            ),
-            GroupAction(
-                condition=IfCondition(is_swerve),
-                actions=[
-                    Node(
-                        package="controller_manager",
-                        executable="spawner",
-                        namespace="/",
-                        output="screen",
-                        arguments=[
-                            "swerve_drive_controller",
-                            "--controller-ros-args",
-                            "--ros-args -r __ns:=/control/body --remap /control/body/odom:=/odom",
-                        ],
-                        ros_arguments=["--log-level", log_level],
-                    ),
-                    IncludeLaunchDescription(
-                        PathSubstitution(FindPackageShare(
-                            "ai_worker_mujoco_nav"))
-                        / "launch"
-                        / "navigation.launch.py",
-                        condition=IfCondition(
-                            LaunchConfiguration("use_navigation")),
-                    ),
-                ],
-            ),
+            OpaqueFunction(function=launch_setup),
         ]
     )

@@ -3,6 +3,8 @@
     ros__parameters:
       update_rate: 100
 
+      base_pose_broadcaster:
+        type: pose_broadcaster/PoseBroadcaster
       body_joint_state_broadcaster:
         type: joint_state_broadcaster/JointStateBroadcaster
 
@@ -213,3 +215,11 @@
       allow_partial_joints_goal: true
       interpolate_from_desired_state: true
       set_last_command_interface_value_as_state_on_activation: false
+
+  base_pose_broadcaster:
+    ros__parameters:
+      pose_name: base_pose
+      frame_id: map
+      tf:
+        enable: true
+        child_frame_id: pelvis

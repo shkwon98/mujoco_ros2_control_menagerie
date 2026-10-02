@@ -1,245 +1,299 @@
 #!/usr/bin/env python3
+"""Launch this robot with its own descriptions, state publishers and controllers."""
 
-from launch import LaunchContext, LaunchDescription, Substitution
-from launch.actions import (
-    DeclareLaunchArgument,
-    GroupAction,
-    RegisterEventHandler,
-)
+from copy import deepcopy
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+import xacro
+from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, RegisterEventHandler
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import (
-    Command,
-    EqualsSubstitution,
-    FindExecutable,
-    IfElseSubstitution,
-    LaunchConfiguration,
-    NotSubstitution,
-    PathSubstitution,
-)
-from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node, SetParameter
 from launch_ros.parameter_descriptions import ParameterValue
-from launch_ros.substitutions import FindPackageShare
+
+ROBOT_MODELS = {
+    "g1": "scene.xml",
+    "g1_with_hands": "scene_with_hands_fixed.xml",
+    "g1_with_inspire_hands": "scene_inspire_hand_fixed.xml",
+}
 
 
-def described_path(value: Substitution, **placeholders: str) -> Substitution:
-    context = LaunchContext()
-    context.launch_configurations.update(placeholders)
-    value.describe = lambda: value.perform(context)
-    return value
+def split_description(xml: str, hand_roots: dict[str, str]) -> dict[str, str]:
+    """Keep each hand's attachment link in the body and as an empty hand root.
+
+    Every original link geometry and joint belongs to exactly one partition.
+    All partitions retain global materials and omit ros2_control metadata.
+    """
+    full = ET.fromstring(xml)
+    links = {link.get("name") for link in full.findall("link")}
+    joints = full.findall("joint")
+    children: dict[str, list[str]] = {}
+    for joint in joints:
+        children.setdefault(joint.find("parent").get("link"), []).append(
+            joint.find("child").get("link")
+        )
+
+    hands: dict[str, set[str]] = {}
+    for side, root in hand_roots.items():
+        if not root:
+            continue
+        if root not in links:
+            raise ValueError(f"Unknown {side} hand attachment link: {root}")
+        descendants: set[str] = set()
+        pending = list(children.get(root, []))
+        while pending:
+            child = pending.pop()
+            if child == root or child in descendants:
+                raise ValueError(f"Cyclic URDF subtree at {root}")
+            descendants.add(child)
+            pending.extend(children.get(child, []))
+        hands[side] = descendants
+    removed = set().union(*hands.values())
+    if sum(map(len, hands.values())) != len(removed) or removed.intersection(
+        hand_roots.values()
+    ):
+        raise ValueError("Hand URDF subtrees must be disjoint")
+
+    result = {}
+    for part, selected in {"body": links - removed, **hands}.items():
+        robot = ET.Element("robot", name=f"{full.get('name')}_{part}")
+        if part != "body":
+            ET.SubElement(robot, "link", name=hand_roots[part])
+        for element in full:
+            if (
+                element.tag == "material"
+                or element.tag == "link"
+                and element.get("name") in selected
+                or element.tag == "joint"
+                and element.find("child").get("link") in selected
+            ):
+                robot.append(deepcopy(element))
+        result[part] = ET.tostring(robot, encoding="unicode")
+    return result
 
 
-def generate_launch_description():
-    robot_model = LaunchConfiguration("robot_model")
-    controllers_yaml = LaunchConfiguration("controllers_yaml")
-    initial_positions_file = LaunchConfiguration("initial_positions_file")
-    mujoco_model_file = LaunchConfiguration("mujoco_model_file")
-    headless = LaunchConfiguration("headless")
+def description_nodes(xml: str, hand_roots: dict[str, str]) -> list:
+    descriptions = split_description(xml, hand_roots)
     log_level = LaunchConfiguration("log_level")
-    has_hands = NotSubstitution(EqualsSubstitution(robot_model, "g1"))
-    has_inspire_hands = EqualsSubstitution(
-        robot_model, "g1_with_inspire_hands")
-    controllers_yaml_value = IfElseSubstitution(
-        EqualsSubstitution(controllers_yaml, "auto"),
-        PathSubstitution(FindPackageShare("g1_mujoco_description"))
-        / "config"
-        / "ros2_control"
-        / [robot_model, "_controllers.yaml"],
-        controllers_yaml,
-    )
-
-    mujoco_model_file_value = IfElseSubstitution(
-        EqualsSubstitution(mujoco_model_file, "auto"),
-        IfElseSubstitution(
-            has_hands,
-            IfElseSubstitution(
-                has_inspire_hands,
-                "scene_inspire_hand_fixed.xml",
-                "scene_with_hands_fixed.xml",
-            ),
-            "scene.xml",
-        ),
-        mujoco_model_file,
-    )
-
-    left_hand_xacro_file = IfElseSubstitution(
-        has_inspire_hands, "g1_inspire_hand_left.urdf.xacro", "g1_hand_left.urdf.xacro"
-    )
-
-    right_hand_xacro_file = IfElseSubstitution(
-        has_inspire_hands,
-        "g1_inspire_hand_right.urdf.xacro",
-        "g1_hand_right.urdf.xacro",
-    )
-
-    xacro_file = (
-        PathSubstitution(FindPackageShare("g1_mujoco_description"))
-        / "urdf"
-        / "g1_mujoco.urdf.xacro"
-    )
-    control_robot_description_content = Command(
-        [
-            FindExecutable(name="xacro"),
-            " ",
-            xacro_file,
-            " robot_model:=",
-            robot_model,
-            " initial_positions_file:=",
-            initial_positions_file,
-            " mujoco_model_file:=",
-            mujoco_model_file_value,
-            " headless:=",
-            headless,
-        ]
-    )
-
-    control_robot_description = {
-        "robot_description": ParameterValue(
-            control_robot_description_content, value_type=str
-        )
-    }
-
-    body_robot_description_content = Command(
-        [
-            FindExecutable(name="xacro"),
-            " ",
-            xacro_file,
-            " robot_model:=g1",
-            " initial_positions_file:=",
-            initial_positions_file,
-            " mujoco_model_file:=scene.xml",
-            " headless:=",
-            headless,
-        ]
-    )
-
-    body_robot_description = {
-        "robot_description": ParameterValue(
-            body_robot_description_content, value_type=str
-        )
-    }
-
-    def make_joint_state_broadcaster_spawner(
-        controller_name,
-        joint_states_topic,
-        dynamic_joint_states_topic,
-    ):
-        return Node(
-            package="controller_manager",
-            executable="spawner",
+    nodes = [
+        Node(
+            package="g1_mujoco_bringup",
+            executable="robot_description_publisher.py",
             namespace="/",
-            output="screen",
-            arguments=[
-                controller_name,
-                "--controller-ros-args",
-                f"--ros-args -r __ns:=/control/body --remap joint_states:={joint_states_topic}",
-                "--controller-ros-args",
-                f"--ros-args --remap dynamic_joint_states:={dynamic_joint_states_topic}",
-            ],
+            parameters=[{"robot_description": ParameterValue(xml, value_type=str)}],
             ros_arguments=["--log-level", log_level],
+            output="screen",
         )
-
-    def make_controller_spawner(
-        controller_name,
-        command_topic,
-        action_topic,
-        controller_namespace="/control/body",
-        joint_states_topic="/sensors/proprio/body/joint_states",
-    ):
-        controller_args = [
-            controller_name,
-            "--controller-ros-args",
-            f"--ros-args --remap ~/joint_states:={joint_states_topic}",
-        ]
-        if controller_namespace:
-            controller_args.extend(
-                [
-                    "--controller-ros-args",
-                    f"--ros-args -r __ns:={controller_namespace}",
-                ]
+    ]
+    for part, description in descriptions.items():
+        segment = "body" if part == "body" else f"hand_{part}"
+        nodes.append(
+            Node(
+                package="robot_state_publisher",
+                executable="robot_state_publisher",
+                namespace=f"/sensors/proprio/{segment}",
+                parameters=[
+                    {"robot_description": ParameterValue(description, value_type=str)}
+                ],
+                remappings=[
+                    ("robot_description", f"/control/{segment}/robot_description"),
+                    ("joint_states", f"/sensors/proprio/{segment}/joint_states"),
+                ],
+                ros_arguments=["--log-level", log_level],
+                output="screen",
             )
-        controller_args.extend(
-            [
-                "--controller-ros-args",
-                f"--ros-args --remap ~/joint_trajectory:={command_topic}",
-                "--controller-ros-args",
-                f"--ros-args --remap ~/follow_joint_trajectory:={action_topic}",
-            ]
         )
-        return Node(
-            package="controller_manager",
-            executable="spawner",
-            namespace="/",
-            output="screen",
-            arguments=controller_args,
-            ros_arguments=["--log-level", log_level],
-        )
+    return nodes
 
-    # Keep the process instance used by the RQT startup event.
-    arm_left_controller_spawner = make_controller_spawner(
-        "arm_left_controller",
-        "/control/body/arm_left_controller/joint_trajectory",
-        "/control/body/arm_left_controller/follow_joint_trajectory",
+
+def controller_spawner(
+    name: str, namespace: str = "/control/body", remappings: tuple = ()
+) -> Node:
+    controller_args = ["--ros-args", "-r", f"__ns:={namespace}"]
+    for source, target in remappings:
+        controller_args.extend(["-r", f"{source}:={target}"])
+    return Node(
+        package="controller_manager",
+        executable="spawner",
+        namespace="/",
+        arguments=[name, "--controller-ros-args", " ".join(controller_args)],
+        ros_arguments=["--log-level", LaunchConfiguration("log_level")],
+        output="screen",
     )
 
-    left_hand_robot_description = {
-        "robot_description": ParameterValue(
-            Command(
-                [
-                    FindExecutable(name="xacro"),
-                    " ",
-                    PathSubstitution(FindPackageShare("g1_mujoco_description"))
-                    / "urdf"
-                    / left_hand_xacro_file,
-                ]
-            ),
-            value_type=str,
-        )
-    }
 
-    right_hand_robot_description = {
-        "robot_description": ParameterValue(
-            Command(
-                [
-                    FindExecutable(name="xacro"),
-                    " ",
-                    PathSubstitution(FindPackageShare("g1_mujoco_description"))
-                    / "urdf"
-                    / right_hand_xacro_file,
-                ]
-            ),
-            value_type=str,
+def launch_setup(context) -> list:
+    description = Path(get_package_share_directory("g1_mujoco_description"))
+    bringup = Path(get_package_share_directory("g1_mujoco_bringup"))
+    log_level = LaunchConfiguration("log_level")
+    model = LaunchConfiguration("robot_model").perform(context)
+    controllers = LaunchConfiguration("controllers_yaml").perform(context)
+    if controllers == "auto":
+        controllers = description / f"config/ros2_control/{model}_controllers.yaml"
+    scene = LaunchConfiguration("mujoco_model_file").perform(context)
+    if scene == "auto":
+        scene = ROBOT_MODELS[model]
+    fixed = scene.endswith("_fixed.xml")
+    xml = xacro.process_file(
+        str(description / "urdf/g1_mujoco.urdf.xacro"),
+        mappings={
+            "robot_model": model,
+            "initial_positions_file": LaunchConfiguration(
+                "initial_positions_file"
+            ).perform(context),
+            "mujoco_model_file": scene,
+            "headless": LaunchConfiguration("headless").perform(context),
+        },
+    ).toxml()
+    placement_frame = "pelvis"
+    body_controllers = (
+        "arm_left_controller",
+        "arm_right_controller",
+        "torso_controller",
+        "leg_controller",
+    )
+    hand_roots = (
+        {"left": "left_hand_base", "right": "right_hand_base"} if model != "g1" else {}
+    )
+    segments = [
+        "body",
+        *[f"hand_{side}" for side, anchor in hand_roots.items() if anchor],
+    ]
+    body_spawners = {
+        name: controller_spawner(
+            name, remappings=(("~/joint_states", "/sensors/proprio/body/joint_states"),)
         )
+        for name in body_controllers
     }
+    selected_spawner = body_spawners[body_controllers[0]]
+    trajectory_names = [(name, "body") for name in body_controllers]
+    trajectory_names += [
+        (f"hand_{side}_controller", f"hand_{side}")
+        for side, anchor in hand_roots.items()
+        if anchor
+    ]
+    rqt = Node(
+        package="rqt_gui",
+        executable="rqt_gui",
+        namespace="/",
+        arguments=[
+            "--perspective-file",
+            str(bringup / "config/g1_mujoco.perspective"),
+            "--force-discover",
+        ],
+        remappings=[
+            ("robot_description", "/robot_description"),
+            *[
+                (f"/{name}/{topic}", f"/control/{segment}/{name}/{topic}")
+                for name, segment in trajectory_names
+                for topic in ("controller_state", "joint_trajectory")
+            ],
+        ],
+        ros_arguments=["--log-level", log_level],
+        output="screen",
+    )
+    nodes = [
+        RegisterEventHandler(
+            OnProcessExit(
+                target_action=selected_spawner,
+                on_exit=lambda event, _: [rqt] if event.returncode == 0 else [],
+            ),
+            condition=IfCondition(LaunchConfiguration("use_rqt")),
+        ),
+        *description_nodes(xml, hand_roots),
+        Node(
+            package="controller_manager",
+            executable="ros2_control_node",
+            namespace="/",
+            parameters=[str(controllers)],
+            remappings=[("robot_description", "/robot_description")],
+            ros_arguments=["--log-level", log_level],
+            output="screen",
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name=f"map_to_{placement_frame}",
+            arguments=[
+                "--z",
+                "0.793",
+                "--frame-id",
+                "map",
+                "--child-frame-id",
+                placement_frame,
+            ],
+            condition=IfCondition(str(fixed)),
+            ros_arguments=["--log-level", log_level],
+        ),
+        *[
+            controller_spawner(
+                f"{segment}_joint_state_broadcaster",
+                namespace="/control/body",
+                remappings=(
+                    ("joint_states", f"/sensors/proprio/{segment}/joint_states"),
+                    (
+                        "dynamic_joint_states",
+                        f"/sensors/proprio/{segment}/dynamic_joint_states",
+                    ),
+                ),
+            )
+            for segment in segments
+        ],
+        *body_spawners.values(),
+        *[
+            controller_spawner(
+                f"hand_{side}_controller",
+                namespace=f"/control/hand_{side}",
+                remappings=(
+                    ("~/joint_states", f"/sensors/proprio/hand_{side}/joint_states"),
+                ),
+            )
+            for side, anchor in hand_roots.items()
+            if anchor
+        ],
+    ]
+    if not fixed:
+        nodes.append(
+            controller_spawner(
+                "base_pose_broadcaster",
+                namespace="/sensors/proprio/body",
+                remappings=(("~/pose", "/sensors/proprio/body/base_pose"),),
+            )
+        )
+    return nodes
 
+
+def generate_launch_description() -> LaunchDescription:
     return LaunchDescription(
         [
+            SetParameter(name="use_sim_time", value=True),
             DeclareLaunchArgument(
                 "robot_model",
                 default_value="g1",
-                choices=["g1", "g1_with_hands", "g1_with_inspire_hands"],
-                description="Unitree G1 MuJoCo Menagerie model",
+                choices=list(ROBOT_MODELS),
+                description="Unitree G1 model",
             ),
             DeclareLaunchArgument(
                 "controllers_yaml",
                 default_value="auto",
-                description="Controller configuration YAML, or 'auto' to select by robot_model",
+                description="Controller YAML, or 'auto' to select by robot_model",
             ),
             DeclareLaunchArgument(
                 "initial_positions_file",
-                default_value=described_path(
-                    PathSubstitution(FindPackageShare("g1_mujoco_description"))
-                    / "config" / "initial_positions.yaml",
+                default_value=str(
+                    Path(get_package_share_directory("g1_mujoco_description"))
+                    / "config/initial_positions.yaml"
                 ),
                 description="Initial joint positions YAML",
             ),
             DeclareLaunchArgument(
                 "mujoco_model_file",
                 default_value="auto",
-                description=(
-                    "MuJoCo model file under g1_mujoco_description/mjcf, "
-                    "or 'auto' to select by robot_model"
-                ),
+                description="MJCF file under g1_mujoco_description/mjcf, or 'auto'",
             ),
             DeclareLaunchArgument(
                 "headless",
@@ -248,209 +302,17 @@ def generate_launch_description():
                 description="Run MuJoCo without its graphical window",
             ),
             DeclareLaunchArgument(
+                "use_rqt",
+                default_value="false",
+                choices=["true", "false"],
+                description="Launch RQT joint trajectory controller",
+            ),
+            DeclareLaunchArgument(
                 "log_level",
                 default_value="info",
                 choices=["debug", "info", "warn", "error", "fatal"],
                 description="ROS log level",
             ),
-            DeclareLaunchArgument(
-                "use_rqt",
-                default_value="false",
-                choices=["true", "false"],
-                description="Launch RQT joint trajectory controller for the robot.",
-            ),
-            # Open RQT only after its selected controller is active.
-            RegisterEventHandler(
-                OnProcessExit(
-                    target_action=arm_left_controller_spawner,
-                    on_exit=lambda event, _: (
-                        [
-                            Node(
-                                package="rqt_gui",
-                                executable="rqt_gui",
-                                namespace="/",
-                                arguments=[
-                                    "--perspective-file",
-                                    PathSubstitution(
-                                        FindPackageShare("g1_mujoco_bringup")
-                                    )
-                                    / "config"
-                                    / "g1_mujoco.perspective",
-                                    "--force-discover",
-                                ],
-                                parameters=[{"use_sim_time": True}],
-                                remappings=[
-                                    (
-                                        "robot_description",
-                                        "/control/body/robot_description",
-                                    ),
-                                    *[
-                                        (
-                                            f"/hand_{side}_controller/{topic}",
-                                            f"/control/hand_{side}/hand_{side}_controller/{topic}",
-                                        )
-                                        for side in ("left", "right")
-                                        for topic in (
-                                            "controller_state",
-                                            "joint_trajectory",
-                                        )
-                                    ],
-                                    *[
-                                        (
-                                            f"/{name}/{topic}",
-                                            f"/control/body/{name}/{topic}",
-                                        )
-                                        for name in (
-                                            "arm_left_controller",
-                                            "arm_right_controller",
-                                            "torso_controller",
-                                            "leg_controller",
-                                        )
-                                        for topic in (
-                                            "controller_state",
-                                            "joint_trajectory",
-                                        )
-                                    ],
-                                ],
-                                output="screen",
-                            )
-                        ]
-                        if event.returncode == 0
-                        else []
-                    ),
-                ),
-                condition=IfCondition(LaunchConfiguration("use_rqt")),
-            ),
-            Node(
-                package="tf2_ros",
-                executable="static_transform_publisher",
-                name="map_to_pelvis",
-                # fmt: off
-                arguments=[
-                    "--x", "0",
-                    "--y", "0",
-                    "--z", "0.793",
-                    "--yaw", "0",
-                    "--pitch", "0",
-                    "--roll", "0",
-                    "--frame-id", "map",
-                    "--child-frame-id", "pelvis",
-                ],
-                # fmt: on
-            ),
-            Node(
-                package="controller_manager",
-                executable="ros2_control_node",
-                namespace="/",
-                parameters=[controllers_yaml_value],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-                remappings=[
-                    ("robot_description", "/control/body/robot_description"),
-                ],
-            ),
-            Node(
-                package="g1_mujoco_bringup",
-                executable="robot_description_publisher.py",
-                namespace="/control/body",
-                parameters=[control_robot_description],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-            ),
-            Node(
-                package="robot_state_publisher",
-                executable="robot_state_publisher",
-                namespace="/sensors/proprio/body",
-                parameters=[body_robot_description],
-                output="screen",
-                ros_arguments=["--log-level", log_level],
-                remappings=[
-                    ("robot_description", "/sensors/proprio/body/robot_description"),
-                    ("joint_states", "/sensors/proprio/body/joint_states"),
-                ],
-            ),
-            make_joint_state_broadcaster_spawner(
-                "body_joint_state_broadcaster",
-                "/sensors/proprio/body/joint_states",
-                "/sensors/proprio/body/dynamic_joint_states",
-            ),
-            make_controller_spawner(
-                "arm_right_controller",
-                "/control/body/arm_right_controller/joint_trajectory",
-                "/control/body/arm_right_controller/follow_joint_trajectory",
-            ),
-            arm_left_controller_spawner,
-            make_controller_spawner(
-                "torso_controller",
-                "/control/body/torso_controller/joint_trajectory",
-                "/control/body/torso_controller/follow_joint_trajectory",
-            ),
-            make_controller_spawner(
-                "leg_controller",
-                "/control/body/leg_controller/joint_trajectory",
-                "/control/body/leg_controller/follow_joint_trajectory",
-            ),
-            GroupAction(
-                condition=IfCondition(has_hands),
-                actions=[
-                    Node(
-                        package="robot_state_publisher",
-                        executable="robot_state_publisher",
-                        namespace="/sensors/proprio/hand_left",
-                        parameters=[left_hand_robot_description],
-                        output="screen",
-                        ros_arguments=["--log-level", log_level],
-                        remappings=[
-                            (
-                                "robot_description",
-                                "/control/hand_left/robot_description",
-                            ),
-                            ("joint_states", "/sensors/proprio/hand_left/joint_states"),
-                        ],
-                    ),
-                    Node(
-                        package="robot_state_publisher",
-                        executable="robot_state_publisher",
-                        namespace="/sensors/proprio/hand_right",
-                        parameters=[right_hand_robot_description],
-                        output="screen",
-                        ros_arguments=["--log-level", log_level],
-                        remappings=[
-                            (
-                                "robot_description",
-                                "/control/hand_right/robot_description",
-                            ),
-                            (
-                                "joint_states",
-                                "/sensors/proprio/hand_right/joint_states",
-                            ),
-                        ],
-                    ),
-                    make_joint_state_broadcaster_spawner(
-                        "hand_left_joint_state_broadcaster",
-                        "/sensors/proprio/hand_left/joint_states",
-                        "/sensors/proprio/hand_left/dynamic_joint_states",
-                    ),
-                    make_joint_state_broadcaster_spawner(
-                        "hand_right_joint_state_broadcaster",
-                        "/sensors/proprio/hand_right/joint_states",
-                        "/sensors/proprio/hand_right/dynamic_joint_states",
-                    ),
-                    make_controller_spawner(
-                        "hand_left_controller",
-                        "/control/hand_left/hand_left_controller/joint_trajectory",
-                        "/control/hand_left/hand_left_controller/follow_joint_trajectory",
-                        "/control/hand_left",
-                        "/sensors/proprio/hand_left/joint_states",
-                    ),
-                    make_controller_spawner(
-                        "hand_right_controller",
-                        "/control/hand_right/hand_right_controller/joint_trajectory",
-                        "/control/hand_right/hand_right_controller/follow_joint_trajectory",
-                        "/control/hand_right",
-                        "/sensors/proprio/hand_right/joint_states",
-                    ),
-                ],
-            ),
+            OpaqueFunction(function=launch_setup),
         ]
     )

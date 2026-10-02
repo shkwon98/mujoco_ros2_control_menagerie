@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+import signal
+
 import rclpy
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from rclpy.qos import (
     DurabilityPolicy,
@@ -16,11 +19,10 @@ class RobotDescriptionPublisher(Node):
         super().__init__("robot_description_publisher")
         self.declare_parameter("robot_description", "")
 
-        self._message = String()
-        self._message.data = (
-            self.get_parameter("robot_description")
-            .get_parameter_value()
-            .string_value
+        message = String()
+        message.data = (
+            self.get_parameter(
+                "robot_description").get_parameter_value().string_value
         )
 
         qos = QoSProfile(
@@ -29,11 +31,9 @@ class RobotDescriptionPublisher(Node):
             reliability=ReliabilityPolicy.RELIABLE,
             durability=DurabilityPolicy.TRANSIENT_LOCAL,
         )
-        self._publisher = self.create_publisher(String, "robot_description", qos)
-        self._publish_robot_description()
-
-    def _publish_robot_description(self):
-        self._publisher.publish(self._message)
+        self._publisher = self.create_publisher(
+            String, "robot_description", qos)
+        self._publisher.publish(message)
 
 
 def main():
@@ -41,9 +41,12 @@ def main():
     node = RobotDescriptionPublisher()
     try:
         rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass
     finally:
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         node.destroy_node()
-        rclpy.shutdown()
+        rclpy.try_shutdown()
 
 
 if __name__ == "__main__":

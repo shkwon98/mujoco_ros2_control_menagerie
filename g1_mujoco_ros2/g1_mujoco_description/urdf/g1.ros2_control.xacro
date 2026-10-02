@@ -90,6 +90,16 @@
         <xacro:g1_inspire_hand_joints side="left" initial_positions="${initial_positions}"/>
         <xacro:g1_inspire_hand_joints side="right" initial_positions="${initial_positions}"/>
       </xacro:if>
+      <sensor name="base_pose">
+        <param name="mujoco_type">pose</param>
+        <state_interface name="position.x"/>
+        <state_interface name="position.y"/>
+        <state_interface name="position.z"/>
+        <state_interface name="orientation.x"/>
+        <state_interface name="orientation.y"/>
+        <state_interface name="orientation.z"/>
+        <state_interface name="orientation.w"/>
+      </sensor>
     </ros2_control>
   </xacro:macro>
 </robot>

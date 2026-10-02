@@ -845,5 +845,7 @@
     <accelerometer name="imu_acc" site="imu" />
     <framepos name="frame_pos" objtype="site" objname="imu" />
     <framelinvel name="frame_vel" objtype="site" objname="imu" />
+    <framepos name="base_pose_pos" objtype="body" objname="pelvis"/>
+    <framequat name="base_pose_quat" objtype="body" objname="pelvis"/>
   </sensor>
 </mujoco>
