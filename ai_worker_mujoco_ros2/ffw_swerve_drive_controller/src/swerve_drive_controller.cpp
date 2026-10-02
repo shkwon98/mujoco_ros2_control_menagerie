@@ -59,15 +59,9 @@ static_assert(ScaleWheelVelocityForAlignment(4.0, true, 0.1) == 4.0);
 static_assert(ScaleWheelVelocityForAlignment(4.0, false, 0.1) == 0.4);
 
 // Reset function
-void SwerveDriveController::reset_controller_reference_msg(
-    const std::shared_ptr<geometry_msgs::msg::Twist> &msg)
+void SwerveDriveController::reset_controller_reference_msg(const std::shared_ptr<CmdVelMsg> &msg)
 {
-    msg->linear.x = std::numeric_limits<double>::quiet_NaN();
-    msg->linear.y = std::numeric_limits<double>::quiet_NaN();
-    msg->linear.z = std::numeric_limits<double>::quiet_NaN();
-    msg->angular.x = std::numeric_limits<double>::quiet_NaN();
-    msg->angular.y = std::numeric_limits<double>::quiet_NaN();
-    msg->angular.z = std::numeric_limits<double>::quiet_NaN();
+    *msg = CmdVelMsg{};
 }
 
 // --- Controller Implementation ---
@@ -370,7 +364,6 @@ CallbackReturn SwerveDriveController::on_configure(
     auto initial_cmd = std::make_shared<CmdVelMsg>();
     reset_controller_reference_msg(initial_cmd);
     cmd_vel_buffer_.initRT(initial_cmd);
-    last_cmd_vel_time_ = get_node()->now();
 
     // Publisher
     try
@@ -536,7 +529,6 @@ CallbackReturn SwerveDriveController::on_activate(
     target_vx_ = 0.0;
     target_vy_ = 0.0;
     target_wz_ = 0.0;
-    last_cmd_vel_time_ = get_node()->now();
 
     // Reset 180° Rule smooth reversal state
     for (size_t i = 0; i < num_modules_; ++i)
@@ -693,16 +685,13 @@ controller_interface::return_type SwerveDriveController::update(const rclcpp::Ti
     // 1. read the latest command velocity
     auto current_cmd_vel_ptr = cmd_vel_buffer_.readFromRT();
 
-    // check if the command velocity is valid
-    bool timeout = false;
-    // Check if ref_timeout_ is valid (non-zero duration) before calculating difference
-    if (ref_timeout_.seconds() > 0.0 && (time - last_cmd_vel_time_) > ref_timeout_)
-    {
-        RCLCPP_WARN_THROTTLE(get_node()->get_logger(), *get_node()->get_clock(), 100000,
-                             "time: %.3f, last_cmd_vel_time_: %.3f, ref_timeout_: %.3f",
-                             time.seconds(), last_cmd_vel_time_.seconds(), ref_timeout_.seconds());
-        timeout = true;
-    }
+    // Read time and velocity from the same RT-buffer sample.
+    const bool has_command = current_cmd_vel_ptr && *current_cmd_vel_ptr;
+    const rclcpp::Time command_time =
+        has_command ? rclcpp::Time((*current_cmd_vel_ptr)->header.stamp, time.get_clock_type())
+                    : rclcpp::Time(0, 0, time.get_clock_type());
+    const bool timeout = !has_command || command_time.nanoseconds() == 0 || command_time > time ||
+                         (ref_timeout_.seconds() > 0.0 && (time - command_time) > ref_timeout_);
 
     if (timeout)
     {
@@ -714,7 +703,7 @@ controller_interface::return_type SwerveDriveController::update(const rclcpp::Ti
     else if (current_cmd_vel_ptr && *current_cmd_vel_ptr)
     {
         // Valid command pointer received
-        const auto &current_cmd_vel = **current_cmd_vel_ptr;
+        const auto &current_cmd_vel = (*current_cmd_vel_ptr)->twist;
 
         double new_vx = current_cmd_vel.linear.x;
         double new_vy = current_cmd_vel.linear.y;
@@ -1237,7 +1226,18 @@ controller_interface::return_type SwerveDriveController::update(const rclcpp::Ti
 
 void SwerveDriveController::reference_callback(const std::shared_ptr<CmdVelMsg> msg)
 {
-    last_cmd_vel_time_ = this->get_node()->now();
+    const auto &twist = msg->twist;
+    const auto &stamp = msg->header.stamp;
+    if (stamp.sec < 0 || stamp.nanosec >= 1000000000u || (stamp.sec == 0 && stamp.nanosec == 0) ||
+        rclcpp::Time(stamp, get_node()->get_clock()->get_clock_type()) > get_node()->now() ||
+        (!msg->header.frame_id.empty() && msg->header.frame_id != base_frame_id_) ||
+        !std::isfinite(twist.linear.x) || !std::isfinite(twist.linear.y) ||
+        !std::isfinite(twist.angular.z))
+    {
+        RCLCPP_ERROR_THROTTLE(get_node()->get_logger(), *get_node()->get_clock(), 1000,
+                              "Rejected cmd_vel: invalid timestamp, frame or planar velocity");
+        return;
+    }
     cmd_vel_buffer_.writeFromNonRT(msg);
 }
 

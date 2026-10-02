@@ -46,8 +46,8 @@ add_library(
   src/odometry.cpp
   src/marker_visualize.cpp
   src/speed_limiter.cpp)
-target_compile_features(ffw_swerve_drive_controller PUBLIC c_std_99 cxx_std_17
-)# Require C99 and C++17
+target_compile_features(ffw_swerve_drive_controller PUBLIC c_std_99 cxx_std_20
+)# Require C99 and C++20
 target_include_directories(
   ffw_swerve_drive_controller
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -73,10 +73,10 @@ target_link_libraries(
          hardware_interface::hardware_interface
          ${generate_parameter_library_TARGETS}
          ${geometry_msgs_TARGETS}
-  ${lifecycle_msgs_TARGETS}
-  ${nav_msgs_TARGETS}
-  ${rcl_interfaces_TARGETS}
-  ${std_msgs_TARGETS}
+         ${lifecycle_msgs_TARGETS}
+         ${nav_msgs_TARGETS}
+         ${rcl_interfaces_TARGETS}
+         ${std_msgs_TARGETS}
          pluginlib::pluginlib
          rclcpp::rclcpp
          rclcpp_lifecycle::rclcpp_lifecycle
@@ -84,7 +84,7 @@ target_link_libraries(
          ${std_srvs_TARGETS}
          tf2::tf2
          tf2_geometry_msgs::tf2_geometry_msgs
-  tf2_ros::tf2_ros
+         tf2_ros::tf2_ros
          ${tf2_msgs_TARGETS}
          ${sensor_msgs_TARGETS}
          ${visualization_msgs_TARGETS}

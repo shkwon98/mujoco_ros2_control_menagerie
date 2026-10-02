@@ -33,6 +33,7 @@
 #include "ffw_swerve_drive_controller/odometry.hpp"
 #include "ffw_swerve_drive_controller/speed_limiter.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp"
 #include "hardware_interface/loaned_command_interface.hpp"
 #include "hardware_interface/loaned_state_interface.hpp"
 #include "nav_msgs/msg/odometry.hpp"
@@ -56,8 +57,8 @@ namespace ffw_swerve_drive_controller
 
 // Define aliases for convenience
 using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
-// Use Twist directly as the command message type
-using CmdVelMsg = geometry_msgs::msg::Twist;
+// Public mobile-base commands carry ROS timestamps.
+using CmdVelMsg = geometry_msgs::msg::TwistStamped;
 using Twist = geometry_msgs::msg::Twist;
 using OdomStateMsg = nav_msgs::msg::Odometry;
 using TfStateMsg = tf2_msgs::msg::TFMessage;
@@ -193,7 +194,6 @@ protected:
     double target_vx_ = 0.0;
     double target_vy_ = 0.0;
     double target_wz_ = 0.0;
-    rclcpp::Time last_cmd_vel_time_;
 
     // Odometry
     Odometry odometry_;
@@ -281,7 +281,7 @@ protected:
     // using ControllerReferenceMsg = geometry_msgs::msg::Twist;
     // Not strictly needed if CmdVelMsg is used
     // Utility function prototype (global scope)
-    void reset_controller_reference_msg(const std::shared_ptr<geometry_msgs::msg::Twist> &msg);
+    void reset_controller_reference_msg(const std::shared_ptr<CmdVelMsg> &msg);
 };
 } // namespace ffw_swerve_drive_controller
 
