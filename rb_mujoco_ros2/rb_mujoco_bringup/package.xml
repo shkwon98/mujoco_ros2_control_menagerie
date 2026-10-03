@@ -20,9 +20,6 @@
   <exec_depend>rqt_gui</exec_depend>
   <exec_depend>rqt_joint_trajectory_controller</exec_depend>
   <exec_depend>rb_mujoco_description</exec_depend>
-  <exec_depend>wuji_description</exec_depend>
-  <exec_depend>wuji_hand2_beta1_description</exec_depend>
-  <exec_depend>wuji_hand2_beta2_description</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

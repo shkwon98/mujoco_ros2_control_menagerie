@@ -181,14 +181,12 @@ def prepare_descriptions(context) -> list:
     side = LaunchConfiguration("hand_side").perform(context)
     hand_roots, temporary = {}, None
     if hand != "none":
-        package = "wuji_description" if hand == "wuji_hand" else f"{hand}_description"
         temporary = TemporaryDirectory(prefix="rb_wuji_")
         compose = run_path(
             (description / "urdf" / "compose_wuji.py").perform(context)
         )["compose_wuji"]
         xml, controllers = compose(
             xml, Path(description.perform(context)),
-            Path(FindPackageShare(package).perform(context)),
             model, hand, side, Path(temporary.name),
         )
         hand_roots[side] = f"{side}_hand_base"

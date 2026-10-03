@@ -11,8 +11,9 @@ if(BUILD_TESTING)
   target_link_libraries(test_rb_hold PRIVATE mujoco::mujoco)
   add_test(
     NAME rb_hold
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_hold.py
-            $<TARGET_FILE:test_rb_hold>)
+    COMMAND
+      ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_hold.py
+      $<TARGET_FILE:test_rb_hold>)
   add_test(
     NAME rb_models
     COMMAND
@@ -28,6 +29,8 @@ install(
             mjcf
             urdf
   DESTINATION share/${PROJECT_NAME})
-install(FILES LICENSE.rb_description DESTINATION share/${PROJECT_NAME})
+install(
+  FILES LICENSE.rb_description LICENSE.wuji_description
+  DESTINATION share/${PROJECT_NAME})
 
 ament_package()

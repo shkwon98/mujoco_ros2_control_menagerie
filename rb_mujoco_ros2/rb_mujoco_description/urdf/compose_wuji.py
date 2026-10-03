@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 
 
-def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
+def compose_wuji(robot_xml: str, description: Path,
                  robot_model: str, hand_model: str, side: str,
                  output: Path) -> tuple[str, str]:
     """Write the combined MJCF/controller YAML in the launch-owned directory.
@@ -19,9 +19,9 @@ def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
     ):
         raise ValueError("Unsupported Wuji hand model or side")
     variant = side if hand_model == "wuji_hand" else f"{side}_with_mount"
-    hand = ET.parse(hand_description / "urdf" /
+    hand = ET.parse(description / "urdf" / hand_model /
                     f"{variant}-ros.urdf").getroot()
-    hand_mjcf = ET.parse(hand_description / "mjcf" /
+    hand_mjcf = ET.parse(description / "mjcf" / hand_model /
                          f"{variant}.xml").getroot()
     source = description / "mjcf" / f"{robot_model}.xml"
     model = ET.parse(source).getroot()
@@ -42,7 +42,7 @@ def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
         raise ValueError("Wuji URDF and MJCF attachment roots differ")
 
     # Keep resource lookup at launch; generated models use install-space paths.
-    for tree, directory in ((model, source.parent), (hand_mjcf, hand_description / "mjcf")):
+    for tree, directory in ((model, source.parent), (hand_mjcf, description / "mjcf" / hand_model)):
         meshdir = directory / tree.find("compiler").get("meshdir", "")
         for mesh in tree.findall("asset/mesh"):
             mesh.set("file", str((meshdir / mesh.get("file")).resolve()))
@@ -61,7 +61,7 @@ def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
     mounts = [("tcp", base, "0 0 0", "-1.5707963267948966 0 0", base_body)]
     if hand_model == "wuji_hand":
         docking = ET.parse(
-            hand_description / "attachment/impact-resistant-attachment/urdf/docking-ros.urdf").find("link")
+            description / "urdf/wuji_hand/docking-ros.urdf").find("link")
         docking.set("name", f"{side}_hand_docking_link")
         robot.append(docking)
         dock_body = ET.Element("body", name=docking.get("name"))
@@ -74,7 +74,7 @@ def compose_wuji(robot_xml: str, description: Path, hand_description: Path,
         mesh = docking.find("visual/geometry/mesh")
         relative = mesh.get("filename").split("/", 3)[-1]
         ET.SubElement(assets, "mesh", name=docking.get("name"),
-                      file=str(hand_description / relative))
+                      file=str(description / relative))
         for group, collide in ((2, "0"), (3, "1")):
             ET.SubElement(dock_body, "geom", type="mesh", mesh=docking.get("name"),
                           group=str(group), contype=collide, conaffinity=collide,

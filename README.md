@@ -42,8 +42,11 @@ colcon build --merge-install --symlink-install \
 source install/setup.bash
 ```
 
-Wuji-equipped RB models also require the `wuji_description`,
-`wuji_hand2_beta1_description` and `wuji_hand2_beta2_description` asset packages.
+RB and RBY1 include Wuji Hand1 and Hand2 Beta1/Beta2 URDF, MJCF and mesh assets
+in their description packages; no external Wuji description packages are required.
+RB Hand1 assets come from [wuji-description](https://github.com/wuji-technology/wuji-description)
+revision `c2cd7f8d1ef8b6dc8cb907c17daa5a88b4442d95`; RB Hand2 assets use the same
+bundled models as RBY1. Each description package includes `LICENSE.wuji_description`.
 
 ## Launch
 
