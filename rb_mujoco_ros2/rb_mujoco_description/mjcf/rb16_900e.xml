@@ -22,13 +22,13 @@
     <mesh name="link1_visual_3" file="../meshes/rb16_900e/visual/link1_visual_3.obj" />
     <material name="link1_visual_3" rgba="0.1 0.1 0.1 1" specular="0" />
     <mesh name="link1_visual_4" file="../meshes/rb16_900e/visual/link1_visual_4.obj" />
-    <material name="link1_visual_4" rgba="0.8 0.8 0.8 1" specular="0"/>
+    <material name="link1_visual_4" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link1_visual_5" file="../meshes/rb16_900e/visual/link1_visual_5.obj" />
     <material name="link1_visual_5" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link1_visual_6" file="../meshes/rb16_900e/visual/link1_visual_6.obj" />
     <material name="link1_visual_6" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link1_visual_7" file="../meshes/rb16_900e/visual/link1_visual_7.obj" />
-    <material name="link1_visual_7" rgba="0.3 0.3 0.3 1" specular="0"/>
+    <material name="link1_visual_7" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link2_visual_0" file="../meshes/rb16_900e/visual/link2_visual_0.obj" />
     <material name="link2_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link2_visual_1" file="../meshes/rb16_900e/visual/link2_visual_1.obj" />
@@ -36,9 +36,9 @@
     <mesh name="link2_visual_2" file="../meshes/rb16_900e/visual/link2_visual_2.obj" />
     <material name="link2_visual_2" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link2_visual_3" file="../meshes/rb16_900e/visual/link2_visual_3.obj" />
-    <material name="link2_visual_3" rgba="0.3 0.3 0.3 1" specular="0"/>
+    <material name="link2_visual_3" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link2_visual_4" file="../meshes/rb16_900e/visual/link2_visual_4.obj" />
-    <material name="link2_visual_4" rgba="0.8 0.8 0.8 1" specular="0"/>
+    <material name="link2_visual_4" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link2_visual_5" file="../meshes/rb16_900e/visual/link2_visual_5.obj" />
     <material name="link2_visual_5" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link2_visual_6" file="../meshes/rb16_900e/visual/link2_visual_6.obj" />
@@ -52,7 +52,7 @@
     <mesh name="link3_visual_0" file="../meshes/rb16_900e/visual/link3_visual_0.obj" />
     <material name="link3_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link3_visual_1" file="../meshes/rb16_900e/visual/link3_visual_1.obj" />
-    <material name="link3_visual_1" rgba="0.8 0.8 0.8 1" specular="0"/>
+    <material name="link3_visual_1" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link3_visual_2" file="../meshes/rb16_900e/visual/link3_visual_2.obj" />
     <material name="link3_visual_2" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link3_visual_3" file="../meshes/rb16_900e/visual/link3_visual_3.obj" />
@@ -64,7 +64,7 @@
     <mesh name="link3_visual_6" file="../meshes/rb16_900e/visual/link3_visual_6.obj" />
     <material name="link3_visual_6" rgba="0.1 0.1 0.1 1" specular="0" />
     <mesh name="link3_visual_7" file="../meshes/rb16_900e/visual/link3_visual_7.obj" />
-    <material name="link3_visual_7" rgba="0.8 0.8 0.8 1" specular="0"/>
+    <material name="link3_visual_7" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link3_visual_8" file="../meshes/rb16_900e/visual/link3_visual_8.obj" />
     <material name="link3_visual_8" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link4_visual_0" file="../meshes/rb16_900e/visual/link4_visual_0.obj" />
@@ -74,7 +74,7 @@
     <mesh name="link4_visual_2" file="../meshes/rb16_900e/visual/link4_visual_2.obj" />
     <material name="link4_visual_2" rgba="0.1 0.1 0.1 1" specular="0" />
     <mesh name="link4_visual_3" file="../meshes/rb16_900e/visual/link4_visual_3.obj" />
-    <material name="link4_visual_3" rgba="0.8 0.8 0.8 1" specular="0"/>
+    <material name="link4_visual_3" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link5_visual_0" file="../meshes/rb16_900e/visual/link5_visual_0.obj" />
     <material name="link5_visual_0" rgba="0.3 0.3 0.3 1" specular="0" />
     <mesh name="link5_visual_1" file="../meshes/rb16_900e/visual/link5_visual_1.obj" />
@@ -82,7 +82,7 @@
     <mesh name="link5_visual_2" file="../meshes/rb16_900e/visual/link5_visual_2.obj" />
     <material name="link5_visual_2" rgba="0.1 0.1 0.1 1" specular="0" />
     <mesh name="link5_visual_3" file="../meshes/rb16_900e/visual/link5_visual_3.obj" />
-    <material name="link5_visual_3" rgba="0.8 0.8 0.8 1" specular="0"/>
+    <material name="link5_visual_3" rgba="0.8 0.8 0.8 1" specular="0" />
     <mesh name="link6_visual_0" file="../meshes/rb16_900e/visual/link6_visual_0.obj" />
     <material name="link6_visual_0" rgba="0.1 0.1 0.1 1" specular="0" />
     <mesh name="link6_visual_1" file="../meshes/rb16_900e/visual/link6_visual_1.obj" />
@@ -97,27 +97,27 @@
       <geom type="mesh" mesh="link0" group="3" />
       <body name="link1" pos="0 0 0.197" gravcomp="1">
         <inertial pos="2.146e-05 -0.00785669 -0.0425428" quat="0.668119 0.22715 -0.227241 0.671104" mass="8.36481" diaginertia="0.0300857 0.027396 0.023812" />
-        <joint name="base" pos="0 0 0" axis="0 0 1" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+        <joint name="base" pos="0 0 0" axis="0 0 1" range="-6.28318530717959 6.28318530717959" />
         <geom type="mesh" mesh="link1" group="3" />
         <body name="link2" pos="0 -0.1875 0" gravcomp="1">
           <inertial pos="-1.365e-05 -0.153366 0.149542" quat="0.999856 0.016903 8.76387e-05 -0.00163844" mass="14.6511" diaginertia="0.509682 0.505002 0.0462109" />
-          <joint name="shoulder" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+          <joint name="shoulder" pos="0 0 0" axis="0 1 0" range="-6.28318530717959 6.28318530717959" />
           <geom type="mesh" mesh="link2" group="3" />
           <body name="link3" pos="0 0 0.4127" gravcomp="1">
             <inertial pos="-5.454e-05 0.135564 0.216903" quat="0.999861 0.0137052 -0.000140987 0.00948827" mass="4.996" diaginertia="0.119627 0.119106 0.00989257" />
-            <joint name="elbow" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+            <joint name="elbow" pos="0 0 0" axis="0 1 0" range="-2.87979326579064 2.87979326579064" />
             <geom type="mesh" mesh="link3" group="3" />
             <body name="link4" pos="0 0.1484 0.37015" gravcomp="1">
               <inertial pos="9.393e-05 -0.113976 0.0263146" quat="0.654507 0.0687369 -0.0950849 0.746897" mass="2.04898" diaginertia="0.00272174 0.0026824 0.00209834" />
-              <joint name="wrist1" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+              <joint name="wrist1" pos="0 0 0" axis="0 1 0" range="-6.28318530717959 6.28318530717959" />
               <geom type="mesh" mesh="link4" group="3" />
               <body name="link5" pos="0 -0.11715 0" gravcomp="1">
                 <inertial pos="-9.382e-05 -0.0263394 0.113948" quat="0.510757 0.41522 -0.461879 0.594464" mass="2.05101" diaginertia="0.00272392 0.00268422 0.00210236" />
-                <joint name="wrist2" pos="0 0 0" axis="0 0 1" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+                <joint name="wrist2" pos="0 0 0" axis="0 0 1" range="-6.28318530717959 6.28318530717959" />
                 <geom type="mesh" mesh="link5" group="3" />
                 <body name="link6" pos="0 0 0.11715" gravcomp="1">
                   <inertial pos="-0.00020973 -0.0925397 -0.00029237" quat="0.70685 -0.0433771 -0.0430701 0.704717" mass="0.405901" diaginertia="0.000532872 0.000345389 0.000339939" />
-                  <joint name="wrist3" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+                  <joint name="wrist3" pos="0 0 0" axis="0 1 0" range="-6.28318530717959 6.28318530717959" />
                   <geom type="mesh" mesh="link6" group="3" />
                   <body name="tcp" pos="0 -0.1153 0" gravcomp="1" />
                   <geom type="mesh" mesh="link6_visual_0" material="link6_visual_0" group="2" contype="0" conaffinity="0" density="0" />
@@ -181,11 +181,11 @@
   </contact>
   <statistic center="-0.0010895468 -0.087427858 0.5719865" extent="1.2195755" />
   <actuator>
-    <position name="base" joint="base" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="shoulder" joint="shoulder" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="elbow" joint="elbow" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="wrist1" joint="wrist1" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="wrist2" joint="wrist2" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="wrist3" joint="wrist3" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="base" joint="base" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="shoulder" joint="shoulder" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="elbow" joint="elbow" kp="2000" dampratio="2" ctrlrange="-2.87979326579064 2.87979326579064" />
+    <position name="wrist1" joint="wrist1" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="wrist2" joint="wrist2" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="wrist3" joint="wrist3" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
   </actuator>
 </mujoco>

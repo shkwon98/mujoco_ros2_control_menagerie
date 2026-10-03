@@ -28,6 +28,11 @@ for path in sorted((root / "mjcf").glob("rb*.xml")):
         control.findtext("hardware/param[@name='mujoco_model']"))
     assert (model.nq, model.nv, model.nu) == (6, 6, 6)
     assert [model.joint(i).name for i in range(6)] == list(joints)
+    limits = [robot.find(f"joint[@name='{name}']/limit") for name in joints]
+    ranges = np.array([[float(limit.get("lower")), float(limit.get("upper"))]
+                       for limit in limits])
+    np.testing.assert_allclose(model.jnt_range, ranges, atol=1e-12)
+    np.testing.assert_allclose(model.actuator_ctrlrange, ranges, atol=1e-12)
     visuals = np.flatnonzero(model.geom_group == 2)
     assert len(visuals) and (model.geom_contype[visuals] == 0).all() and (
         model.geom_conaffinity[visuals] == 0).all()

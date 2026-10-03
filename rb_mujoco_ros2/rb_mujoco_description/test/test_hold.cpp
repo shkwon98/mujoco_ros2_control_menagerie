@@ -1,12 +1,12 @@
 /** @brief Check RB arm settling and step response in ROS's MuJoCo engine. */
-#include <mujoco/mujoco.h>
-
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <iostream>
 #include <limits>
 #include <memory>
+
+#include <mujoco/mujoco.h>
 
 int main(int argc, char **argv)
 {
@@ -22,11 +22,11 @@ int main(int argc, char **argv)
         std::cerr << error << '\n';
         return 2;
     }
-    const std::unique_ptr<mjData, decltype(&mj_deleteData)> data(
-        mj_makeData(model.get()), mj_deleteData);
+    const std::unique_ptr<mjData, decltype(&mj_deleteData)> data(mj_makeData(model.get()),
+                                                                 mj_deleteData);
     // Held target observed when the wrist kept oscillating without new trajectories.
     const std::array target{2.24361959, 0.461867698, -2.05560975,
-                            1.0901419, -0.477071, -3.09182985};
+                            1.0901419,  -0.477071,   -3.09182985};
     for (const double velocity : {-20.0, 0.0, 20.0})
     {
         mj_resetDataKeyframe(model.get(), data.get(), 0);
@@ -82,11 +82,42 @@ int main(int argc, char **argv)
             std::cout << "joint=" << joint << " direction=" << direction
                       << " overshoot_rad=" << overshoot
                       << " final_error_rad=" << data->qpos[joint] - data->ctrl[joint] << '\n';
-            if (overshoot > 1e-3 ||
-                std::abs(data->qpos[joint] - data->ctrl[joint]) > 2e-3)
+            if (overshoot > 1e-3 || std::abs(data->qpos[joint] - data->ctrl[joint]) > 2e-3)
             {
                 return 1;
             }
+        }
+    }
+    // Larger coordinated moves expose servo saturation missed by single-joint steps.
+    const std::array displacement{0.6, -0.6, 0.6, -0.6, 0.6, -0.6};
+    mj_resetDataKeyframe(model.get(), data.get(), 0);
+    std::ranges::copy(posture, data->qpos);
+    for (int joint = 0; joint < 6; ++joint)
+    {
+        data->ctrl[joint] = posture[joint] + displacement[joint];
+    }
+    std::array<double, 6> overshoot{};
+    while (data->time < 3.0)
+    {
+        mj_step(model.get(), data.get());
+        for (int joint = 0; joint < 6; ++joint)
+        {
+            if (!std::isfinite(data->qpos[joint]))
+            {
+                return 1;
+            }
+            const double direction = std::copysign(1.0, displacement[joint]);
+            overshoot[joint] =
+                std::max(overshoot[joint], direction * (data->qpos[joint] - data->ctrl[joint]));
+        }
+    }
+    for (int joint = 0; joint < 6; ++joint)
+    {
+        std::cout << "coordinated_joint=" << joint << " overshoot_rad=" << overshoot[joint]
+                  << " final_error_rad=" << data->qpos[joint] - data->ctrl[joint] << '\n';
+        if (overshoot[joint] > 0.01 || std::abs(data->qpos[joint] - data->ctrl[joint]) > 0.01)
+        {
+            return 1;
         }
     }
 }

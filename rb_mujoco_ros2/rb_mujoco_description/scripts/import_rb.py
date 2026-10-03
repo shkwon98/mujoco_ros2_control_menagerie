@@ -3,22 +3,34 @@
 
 import argparse
 import math
-from pathlib import Path
 import shutil
 import struct
 import subprocess
 import tempfile
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 import mujoco
 import numpy as np
 import trimesh
 import xacro
 
-
 ET.register_namespace("xacro", "http://www.ros.org/wiki/xacro")
 XACRO = "{http://www.ros.org/wiki/xacro}"
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def preserve_joint_limits(robot: ET.Element, model_name: str) -> None:
+    """Keep checked-in URDF limits when refreshing upstream geometry."""
+    path = ROOT / "urdf" / f"{model_name}.urdf"
+    if not path.is_file():
+        return
+    existing = ET.parse(path).getroot()
+    for joint in robot.findall("joint[@type='revolute']"):
+        limit = existing.find(f"joint[@name='{joint.get('name')}']/limit")
+        if limit is not None:
+            joint.find("limit").attrib.update(limit.attrib)
+
 
 # Use RB5-850E's finish for every model, independent of CAD exporter colors.
 SILVER_CAD_COLORS = {
@@ -84,7 +96,8 @@ def rb1_visual_parts(mesh: trimesh.Trimesh, link: str) -> list[tuple[trimesh.Tri
                     vertices, faces, _ = trimesh.intersections.slice_faces_plane(
                         piece.vertices, piece.faces, direction, origin)
                     if len(faces):
-                        part = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
+                        part = trimesh.Trimesh(
+                            vertices=vertices, faces=faces, process=False)
                         part.remove_unreferenced_vertices()
                         divided.append(part)
             else:
@@ -116,7 +129,8 @@ def rb1_visual_parts(mesh: trimesh.Trimesh, link: str) -> list[tuple[trimesh.Tri
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("upstream", type=Path, help="Official rbpodo_description directory")
+    parser.add_argument("upstream", type=Path,
+                        help="Official rbpodo_description directory")
     args = parser.parse_args()
     upstream = args.upstream.resolve()
     for directory in ("urdf", "mjcf", "meshes"):
@@ -161,6 +175,7 @@ def main() -> None:
                 "package://rbpodo_description/", "package://rb_mujoco_description/"
             )
             robot = ET.fromstring(description)
+            preserve_joint_limits(robot, model_name)
             ET.indent(robot, space="  ")
             ET.ElementTree(robot).write(ROOT / "urdf" / f"{model_name}.urdf",
                                         encoding="unicode", xml_declaration=True)
@@ -178,18 +193,25 @@ def main() -> None:
             output_file = ROOT / "mjcf" / f"{model_name}.xml"
             mujoco.mj_saveLastXML(str(output_file), compiled)
             model = ET.parse(output_file).getroot()
+            # Upstream effort=10 is not a verified motor rating. Clipping the
+            # position servo also clips braking and causes large-move overshoot.
+            for joint in model.findall(".//joint"):
+                joint.attrib.pop("actuatorfrcrange", None)
             for mesh in model.findall("asset/mesh"):
-                mesh.set("file", "../" + str(Path(mesh.get("file")).relative_to(ROOT)))
+                mesh.set("file", "../" +
+                         str(Path(mesh.get("file")).relative_to(ROOT)))
             # Lightweight bare wrists need finer steps than hand-mounted arms.
             timestep = {"rb3_730es_u": "0.0001", "rb3_1200e_u": "0.00025",
                         "rb5_850e": "0.00025", "rb5_850e_u": "0.00025"}.get(
                             model_name, "0.0005")
-            ET.SubElement(model, "option", timestep=timestep, integrator="implicitfast")
+            ET.SubElement(model, "option", timestep=timestep,
+                          integrator="implicitfast")
             visual_settings = ET.SubElement(model, "visual")
             ET.SubElement(visual_settings, "headlight", diffuse="0.6 0.6 0.6",
                           ambient="0.3 0.3 0.3", specular="0 0 0")
             ET.SubElement(visual_settings, "rgba", haze="0.15 0.25 0.35 1")
-            ET.SubElement(visual_settings, "global", azimuth="140", elevation="-20")
+            ET.SubElement(visual_settings, "global",
+                          azimuth="140", elevation="-20")
             asset = model.find("asset")
             ET.SubElement(asset, "texture", type="skybox", builtin="gradient",
                           rgb1="0.3 0.5 0.7", rgb2="0 0 0", width="512", height="3072")
@@ -199,7 +221,8 @@ def main() -> None:
             ET.SubElement(asset, "material", name="groundplane", texture="groundplane",
                           texuniform="true", texrepeat="5 5", reflectance="0.2")
             world = model.find("worldbody")
-            ET.SubElement(world, "light", pos="0 0 4", dir="0 0 -1", directional="true")
+            ET.SubElement(world, "light", pos="0 0 4",
+                          dir="0 0 -1", directional="true")
             ET.SubElement(world, "geom", name="floor", type="plane", size="0 0 0.05",
                           material="groundplane")
             # The fixed root is welded to world, so MuJoCo's parent collision
@@ -247,15 +270,18 @@ def main() -> None:
                         parts.append((mesh, rgba))
                 for index, (mesh, rgba) in enumerate(parts):
                     link = initial.body(visual.stem)
-                    points = mesh.vertices @ link.xmat.reshape(3, 3).T + link.xpos
+                    points = mesh.vertices @ link.xmat.reshape(
+                        3, 3).T + link.xpos
                     bounds.extend([points.min(axis=0), points.max(axis=0)])
                     name = f"{visual.stem}_visual_{index}"
                     rgba = product_rgba(rgba, model_name, name)
                     destination = visual.with_name(f"{name}.obj")
-                    mesh.export(destination, include_texture=False, include_color=False)
+                    mesh.export(destination, include_texture=False,
+                                include_color=False)
                     ET.SubElement(asset, "mesh", name=name,
                                   file="../" + str(destination.relative_to(ROOT)))
-                    ET.SubElement(asset, "material", name=name, rgba=rgba, specular="0")
+                    ET.SubElement(asset, "material", name=name,
+                                  rgba=rgba, specular="0")
                     ET.SubElement(body, "geom", type="mesh", mesh=name, material=name,
                                   group="2", contype="0", conaffinity="0", density="0")
                 for obsolete in visual.parent.glob(f"{visual.stem}_visual_*.obj"):
@@ -263,17 +289,16 @@ def main() -> None:
                         obsolete.unlink()
             low, high = np.min(bounds, axis=0), np.max(bounds, axis=0)
             ET.SubElement(model, "statistic",
-                          center=" ".join(f"{value:.8g}" for value in (low + high) / 2),
+                          center=" ".join(
+                              f"{value:.8g}" for value in (low + high) / 2),
                           extent=f"{np.linalg.norm(high - low):.8g}")
             actuator = ET.SubElement(model, "actuator")
             for joint in robot.findall("joint[@type='revolute']"):
                 limit = joint.find("limit")
-                effort = limit.get("effort")
                 # Scale damping with each joint's inertia instead of a fixed velocity gain.
                 ET.SubElement(actuator, "position", name=joint.get("name"),
                               joint=joint.get("name"), kp="2000", dampratio="2",
-                              ctrlrange=f"{limit.get('lower')} {limit.get('upper')}",
-                              forcerange=f"-{effort} {effort}")
+                              ctrlrange=f"{limit.get('lower')} {limit.get('upper')}")
             ET.indent(model, space="  ")
             ET.ElementTree(model).write(output_file, encoding="unicode")
             print(model_name)

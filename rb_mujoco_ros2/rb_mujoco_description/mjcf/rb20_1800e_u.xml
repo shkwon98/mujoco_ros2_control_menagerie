@@ -85,27 +85,27 @@
       <geom type="mesh" mesh="link0" group="3" />
       <body name="link1" pos="0 0 0.241" gravcomp="1">
         <inertial pos="-4.2e-05 -0.009244 -0.056956" quat="0.700201 0.130015 -0.13001 0.689864" mass="16.468" diaginertia="0.0955238 0.094803 0.0704759" />
-        <joint name="base" pos="0 0 0" axis="0 0 1" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+        <joint name="base" pos="0 0 0" axis="0 0 1" range="-6.28318530717959 6.28318530717959" />
         <geom type="mesh" mesh="link1" group="3" />
         <body name="link2" pos="0 -0.2545 0" gravcomp="1">
           <inertial pos="2.9e-05 0.038287 0.332417" quat="0.999924 0.012314 -1.85652e-05 0.00091101" mass="33.747" diaginertia="4.90949 4.87082 0.180776" />
-          <joint name="shoulder" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+          <joint name="shoulder" pos="0 0 0" axis="0 1 0" range="-6.28318530717959 6.28318530717959" />
           <geom type="mesh" mesh="link2" group="3" />
           <body name="link3" pos="0 0 0.885" gravcomp="1">
             <inertial pos="-2.2e-05 0.170556 0.3821" quat="0.999995 -0.001815 -4.47051e-05 0.00254915" mass="8.402" diaginertia="0.801801 0.800253 0.0182539" />
-            <joint name="elbow" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+            <joint name="elbow" pos="0 0 0" axis="0 1 0" range="-2.87979326579064 2.87979326579064" />
             <geom type="mesh" mesh="link3" group="3" />
             <body name="link4" pos="0 0.1875 0.7858" gravcomp="1">
               <inertial pos="9.8e-05 -0.126711 0.032313" quat="0.984306 0.175005 -0.0119343 0.0192874" mass="1.924" diaginertia="0.00258808 0.00246029 0.00200225" />
-              <joint name="wrist1" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+              <joint name="wrist1" pos="0 0 0" axis="0 1 0" range="-6.28318530717959 6.28318530717959" />
               <geom type="mesh" mesh="link4" group="3" />
               <body name="link5" pos="0 -0.1292 0" gravcomp="1">
                 <inertial pos="-9.8e-05 -0.032313 0.126711" quat="0.819757 0.572262 -0.00519944 0.022077" mass="1.924" diaginertia="0.00258808 0.00246029 0.00200225" />
-                <joint name="wrist2" pos="0 0 0" axis="0 0 1" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+                <joint name="wrist2" pos="0 0 0" axis="0 0 1" range="-6.28318530717959 6.28318530717959" />
                 <geom type="mesh" mesh="link5" group="3" />
                 <body name="link6" pos="0 0 0.1292" gravcomp="1">
                   <inertial pos="0.000164 -0.099056 -8e-06" quat="0.402502 0.580979 0.585109 0.397623" mass="0.677" diaginertia="0.00116085 0.000874134 0.000871213" />
-                  <joint name="wrist3" pos="0 0 0" axis="0 1 0" range="-3.14 3.14" actuatorfrcrange="-10 10" />
+                  <joint name="wrist3" pos="0 0 0" axis="0 1 0" range="-6.28318530717959 6.28318530717959" />
                   <geom type="mesh" mesh="link6" group="3" />
                   <body name="tcp" pos="0 -0.13 0" gravcomp="1" />
                   <geom type="mesh" mesh="link6_visual_0" material="link6_visual_0" group="2" contype="0" conaffinity="0" density="0" />
@@ -163,11 +163,11 @@
   </contact>
   <statistic center="0 -0.11899045 1.047274" extent="2.1655472" />
   <actuator>
-    <position name="base" joint="base" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="shoulder" joint="shoulder" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="elbow" joint="elbow" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="wrist1" joint="wrist1" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="wrist2" joint="wrist2" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
-    <position name="wrist3" joint="wrist3" kp="2000" dampratio="2" ctrlrange="-3.14 3.14" forcerange="-10 10" />
+    <position name="base" joint="base" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="shoulder" joint="shoulder" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="elbow" joint="elbow" kp="2000" dampratio="2" ctrlrange="-2.87979326579064 2.87979326579064" />
+    <position name="wrist1" joint="wrist1" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="wrist2" joint="wrist2" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
+    <position name="wrist3" joint="wrist3" kp="2000" dampratio="2" ctrlrange="-6.28318530717959 6.28318530717959" />
   </actuator>
 </mujoco>
