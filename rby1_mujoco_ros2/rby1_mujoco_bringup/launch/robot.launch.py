@@ -200,7 +200,7 @@ def prepare_descriptions(context) -> list:
         config["initial_positions"]
     ).perform(context)
     temporary, scene = None, ""
-    if hand in ("wuji_hand2_beta1", "wuji_hand2_beta2"):
+    if hand == "wuji_hand2":
         temporary = TemporaryDirectory(prefix="rby1_hand2_")
         compose = run_path(
             (description / "urdf" / "compose_hand2.py").perform(context)
@@ -225,7 +225,7 @@ def prepare_descriptions(context) -> list:
         },
     ).toxml()
     hand_roots = (
-        {"left": "left_hand_base", "right": "right_hand_base"}
+        {"left": "left_flange", "right": "right_flange"}
         if config["has_wuji_hands"]
         else {}
     )
@@ -318,7 +318,7 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument(
                 "hand_model",
                 default_value="wuji_hand",
-                choices=["wuji_hand", "wuji_hand2_beta1", "wuji_hand2_beta2"],
+                choices=["wuji_hand", "wuji_hand2"],
                 description="Hand model for a_wuji/m_wuji, used on both sides",
             ),
             DeclareLaunchArgument(

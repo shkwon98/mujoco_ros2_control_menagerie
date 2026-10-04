@@ -16,6 +16,8 @@
   <exec_depend>mujoco_ros2_control</exec_depend>
 
   <test_depend>ament_index_python</test_depend>
+  <test_depend>python3-numpy</test_depend>
+  <test_depend>python3-scipy</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

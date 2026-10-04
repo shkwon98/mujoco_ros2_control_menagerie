@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rby1_wuji_hand_right">
-  <link name="right_hand_base" />
 
   <link name="right_hand_docking_link">
     <inertial>
@@ -31,14 +30,15 @@
   <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand/right.urdf" />
 
   <joint name="right_wuji_mount_joint" type="fixed">
-    <parent link="right_hand_base" />
+    <parent link="right_flange" />
     <child link="right_hand_docking_link" />
-    <origin xyz="0.0 0.0 -0.02725" rpy="-3.14159265359 0.0 -2.35619449019" />
+    <!-- Adapter rotation aligns the native right thumb (+Y) with flange +X. -->
+    <origin xyz="0 0 ${0.02725 - hand_mount_offset_z}" rpy="0 0 3.141592653589793" />
   </joint>
 
   <joint name="right_hand_docking_joint" type="fixed">
     <parent link="right_hand_docking_link" />
     <child link="right_palm_link" />
-    <origin xyz="0.00065 0 0.022" rpy="0 0 1.57079632679" />
+    <origin xyz="0.00065 0 0.022" rpy="0 0 1.5707963267948966" />
   </joint>
 </robot>

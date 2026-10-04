@@ -17,7 +17,7 @@ for model in sorted((root / "mjcf").glob("rb*.xml")):
     for side in ("left", "right"):
         with TemporaryDirectory() as directory:
             compose(xml, root, model.stem,
-                    "wuji_hand2_beta2", side, Path(directory))
+                    "wuji_hand2", side, Path(directory))
             print(f"Checking {model.stem}: {side} Hand 2", flush=True)
             subprocess.run(
                 [sys.argv[1], str(Path(directory) / "model.xml")], check=True)

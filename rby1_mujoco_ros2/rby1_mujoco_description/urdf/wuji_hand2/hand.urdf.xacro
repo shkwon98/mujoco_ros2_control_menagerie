@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="rby1_wuji_hand2">
   <xacro:arg name="side" default="left" />
-  <xacro:arg name="hand_model" default="wuji_hand2_beta1" />
-  <xacro:property name="hand_model" value="$(arg hand_model)" />
   <xacro:property name="side" value="$(arg side)" />
-  <xacro:include filename="$(find rby1_mujoco_description)/urdf/${hand_model}/${side}_with_mount-ros.urdf" />
-  <link name="${side}_hand_base" />
+  <xacro:include filename="$(find rby1_mujoco_description)/urdf/wuji_hand2_beta2/${side}_with_mount-ros.urdf" />
+  <link name="${side}_flange" />
   <!-- Hand2 uses the official mount frame, without the Hand1 docking adapter. -->
   <joint name="${side}_wuji_mount_joint" type="fixed">
-    <parent link="${side}_hand_base" />
+    <parent link="${side}_flange" />
     <child link="${side[0]}_mount" />
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <origin xyz="0 0 0" rpy="3.141592653589793 0 0" />
   </joint>
 </robot>

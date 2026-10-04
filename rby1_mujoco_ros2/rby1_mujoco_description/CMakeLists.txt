@@ -13,9 +13,8 @@ install(
 if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
   add_test(
-    NAME hand2_composition
-    COMMAND
-      ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_hand2.py)
+    NAME hand_composition
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test/test_wuji.py)
 endif()
 
 install(

@@ -42,8 +42,11 @@ colcon build --merge-install --symlink-install \
 source install/setup.bash
 ```
 
-RB and RBY1 include Wuji Hand1 and Hand2 Beta1/Beta2 URDF, MJCF and mesh assets
+RB and RBY1 include Wuji Hand1 and Hand2 URDF, MJCF and mesh assets
 in their description packages; no external Wuji description packages are required.
+The public hand model names are `wuji_hand` and `wuji_hand2`; `wuji_hand2`
+always uses the bundled `wuji_hand2_beta2` assets. Beta names are not accepted
+as `hand_model` arguments.
 RB Hand1 assets come from [wuji-description](https://github.com/wuji-technology/wuji-description)
 revision `c2cd7f8d1ef8b6dc8cb907c17daa5a88b4442d95`; RB Hand2 assets use the same
 bundled models as RBY1. Each description package includes `LICENSE.wuji_description`.
@@ -83,21 +86,28 @@ Model options:
   Select `mujoco_model_file:=scene_with_hands.xml` or `scene_inspire_hand.xml`
   for the corresponding floating-base hand model.
 - RB-Series: `hand_model` defaults to `none`; options are `wuji_hand`,
-  `wuji_hand2_beta1` and `wuji_hand2_beta2`. `hand_side` selects `right` (default)
-  or `left`, using a simulated TCP mount.
+  `wuji_hand2`. `hand_side` selects `right` (default)
+  or `left`, using a simulated mount attached directly to `flange`.
+  Hand1 retains its docking adapter; Hand2 attaches its native mount link.
+  Hand descriptions use `flange` as their shared root with the body description;
+  no `left_hand_base` or `right_hand_base` intermediate frame is created.
 - RBY1: `a_wuji` and `m_wuji` use Wuji hands. `hand_model` defaults to
-  `wuji_hand`; Hand2 options are `wuji_hand2_beta1` and `wuji_hand2_beta2`.
+  `wuji_hand`; select `wuji_hand2` for Hand2.
   `robot_version` defaults to `v1.2`; A models support `v1.0`–`v1.2`,
   M models support `v1.0`–`v1.3`.
+  Wuji hands attach directly to `left_flange` and `right_flange`, which are also
+  the shared roots for body/hand descriptions. Hand1 keeps its docking adapter,
+  oriented so the thumb follows flange +X; M v1.3 retains its 66.384 mm mounting offset. No intermediate
+  `left_hand_base` or `right_hand_base` frame is created.
 
 For example:
 
 ```bash
 ros2 launch g1_mujoco_bringup robot.launch.py robot_model:=g1_with_hands
 ros2 launch rb_mujoco_bringup robot.launch.py \
-  robot_model:=rb5_850e hand_model:=wuji_hand2_beta2 hand_side:=right
+  robot_model:=rb5_850e hand_model:=wuji_hand2 hand_side:=right
 ros2 launch rby1_mujoco_bringup robot.launch.py \
-  robot_model:=a_wuji hand_model:=wuji_hand2_beta2
+  robot_model:=a_wuji hand_model:=wuji_hand2
 ```
 
 ## Common ROS interface
@@ -127,7 +137,23 @@ All nodes use `use_sim_time=true`; message timestamps follow `/clock`.
 Mobile robots use `map -> odom -> base_link` TF; fixed FFW models use
 `map -> base_link`, RB-Series uses `map -> link0`, and G1 uses `map -> pelvis`
 (static for fixed scenes, dynamic for floating scenes). Floating G1 also
-publishes `/sensors/proprio/body/base_pose`. RB-Series exposes the tool frame `tcp`.
+publishes `/sensors/proprio/body/base_pose`. RB-Series retains the native `tcp` frame
+and exposes a mounting-face-centred `flange` with +Z pointing outward toward the tool.
+
+Mobile ALOHA, RB and RBY1 add these fixed flange frames in their enclosing
+xacro descriptions while preserving the original robot URDF/model xacro files.
+`robot_state_publisher` publishes their transforms from the expanded description.
+Mounting directions are defined with all arm joints at zero. RB flange +X follows
+TCP +X, +Y points upward, and +Z follows TCP -Y. Hand1 and Hand2 on either side
+use the same single `flange` frame: thumbs follow +X and fingers follow +Z.
+The right dorsum follows +Y (up) and the left dorsum follows -Y (down).
+RBY1 flanges use native
+`ee_left`/`ee_right` +X as +X and native -Z as +Z: left -Y and right +Y represent
+the outward-facing dorsum. Hand1 and Hand2 thumbs follow flange +X, and fingers
+extend along flange +Z. Hand1's adapter rotation is aligned to these axes while
+retaining its docking-to-palm geometry and mounting offsets in URDF and MuJoCo.
+The direct right Hand2 mount on `rb20_1900es_u` intersects the wrist and thumb
+geometry at joint zero; its `rb_wuji` clearance check fails.
 
 ### Mobile bases
 

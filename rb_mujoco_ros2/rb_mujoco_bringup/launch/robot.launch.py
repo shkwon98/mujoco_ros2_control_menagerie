@@ -189,7 +189,7 @@ def prepare_descriptions(context) -> list:
             xml, Path(description.perform(context)),
             model, hand, side, Path(temporary.name),
         )
-        hand_roots[side] = f"{side}_hand_base"
+        hand_roots[side] = "flange"
     parts = split_description(xml, hand_roots)
     values = {
         "_full_robot_description": xml,
@@ -265,9 +265,8 @@ def generate_launch_description() -> LaunchDescription:
             ),
             DeclareLaunchArgument(
                 "hand_model", default_value="none",
-                choices=["none", "wuji_hand",
-                         "wuji_hand2_beta1", "wuji_hand2_beta2"],
-                description="Optional Wuji hand at the RB TCP (simulation mount)",
+                choices=["none", "wuji_hand", "wuji_hand2"],
+                description="Optional Wuji hand at the RB flange (simulation mount)",
             ),
             DeclareLaunchArgument(
                 "hand_side", default_value="right", choices=["left", "right"],

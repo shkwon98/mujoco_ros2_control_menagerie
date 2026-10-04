@@ -7,7 +7,6 @@
   <xacro:arg name="hand_model" default="wuji_hand" />
   <xacro:arg name="mujoco_model_file" default="" />
   <xacro:arg name="headless" default="false" />
-  <xacro:arg name="hand_base_offset_z" default="0" />
 
   <xacro:property name="robot_model" value="$(arg robot_model)" />
   <xacro:property name="robot_version" value="$(arg robot_version)" />
@@ -22,12 +21,10 @@
     <xacro:include filename="$(find rby1_mujoco_description)/urdf/rby1m/model_${robot_version}.urdf" />
   </xacro:if>
 
+  <xacro:rby1_flange_frames />
   <xacro:if value="${robot_model == 'a_wuji' or robot_model == 'm_wuji'}">
     <xacro:rby1_wuji_hand_mounts robot_model="${robot_model}" robot_version="${robot_version}"
       hand_model="$(arg hand_model)" />
-  </xacro:if>
-  <xacro:if value="${robot_model != 'a_wuji' and robot_model != 'm_wuji'}">
-    <xacro:rby1_hand_base_frames hand_base_offset_z="$(arg hand_base_offset_z)" />
   </xacro:if>
 
   <!-- ros2_control -->

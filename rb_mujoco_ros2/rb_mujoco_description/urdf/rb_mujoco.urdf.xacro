@@ -2,6 +2,13 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="$(arg robot_model)">
   <xacro:arg name="headless" default="false"/>
   <xacro:include filename="$(find rb_mujoco_description)/urdf/$(arg robot_model).urdf"/>
+  <!-- Joint zero: both thumbs +X, fingers +Z = TCP -Y; right dorsum +Y, left dorsum -Y. -->
+  <link name="flange"/>
+  <joint name="flange_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="1.570796326794897 0 0"/>
+    <parent link="tcp"/>
+    <child link="flange"/>
+  </joint>
   <xacro:include filename="$(find rb_mujoco_description)/urdf/rb.ros2_control.xacro"/>
   <xacro:rb_ros2_control robot_model="$(arg robot_model)" headless="$(arg headless)"/>
 </robot>

@@ -191,7 +191,7 @@
         <xacro:position_joint joint_name="left_finger5_joint3" initial_positions="${initial_positions}" />
         <xacro:position_joint joint_name="left_finger5_joint4" initial_positions="${initial_positions}" />
       </xacro:if>
-      <xacro:if value="${(robot_model == 'a_wuji' or robot_model == 'm_wuji') and hand_model in ['wuji_hand2_beta1', 'wuji_hand2_beta2']}">
+      <xacro:if value="${(robot_model == 'a_wuji' or robot_model == 'm_wuji') and hand_model == 'wuji_hand2'}">
         <!-- Launch supplies the official Hand2 names and zero initial joint positions. -->
         <xacro:macro name="hand2_joints" params="names">
           <xacro:if value="${len(names) > 0}">

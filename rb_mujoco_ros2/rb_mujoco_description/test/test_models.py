@@ -44,8 +44,15 @@ for path in sorted((root / "mjcf").glob("rb*.xml")):
     data.qpos[:] = [0.2, -0.3, 0.4, -0.2, 0.3, -0.1]
     data.ctrl[:] = data.qpos
     mujoco.mj_forward(model, data)
+    parents = {joint.find("child").get(
+        "link"): joint for joint in robot.findall("joint")}
+    chain, tip = [], "tcp"
+    while tip in parents:
+        joint = parents[tip]
+        chain.append(joint)
+        tip = joint.find("parent").get("link")
     transform = np.eye(4)
-    for joint in robot.findall("joint"):
+    for joint in reversed(chain):
         origin, offset = joint.find("origin"), np.eye(4)
         offset[:3, 3] = np.fromstring(origin.get("xyz", "0 0 0"), sep=" ")
         offset[:3, :3] = Rotation.from_euler("xyz", np.fromstring(

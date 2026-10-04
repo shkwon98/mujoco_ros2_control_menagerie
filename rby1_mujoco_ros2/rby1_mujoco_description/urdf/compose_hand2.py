@@ -7,7 +7,7 @@ import yaml
 
 def compose_hand2(description: Path, base_model: str, version: str,
                   controllers_file: Path, output: Path,
-                  hand_model: str = "wuji_hand2_beta1") -> tuple[str, str, str]:
+                  hand_model: str = "wuji_hand2") -> tuple[str, str, str]:
     """Write MJCF, initial positions and controllers into the launch-owned directory.
 
     Keep the RBY1 body and controller tuning; replace only Hand1 geometry, joints
@@ -15,8 +15,9 @@ def compose_hand2(description: Path, base_model: str, version: str,
     Hand2 joint units are radians and its actuator gains are the
     official simulation gains, not the hardware's current-control gains.
     """
-    if hand_model not in ("wuji_hand2_beta1", "wuji_hand2_beta2"):
+    if hand_model != "wuji_hand2":
         raise ValueError(f"Unsupported Hand2 model: {hand_model}")
+    asset_model = "wuji_hand2_beta2"
     source = description / "mjcf" / f"rby1{base_model}"
     body = ET.parse(source / f"rby1_{version}_wuji.xml")
     model = ET.parse(source / f"model_act_{version}_wuji.xml")
@@ -38,8 +39,8 @@ def compose_hand2(description: Path, base_model: str, version: str,
         contacts = ET.SubElement(model.getroot(), "contact")
 
     for side in ("left", "right"):
-        hand = ET.parse(description / "mjcf" / hand_model / f"{side}_with_mount.xml")
-        geometry = ET.parse(description / "urdf" / hand_model /
+        hand = ET.parse(description / "mjcf" / asset_model / f"{side}_with_mount.xml")
+        geometry = ET.parse(description / "urdf" / asset_model /
                             f"{side}_with_mount-ros.urdf")
         names = [j.get("name") for j in geometry.findall(
             "joint") if j.get("type") != "fixed"]
@@ -60,7 +61,7 @@ def compose_hand2(description: Path, base_model: str, version: str,
         for controller in (f"hand_{side}_controller", f"hand_{side}_joint_state_broadcaster"):
             controllers["/**"][controller]["ros__parameters"]["joints"] = names.copy()
 
-        meshdir = description / "mjcf" / hand_model / hand.find("compiler").get("meshdir")
+        meshdir = description / "mjcf" / asset_model / hand.find("compiler").get("meshdir")
         for mesh in hand.findall("asset/mesh"):
             mesh.set("file", str((meshdir / mesh.get("file")).resolve()))
             assets.append(mesh)

@@ -1,4 +1,4 @@
-"""Attach one Wuji hand to an RB TCP without changing the arm model."""
+"""Attach one Wuji hand directly to the RB flange."""
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -10,18 +10,20 @@ def compose_wuji(robot_xml: str, description: Path,
                  output: Path) -> tuple[str, str]:
     """Write the combined MJCF/controller YAML in the launch-owned directory.
 
-    Mount coordinates are metres/radians. The Wuji mount's negative Z axis
-    points along the RB flange's negative Y axis. This is a simulation mount,
-    not a model of a manufactured RB adapter.
+    Mount coordinates are metres/radians in the +Z-outward flange frame.
+    Both sides use the single flange's thumbward +X and fingerward +Z axes.
+    At arm joint zero the right dorsum points up and the left dorsum points down.
+    This is a simulation mount, not a model of a manufactured RB adapter.
     """
     if side not in ("left", "right") or hand_model not in (
-        "wuji_hand", "wuji_hand2_beta1", "wuji_hand2_beta2"
+        "wuji_hand", "wuji_hand2"
     ):
         raise ValueError("Unsupported Wuji hand model or side")
+    asset_model = "wuji_hand2_beta2" if hand_model == "wuji_hand2" else "wuji_hand"
     variant = side if hand_model == "wuji_hand" else f"{side}_with_mount"
-    hand = ET.parse(description / "urdf" / hand_model /
+    hand = ET.parse(description / "urdf" / asset_model /
                     f"{variant}-ros.urdf").getroot()
-    hand_mjcf = ET.parse(description / "mjcf" / hand_model /
+    hand_mjcf = ET.parse(description / "mjcf" / asset_model /
                          f"{variant}.xml").getroot()
     source = description / "mjcf" / f"{robot_model}.xml"
     model = ET.parse(source).getroot()
@@ -42,7 +44,7 @@ def compose_wuji(robot_xml: str, description: Path,
         raise ValueError("Wuji URDF and MJCF attachment roots differ")
 
     # Keep resource lookup at launch; generated models use install-space paths.
-    for tree, directory in ((model, source.parent), (hand_mjcf, description / "mjcf" / hand_model)):
+    for tree, directory in ((model, source.parent), (hand_mjcf, description / "mjcf" / asset_model)):
         meshdir = directory / tree.find("compiler").get("meshdir", "")
         for mesh in tree.findall("asset/mesh"):
             mesh.set("file", str((meshdir / mesh.get("file")).resolve()))
@@ -55,10 +57,9 @@ def compose_wuji(robot_xml: str, description: Path,
         for key, value in defaults.items():
             joint.attrib.setdefault(key, value)
 
-    base = f"{side}_hand_base"
-    ET.SubElement(robot, "link", name=base)
-    base_body = ET.Element("body", name=base)
-    mounts = [("tcp", base, "0 0 0", "-1.5707963267948966 0 0", base_body)]
+    flange_origin = robot.find("joint[@name='flange_joint']/origin")
+    ET.SubElement(model.find(".//body[@name='tcp']"), "body", name="flange",
+                  pos=flange_origin.get("xyz"), euler=flange_origin.get("rpy"))
     if hand_model == "wuji_hand":
         docking = ET.parse(
             description / "urdf/wuji_hand/docking-ros.urdf").find("link")
@@ -79,18 +80,18 @@ def compose_wuji(robot_xml: str, description: Path,
             ET.SubElement(dock_body, "geom", type="mesh", mesh=docking.get("name"),
                           group=str(group), contype=collide, conaffinity=collide,
                           density="0", rgba="0.8 0.8 0.8 1")
-        dock_rpy = ("3.141592653589793 0 2.356194490192345" if side == "left"
-                    else "-3.141592653589793 0 -2.356194490192345")
+        # Keep the docking-to-palm geometry; align both thumbs with flange +X.
+        dock_rpy = "0 0 3.141592653589793"
         palm_rpy = "0 0 -1.5707963267948966" if side == "left" else "0 0 1.5707963267948966"
-        mounts.extend([
-            (base, docking.get("name"), "0 0 -0.02725",
+        mounts = [
+            ("flange", docking.get("name"), "0 0 0.02725",
              dock_rpy, dock_body),
             (docking.get("name"), hand_body.get("name"), "0.00065 0 0.022",
              palm_rpy, hand_body),
-        ])
+        ]
     else:
-        mounts.append((base, hand_body.get("name"),
-                      "0 0 0", "0 0 0", hand_body))
+        mounts = [("flange", hand_body.get("name"), "0 0 0",
+                   "3.141592653589793 0 0", hand_body)]
     model.find("compiler").set("eulerseq", "XYZ")
     for parent, child, xyz, rpy, body in mounts:
         joint = ET.SubElement(
