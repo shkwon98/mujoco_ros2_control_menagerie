@@ -45,10 +45,11 @@ def compose_wuji(robot_xml: str, description: Path,
 
     # Keep resource lookup at launch; generated models use install-space paths.
     for tree, directory in ((model, source.parent), (hand_mjcf, description / "mjcf" / asset_model)):
-        meshdir = directory / tree.find("compiler").get("meshdir", "")
+        compiler = tree.find("compiler")
+        meshdir = directory / compiler.get("meshdir", "")
         for mesh in tree.findall("asset/mesh"):
             mesh.set("file", str((meshdir / mesh.get("file")).resolve()))
-        tree.find("compiler").attrib.pop("meshdir", None)
+        compiler.attrib.pop("meshdir", None)
     assets = model.find("asset")
     assets.extend(hand_mjcf.findall("asset/*"))
     # Explicit hand defaults cannot change the arm's dynamics.
@@ -58,8 +59,8 @@ def compose_wuji(robot_xml: str, description: Path,
             joint.attrib.setdefault(key, value)
 
     flange_origin = robot.find("joint[@name='flange_joint']/origin")
-    ET.SubElement(model.find(".//body[@name='tcp']"), "body", name="flange",
-                  pos=flange_origin.get("xyz"), euler=flange_origin.get("rpy"))
+    flange = ET.SubElement(model.find(".//body[@name='tcp']"), "body", name="flange",
+                           pos=flange_origin.get("xyz"), euler=flange_origin.get("rpy"))
     if hand_model == "wuji_hand":
         docking = ET.parse(
             description / "urdf/wuji_hand/docking-ros.urdf").find("link")
@@ -84,24 +85,25 @@ def compose_wuji(robot_xml: str, description: Path,
         dock_rpy = "0 0 3.141592653589793"
         palm_rpy = "0 0 -1.5707963267948966" if side == "left" else "0 0 1.5707963267948966"
         mounts = [
-            ("flange", docking.get("name"), "0 0 0.02725",
+            (flange, "0 0 0.02725",
              dock_rpy, dock_body),
-            (docking.get("name"), hand_body.get("name"), "0.00065 0 0.022",
+            (dock_body, "0.00065 0 0.022",
              palm_rpy, hand_body),
         ]
     else:
-        mounts = [("flange", hand_body.get("name"), "0 0 0",
+        mounts = [(flange, "0 0 0",
                    "3.141592653589793 0 0", hand_body)]
     model.find("compiler").set("eulerseq", "XYZ")
-    for parent, child, xyz, rpy, body in mounts:
+    for parent, xyz, rpy, body in mounts:
+        child = body.get("name")
         joint = ET.SubElement(
             robot, "joint", name=f"{child}_mount_joint", type="fixed")
-        ET.SubElement(joint, "parent", link=parent)
+        ET.SubElement(joint, "parent", link=parent.get("name"))
         ET.SubElement(joint, "child", link=child)
         ET.SubElement(joint, "origin", xyz=xyz, rpy=rpy)
         body.set("pos", xyz)
         body.set("euler", rpy)
-        model.find(f".//body[@name='{parent}']").append(body)
+        parent.append(body)
     for element in hand:
         if element.tag in ("link", "joint", "material"):
             robot.append(element)
@@ -119,9 +121,8 @@ def compose_wuji(robot_xml: str, description: Path,
         geom.set("rgba", color)
         colors[mesh] = color
     for visual in hand.findall("link/visual"):
-        material = visual.find("material")
         mesh = Path(visual.find("geometry/mesh").get("filename")).stem
-        material.find("color").set("rgba", colors[mesh])
+        visual.find("material/color").set("rgba", colors[mesh])
     model.find("actuator").extend(hand_mjcf.findall("actuator/*"))
     control = robot.find("ros2_control")
     initial = []
