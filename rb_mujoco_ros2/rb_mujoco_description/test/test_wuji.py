@@ -58,7 +58,7 @@ for (arm, hand), side in product(cases, ("left", "right")):
             data.qpos <= model.jnt_range[:, 1])
         mujoco.mj_forward(model, data)
         np.testing.assert_allclose(data.body("flange").xmat.reshape(3, 3),
-                                   [[1, 0, 0], [0, 0, -1], [0, 1, 0]], atol=1e-12)
+                                   [[0, 1, 0], [-1, 0, 0], [0, 0, 1]], atol=1e-12)
         flange_rotation = data.body("flange").xmat.reshape(3, 3)
         native_rotation = data.body(
             f"{side}_palm_link" if hand == "wuji_hand" else mount).xmat.reshape(3, 3)
@@ -68,11 +68,11 @@ for (arm, hand), side in product(cases, ("left", "right")):
         dorsum = [-1, 0, 0] if hand == "wuji_hand" else [0,
                                                          1 if side == "left" else -1, 0]
         np.testing.assert_allclose(flange_rotation.T @ native_rotation @ thumb,
-                                   [1, 0, 0], atol=1e-12)
+                                   [0, 0, 1], atol=1e-12)
         np.testing.assert_allclose(
-            flange_rotation.T @ native_rotation @ fingers, [0, 0, 1], atol=1e-12)
+            flange_rotation.T @ native_rotation @ fingers, [1, 0, 0], atol=1e-12)
         np.testing.assert_allclose(native_rotation @ dorsum,
-                                   [0, 0, -1 if side == "left" else 1], atol=1e-12)
+                                   [1 if side == "left" else -1, 0, 0], atol=1e-12)
         data.qpos[:6] = [0.2, -0.3, 0.4, -0.2, 0.3, -0.1]
         data.ctrl[:] = data.qpos
         mujoco.mj_forward(model, data)
@@ -81,12 +81,12 @@ for (arm, hand), side in product(cases, ("left", "right")):
                            "wuji_hand" else mount)
         rotation = flange.xmat.reshape(3, 3).T
         if hand == "wuji_hand":
-            position = [-0.00065, 0, 0.04925]
-            orientation = Rotation.from_euler(
-                "z", np.pi / 2 if side == "left" else -np.pi / 2)
+            position = [0.04925, 0, -0.00065]
+            orientation = Rotation.from_euler("y", np.pi / 2) * Rotation.from_euler(
+                "z", -np.pi / 2 if side == "left" else np.pi / 2)
         else:
             position = [0, 0, 0]
-            orientation = Rotation.from_euler("xyz", [np.pi, 0, 0])
+            orientation = Rotation.from_euler("xyz", [0, -np.pi / 2, 0])
         np.testing.assert_allclose(
             rotation @ (native.xpos - flange.xpos), position, atol=1e-12)
         np.testing.assert_allclose(

@@ -10,9 +10,9 @@ def compose_wuji(robot_xml: str, description: Path,
                  output: Path) -> tuple[str, str]:
     """Write the combined MJCF/controller YAML in the launch-owned directory.
 
-    Mount coordinates are metres/radians in the +Z-outward flange frame.
-    Both sides use the single flange's thumbward +X and fingerward +Z axes.
-    At arm joint zero the right dorsum points up and the left dorsum points down.
+    Mount coordinates are metres/radians in the +X-outward flange frame.
+    Both sides use the single flange's fingerward +X and thumbward +Z axes.
+    At arm joint zero both thumbs point up; fingers point toward robot right.
     This is a simulation mount, not a model of a manufactured RB adapter.
     """
     if side not in ("left", "right") or hand_model not in (
@@ -81,18 +81,18 @@ def compose_wuji(robot_xml: str, description: Path,
             ET.SubElement(dock_body, "geom", type="mesh", mesh=docking.get("name"),
                           group=str(group), contype=collide, conaffinity=collide,
                           density="0", rgba="0.8 0.8 0.8 1")
-        # Keep the docking-to-palm geometry; align both thumbs with flange +X.
-        dock_rpy = "0 0 3.141592653589793"
+        # Keep the docking-to-palm geometry; align both thumbs with flange +Z.
+        dock_rpy = "0 1.5707963267948966 0"
         palm_rpy = "0 0 -1.5707963267948966" if side == "left" else "0 0 1.5707963267948966"
         mounts = [
-            (flange, "0 0 0.02725",
+            (flange, "0.02725 0 0",
              dock_rpy, dock_body),
             (dock_body, "0.00065 0 0.022",
              palm_rpy, hand_body),
         ]
     else:
         mounts = [(flange, "0 0 0",
-                   "3.141592653589793 0 0", hand_body)]
+                   "0 -1.5707963267948966 0", hand_body)]
     model.find("compiler").set("eulerseq", "XYZ")
     for parent, xyz, rpy, body in mounts:
         child = body.get("name")
