@@ -208,10 +208,11 @@
               <geom mesh="link4_5" material="dark_gray_mat" class="visual"/>
               <geom mesh="link4_6" material="dark_gray_mat" class="visual"/>
               <geom mesh="link4" class="collision"/>
-              <body name="link5" quat="0.707105 0.707108 0 0" gravcomp="1">
+              <!-- joint5 zero shifted by +0.0872495900012399 rad from the native convention. -->
+              <body name="link5" quat="0.7064325338182241 0.7064355309651845 -0.03083767032583523 0.03083753949290593" gravcomp="1">
                 <inertial pos="8.82262e-05 0.0566829 -0.0019612" quat="0.507447 0.490986 0.506887 0.494466"
                   mass="0.144711" diaginertia="0.001 0.001 0.001"/>
-                <joint name="joint5" axis="0 0 1" range="-1.22 1.22"/>
+                <joint name="joint5" axis="0 0 1" range="-1.30724959000124 1.13275040999876"/>
                 <geom mesh="link5_2" material="black_mat" class="visual"/>
                 <geom mesh="link5_3" material="black_mat" class="visual"/>
                 <geom mesh="link5_4" material="darker_gray_mat" class="visual"/>

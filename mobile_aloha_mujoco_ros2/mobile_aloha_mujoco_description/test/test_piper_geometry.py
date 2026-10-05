@@ -22,6 +22,20 @@ for model, data in zip(models, states):
     mujoco.mj_forward(model, data)
 
 
+# Model zero means horizontal tool on all followers/leaders; physical native limits stay fixed.
+delta = 0.0872495900012399
+for model, data in zip(models, states):
+    for prefix in ("fl", "fr", "bl", "br"):
+        rotation = data.body("base_link").xmat.reshape(3, 3).T @ data.body(f"{prefix}_link6").xmat.reshape(3, 3)
+        np.testing.assert_allclose(rotation[:, 2], [1, 0, 0], atol=2e-5, rtol=0)
+        joint = model.joint(f"{prefix}_joint5")
+        np.testing.assert_allclose(model.jnt_range[joint.id] + delta, [-1.22, 1.22], atol=1e-12)
+# Startup keeps the old native joint5=0 physical posture after re-zeroing.
+home = models[1].key_qpos[0]
+for prefix in ("fl", "fr", "bl", "br"):
+    assert abs(home[models[1].joint(f"{prefix}_joint5").qposadr[0]] + delta) < 1e-12
+
+
 def vertices(model, data, geom, attachment):
     mesh = model.geom_dataid[geom]
     start = model.mesh_vertadr[mesh]

@@ -32,6 +32,7 @@
     </link>
   </xacro:macro>
 
+  <!-- Native joint5 = model joint5 + 0.0872495900012399 rad; model zero has a horizontal tool. -->
   <xacro:macro name="piper" params="prefix parent xyz gripper_prefix finger_origin">
     <xacro:piper_link name="${prefix}_base_link" mesh="base_link.stl"/>
     <joint name="${prefix}_base_joint" type="fixed">
@@ -78,11 +79,11 @@
 
     <xacro:piper_link name="${prefix}_link5" mesh="link5.stl"/>
     <joint name="${prefix}_joint5" type="revolute">
-      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <origin xyz="0 0 0" rpy="1.570800014025604 -0.08724959000064958 -3.21301354522241e-07"/>
       <parent link="${prefix}_link4"/>
       <child link="${prefix}_link5"/>
       <axis xyz="0 0 1"/>
-      <limit lower="-1.22" upper="1.22" effort="100" velocity="3"/>
+      <limit lower="-1.30724959000124" upper="1.13275040999876" effort="100" velocity="3"/>
     </joint>
 
     <xacro:piper_link name="${prefix}_link6" mesh="${gripper_prefix}_link6.stl"/>

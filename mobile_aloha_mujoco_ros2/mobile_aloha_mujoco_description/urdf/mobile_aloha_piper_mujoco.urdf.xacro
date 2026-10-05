@@ -6,13 +6,13 @@
   <xacro:mobile_aloha_piper_ros2_control headless="$(arg headless)"/>
   <link name="left_flange"/>
   <joint name="left_flange_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 1.570796326794897"/>
+    <origin xyz="0 0 0" rpy="-1.570796326794897 -1.570796326794897 0"/>
     <parent link="fl_link6"/>
     <child link="left_flange"/>
   </joint>
   <link name="right_flange"/>
   <joint name="right_flange_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 1.570796326794897"/>
+    <origin xyz="0 0 0" rpy="-1.570796326794897 -1.570796326794897 0"/>
     <parent link="fr_link6"/>
     <child link="right_flange"/>
   </joint>

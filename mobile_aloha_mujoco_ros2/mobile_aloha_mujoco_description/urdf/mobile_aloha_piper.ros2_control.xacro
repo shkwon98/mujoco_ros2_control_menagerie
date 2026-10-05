@@ -23,7 +23,7 @@
     <xacro:piper_position_joint name="${prefix}_joint2" initial_value="1.57"/>
     <xacro:piper_position_joint name="${prefix}_joint3" initial_value="-1.3485"/>
     <xacro:piper_position_joint name="${prefix}_joint4"/>
-    <xacro:piper_position_joint name="${prefix}_joint5"/>
+    <xacro:piper_position_joint name="${prefix}_joint5" initial_value="-0.0872495900012399"/>
     <xacro:piper_position_joint name="${prefix}_joint6"/>
     <xacro:piper_position_joint name="${prefix}_joint7" initial_value="0.035"/>
   </xacro:macro>
