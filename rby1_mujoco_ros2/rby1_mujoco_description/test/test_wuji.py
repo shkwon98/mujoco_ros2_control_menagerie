@@ -79,7 +79,7 @@ for base, version in (("a", "v1.0"), ("a", "v1.1"), ("a", "v1.2"),
                     "joint") if j.find("child").get("link") == mount)
                 assert attachment.find("parent").get("link") == flange
                 np.testing.assert_allclose(fixed_transform(robot, flange, "ee_" + side),
-                                           pose([0, 0, 0], [np.pi, 0, 0]),
+                                           pose([0, 0, 0], [0, np.pi / 2, 0]),
                                            atol=1e-12)
                 native = side + "_palm_link" if hand == "wuji_hand" else mount
                 expected = pose([0, 0, offset], [0, 0, 0])
@@ -108,9 +108,9 @@ for base, version in (("a", "v1.0"), ("a", "v1.1"), ("a", "v1.2"),
                 dorsum = [-1, 0, 0] if hand == "wuji_hand" else [0,
                                                                  1 if side == "left" else -1, 0]
                 np.testing.assert_allclose(
-                    flange_rotation.T @ native_rotation @ thumb, [1, 0, 0], atol=1e-9)
+                    flange_rotation.T @ native_rotation @ thumb, [0, 0, 1], atol=1e-9)
                 np.testing.assert_allclose(
-                    flange_rotation.T @ native_rotation @ fingers, [0, 0, 1], atol=1e-9)
+                    flange_rotation.T @ native_rotation @ fingers, [1, 0, 0], atol=1e-9)
                 np.testing.assert_allclose(
                     native_rotation @ dorsum, [0, 1 if side == "left" else -1, 0], atol=1e-9)
                 if hand != "wuji_hand":

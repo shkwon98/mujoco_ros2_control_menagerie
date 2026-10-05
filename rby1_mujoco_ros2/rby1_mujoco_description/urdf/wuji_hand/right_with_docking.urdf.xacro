@@ -32,8 +32,8 @@
   <joint name="right_wuji_mount_joint" type="fixed">
     <parent link="right_flange" />
     <child link="right_hand_docking_link" />
-    <!-- Adapter rotation aligns the native right thumb (+Y) with flange +X. -->
-    <origin xyz="0 0 ${0.02725 - hand_mount_offset_z}" rpy="0 0 3.141592653589793" />
+    <!-- Fingers follow flange +X; thumb follows flange +Z. -->
+    <origin xyz="${0.02725 - hand_mount_offset_z} 0 0" rpy="0 1.570796326794897 0" />
   </joint>
 
   <joint name="right_hand_docking_joint" type="fixed">
