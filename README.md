@@ -97,7 +97,7 @@ Model options:
   M models support `v1.0`–`v1.3`.
   Wuji hands attach directly to `left_flange` and `right_flange`, which are also
   the shared roots for body/hand descriptions. Hand1 keeps its docking adapter,
-  oriented so the thumb follows flange +X; M v1.3 retains its 66.384 mm mounting offset. No intermediate
+  oriented so fingers follow flange +X and the thumb flange +Z; M v1.3 retains its 66.384 mm mounting offset. No intermediate
   `left_hand_base` or `right_hand_base` frame is created.
 
 For example:
@@ -138,22 +138,23 @@ Mobile robots use `map -> odom -> base_link` TF; fixed FFW models use
 `map -> base_link`, RB-Series uses `map -> link0`, and G1 uses `map -> pelvis`
 (static for fixed scenes, dynamic for floating scenes). Floating G1 also
 publishes `/sensors/proprio/body/base_pose`. RB-Series retains the native `tcp` frame
-and exposes a mounting-face-centred `flange` with +Z pointing outward toward the tool.
+and exposes a mounting-face-centred `flange` with +X pointing outward toward the tool.
 
-Mobile ALOHA, RB and RBY1 add these fixed flange frames in their enclosing
-xacro descriptions while preserving the original robot URDF/model xacro files.
-`robot_state_publisher` publishes their transforms from the expanded description.
-Mounting directions are defined with all arm joints at zero. RB flange +X follows
-TCP +X, +Y points upward, and +Z follows TCP -Y. Hand1 and Hand2 on either side
-use the same single `flange` frame: thumbs follow +X and fingers follow +Z.
-The right dorsum follows +Y (up) and the left dorsum follows -Y (down).
-RBY1 flanges use native
-`ee_left`/`ee_right` +X as +X and native -Z as +Z: left -Y and right +Y represent
-the outward-facing dorsum. Hand1 and Hand2 thumbs follow flange +X, and fingers
-extend along flange +Z. Hand1's adapter rotation is aligned to these axes while
-retaining its docking-to-palm geometry and mounting offsets in URDF and MuJoCo.
-The direct right Hand2 mount on `rb20_1900es_u` intersects the wrist and thumb
-geometry at joint zero; its `rb_wuji` clearance check fails.
+Mobile ALOHA, RB and RBY1 add fixed ROS-Industrial flange frames in the enclosing
+xacro descriptions. RB keeps one flange: at joint zero X points right, Y forward,
+and Z up. RBY1 has left/right flanges: at joint zero X points down, Y left and Z
+forward; with the elbow bent forward the reference is X forward, Y left, Z up.
+VX300S and PiPER have forward/left/up flanges at model zero. PiPER joint5 is
+re-zeroed by `0.0872495900012399` rad (approximately 5 degrees) on all four arms;
+URDF and MuJoCo limits and initial positions are shifted together. Native hardware
+angles satisfy `q_native = q_model + offset`; driver state/commands and published
+TF must use a consistent convention. Existing startup physical postures are preserved.
+
+Hand1/Hand2 fingers follow flange +X and thumbs follow flange +Z on both sides.
+Hand1 docking geometry and translations, and the RBY1 M v1.3 axial correction,
+are retained. RBY1 physical hand orientations stay unchanged: thumbs forward,
+dorsa outward. RB thumbs now point up. Native gripper geometry is unchanged.
+URDF/MuJoCo composition tests cover both hands and the supported robot variants.
 
 ### Mobile bases
 
