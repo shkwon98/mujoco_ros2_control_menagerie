@@ -120,11 +120,11 @@ to retain the existing single-robot paths and simulation-time behavior.
 ros2 launch rb_mujoco_bringup robot.launch.py \
   robot_model:=rb5_850e instance_id:=rb_01 \
   hand_model:=wuji_hand2 hand_instance_id:=wuji_hand_01 hand_side:=left \
-  base_xyz:="0 0.5 0"
+  base_xyz:="0 0.5 0" base_rpy:="0 0 0.7853981634"
 ros2 launch rb_mujoco_bringup robot.launch.py \
   robot_model:=rb5_850e instance_id:=rb_02 \
   hand_model:=wuji_hand2 hand_instance_id:=wuji_hand_01 hand_side:=right \
-  base_xyz:="0 -0.5 0"
+  base_xyz:="0 -0.5 0" base_rpy:="0 0 2.3561944902"
 ```
 
 Body interfaces use `/<instance_id>`; hand feedback and descriptions use
