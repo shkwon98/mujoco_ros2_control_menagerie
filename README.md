@@ -110,6 +110,36 @@ ros2 launch rby1_mujoco_bringup robot.launch.py \
   robot_model:=a_wuji hand_model:=wuji_hand2
 ```
 
+### Multiple RB instances
+
+Only RB bringup currently supports instance-specific interfaces. Omit `instance_id`
+to retain the existing single-robot paths and simulation-time behavior.
+
+```bash
+# Separate terminals; each simulation contains its arm and attached hand.
+ros2 launch rb_mujoco_bringup robot.launch.py \
+  robot_model:=rb5_850e instance_id:=rb_01 \
+  hand_model:=wuji_hand2 hand_instance_id:=wuji_hand_01 hand_side:=left \
+  base_xyz:="0 0.5 0"
+ros2 launch rb_mujoco_bringup robot.launch.py \
+  robot_model:=rb5_850e instance_id:=rb_02 \
+  hand_model:=wuji_hand2 hand_instance_id:=wuji_hand_01 hand_side:=right \
+  base_xyz:="0 -0.5 0"
+```
+
+Body interfaces use `/<instance_id>`; hand feedback and descriptions use
+`/<hand_instance_id>/<side>_eef`, with commands on
+`/<hand_instance_id>/<side>_eef_controller`. Joint names stay unchanged; TF prefixes
+are `<instance_id>_` and `<hand_instance_id>_<side>_`. RViz uses the separate
+`visualization/robot_description` topic under each body/hand namespace, with
+matching link names and an empty TF Prefix.
+
+`base_xyz` and `base_rpy` place each base in `map` (metres/radians). Named instances
+use system time by default; shared teleop should use `use_sim_time:=false`.
+Explicit `use_sim_time:=true` uses that instance's private `/<instance_id>/clock`.
+Each arm and hand share one controller manager and MuJoCo world. Separate RB
+instances have no physical interaction or collision checks against one another.
+
 ## Common ROS interface
 
 | Endpoint | Purpose |
@@ -133,7 +163,7 @@ RB-Series uses `arm_controller`; dual-arm robots use `arm_left_controller` and
 G2 grippers provide state only. RBY1 stock grippers remain in the body interface;
 PiPER rear leaders have additional `leader_*_controller` body interfaces.
 
-All nodes use `use_sim_time=true`; message timestamps follow `/clock`.
+Legacy launches use `use_sim_time=true`; message timestamps follow `/clock`. Named RB instances use the time policy described above.
 Mobile robots use `map -> odom -> base_link` TF; fixed FFW models use
 `map -> base_link`, RB-Series uses `map -> link0`, and G1 uses `map -> pelvis`
 (static for fixed scenes, dynamic for floating scenes). Floating G1 also

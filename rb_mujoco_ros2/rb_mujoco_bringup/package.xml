@@ -21,6 +21,13 @@
   <exec_depend>rqt_joint_trajectory_controller</exec_depend>
   <exec_depend>rb_mujoco_description</exec_depend>
 
+  <exec_depend>python3-yaml</exec_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <test_depend>controller_manager_msgs</test_depend>
+  <test_depend>control_msgs</test_depend>
+  <test_depend>sensor_msgs</test_depend>
+  <test_depend>tf2_msgs</test_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>
